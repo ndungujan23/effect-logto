@@ -1,0 +1,101 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": [
+			"**",
+			"!**/dist",
+			"!**/coverage",
+			"!**/node_modules",
+			"!**/.git",
+			"!**/*.svg"
+		]
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "off",
+				"useSortedProperties": "off"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineEnding": "auto",
+		"lineWidth": 140,
+		"expand": "never"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"preset": "recommended",
+			"a11y": {
+				"recommended": false,
+				"useButtonType": "off",
+				"noSvgWithoutTitle": "off"
+			},
+			"complexity": {
+				"useArrowFunction": "on",
+				"noBannedTypes": "info"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "off",
+				"noDocumentCookie": "warn",
+				"noExplicitAny": "off",
+				"useIterableCallbackReturn": "off",
+				"noThenProperty": "off",
+				"noConfusingVoidType": "off"
+			},
+			"correctness": {
+				"useYield": "off",
+				"noEmptyPattern": "off",
+				"noUnusedVariables": "off",
+				"noUnusedFunctionParameters": "off",
+				"useSingleJsDocAsterisk": "off",
+				"noInvalidUseBeforeDeclaration": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"enabled": true,
+			"bracketSpacing": true,
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"quoteStyle": "single",
+			"trailingCommas": "es5",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "asNeeded",
+			"indentStyle": "tab",
+			"indentWidth": 4,
+			"lineWidth": 140,
+			"attributePosition": "auto"
+		},
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		}
+	},
+	"json": {
+		"formatter": {
+			"enabled": true,
+			"lineWidth": 140,
+			"indentWidth": 4,
+			"indentStyle": "tab",
+			"expand": "never",
+			"delimiterSpacing": false,
+			"bracketSpacing": false,
+			"lineEnding": "auto"
+		}
+	}
+}
