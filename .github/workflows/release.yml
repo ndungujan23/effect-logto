@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # the changelog links the commit each changeset arrived in
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.14
