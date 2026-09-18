@@ -1,29 +1,11 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
-	"vcs": {
-		"enabled": true,
-		"clientKind": "git",
-		"useIgnoreFile": true
-	},
+	"vcs": {"enabled": true, "clientKind": "git", "useIgnoreFile": true},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": [
-			"**",
-			"!**/dist",
-			"!**/coverage",
-			"!**/node_modules",
-			"!**/.git",
-			"!**/*.svg"
-		]
+		"includes": ["**", "!**/dist", "!**/coverage", "!**/node_modules", "!**/.git", "!**/*.svg", "!**/spec/openapi.json"]
 	},
-	"assist": {
-		"actions": {
-			"source": {
-				"organizeImports": "off",
-				"useSortedProperties": "off"
-			}
-		}
-	},
+	"assist": {"actions": {"source": {"organizeImports": "off", "useSortedProperties": "off"}}},
 	"formatter": {
 		"enabled": true,
 		"formatWithErrors": false,
@@ -37,15 +19,8 @@
 		"enabled": true,
 		"rules": {
 			"preset": "recommended",
-			"a11y": {
-				"recommended": false,
-				"useButtonType": "off",
-				"noSvgWithoutTitle": "off"
-			},
-			"complexity": {
-				"useArrowFunction": "on",
-				"noBannedTypes": "info"
-			},
+			"a11y": {"recommended": false, "useButtonType": "off", "noSvgWithoutTitle": "off"},
+			"complexity": {"useArrowFunction": "on", "noBannedTypes": "info"},
 			"suspicious": {
 				"noArrayIndexKey": "off",
 				"noDocumentCookie": "warn",
@@ -62,9 +37,7 @@
 				"useSingleJsDocAsterisk": "off",
 				"noInvalidUseBeforeDeclaration": "off"
 			},
-			"style": {
-				"noNonNullAssertion": "off"
-			}
+			"style": {"noNonNullAssertion": "off"}
 		}
 	},
 	"javascript": {
@@ -82,9 +55,7 @@
 			"lineWidth": 140,
 			"attributePosition": "auto"
 		},
-		"parser": {
-			"unsafeParameterDecoratorsEnabled": true
-		}
+		"parser": {"unsafeParameterDecoratorsEnabled": true}
 	},
 	"json": {
 		"formatter": {

@@ -1,0 +1,46 @@
+{
+	"name": "effect-logto",
+	"version": "0.0.0",
+	"description": "Effect client for the Logto Management, Account and Experience APIs, with typed webhooks and user search",
+	"keywords": ["effect", "effect-ts", "logto", "oidc", "auth", "management-api", "webhooks"],
+	"license": "MIT",
+	"author": "Jan Ndungu <ndungujan23@gmail.com>",
+	"homepage": "https://github.com/ndungujan23/effect-logto#readme",
+	"bugs": "https://github.com/ndungujan23/effect-logto/issues",
+	"repository": {"type": "git", "url": "git+https://github.com/ndungujan23/effect-logto.git", "directory": "packages/effect-logto"},
+	"type": "module",
+	"sideEffects": false,
+	"engines": {"node": ">=22"},
+	"files": ["dist", "src", "LICENSE", "README.md"],
+	"exports": {
+		".": {"types": "./dist/index.d.ts", "default": "./dist/index.js"},
+		"./schema": {"types": "./dist/schema.d.ts", "default": "./dist/schema.js"},
+		"./webhook": {"types": "./dist/webhook.d.ts", "default": "./dist/webhook.js"},
+		"./package.json": "./package.json"
+	},
+	"publishConfig": {"access": "public"},
+	"scripts": {
+		"build": "rm -rf dist && tsc -p tsconfig.build.json && bun run sync:readme",
+		"build:watch": "tsc -p tsconfig.build.json --watch",
+		"type:check": "tsc -p tsconfig.json && tsc -p scripts/tsconfig.json",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
+		"lint:package": "publint --strict && attw --pack . --profile esm-only",
+		"generate": "bun scripts/generate.ts",
+		"live-check": "bun scripts/live-check.ts",
+		"sync:readme": "bun ../../scripts/sync-package-readme.ts"
+	},
+	"peerDependencies": {"effect": "^4.0.0-rc.115"},
+	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.18.5",
+		"@effect/openapi-generator": "4.0.0-rc.112",
+		"@types/bun": "^1.3.14",
+		"@types/node": "^24.13.5",
+		"@vitest/coverage-v8": "catalog:",
+		"effect": "4.0.0-rc.115",
+		"publint": "^0.3.24",
+		"typescript-api": "npm:typescript@6.0.3",
+		"vitest": "catalog:"
+	}
+}

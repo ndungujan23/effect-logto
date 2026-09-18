@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM"],
+		"types": [],
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"moduleDetection": "force",
+		"verbatimModuleSyntax": true,
+		"allowImportingTsExtensions": true,
+		"rewriteRelativeImportExtensions": true,
+		"isolatedModules": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"exactOptionalPropertyTypes": false,
+		"noEmit": true
+	},
+	"exclude": ["**/dist", "**/node_modules"]
+}
