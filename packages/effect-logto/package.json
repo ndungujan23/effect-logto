@@ -1,6 +1,6 @@
 {
 	"name": "effect-logto",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "Effect client for the Logto Management, Account and Experience APIs, with typed webhooks and user search",
 	"keywords": ["effect", "effect-ts", "logto", "oidc", "auth", "management-api", "webhooks"],
 	"license": "MIT",
