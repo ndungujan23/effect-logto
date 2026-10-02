@@ -14,17 +14,29 @@ export const makeOrganizationInvitations = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): OrganizationInvitationsOperations => ({
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/organization-invitations/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/organization-invitations/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/organization-invitations/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/organization-invitations/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	list: options =>
-		HttpClientRequest.get(`/api/organization-invitations`).pipe(
+		HttpClientRequest.get('/api/organization-invitations').pipe(
 			HttpClientRequest.setUrlParams({
 				organizationId: options?.params?.['organizationId'] as any,
 				inviterId: options?.params?.['inviterId'] as any,
@@ -33,20 +45,28 @@ export const makeOrganizationInvitations = ({
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/organization-invitations`).pipe(
+		HttpClientRequest.post('/api/organization-invitations').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	createMessage: (id, options) =>
-		HttpClientRequest.post(`/api/organization-invitations/${encodeURIComponent(id)}/message`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/organization-invitations/' + __encodePathParam(id) + '/message').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	replaceStatus: (id, options) =>
-		HttpClientRequest.put(`/api/organization-invitations/${encodeURIComponent(id)}/status`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceStatusResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.put, [id], () => '/api/organization-invitations/' + __encodePathParam(id) + '/status').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceStatusResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 })

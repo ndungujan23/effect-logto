@@ -3,167 +3,223 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type ListResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-	readonly label: string
-	readonly description: string | null
-	readonly required: boolean
-	readonly config: {
-		readonly placeholder?: string
-		readonly minLength?: number
-		readonly maxLength?: number
-		readonly minValue?: number
-		readonly maxValue?: number
-		readonly format?: string
-		readonly customFormat?: string
-		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-		readonly defaultValue?: string
-		readonly parts?: ReadonlyArray<{
-			readonly enabled: boolean
-			readonly name: string
-			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: {
-				readonly placeholder?: string
-				readonly minLength?: number
-				readonly maxLength?: number
-				readonly minValue?: number
-				readonly maxValue?: number
-				readonly format?: string
-				readonly customFormat?: string
-				readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-				readonly defaultValue?: string
-			}
-		}>
-	}
-	readonly createdAt: number
-	readonly sieOrder: number
-}>
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly name: string
+		readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+		readonly label: string
+		readonly description: string | null
+		readonly required: boolean
+		readonly config: {
+			readonly placeholder?: string
+			readonly minLength?: number
+			readonly maxLength?: number
+			readonly minValue?: number
+			readonly maxValue?: number
+			readonly format?: string
+			readonly customFormat?: string
+			readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
+			readonly defaultValue?: string
+			readonly parts?: ReadonlyArray<
+				{
+					readonly enabled: boolean
+					readonly name: string
+					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+					readonly label?: string
+					readonly description?: string
+					readonly required: boolean
+					readonly config?: {
+						readonly placeholder?: string
+						readonly minLength?: number
+						readonly maxLength?: number
+						readonly minValue?: number
+						readonly maxValue?: number
+						readonly format?: string
+						readonly customFormat?: string
+						readonly options?: ReadonlyArray<
+							{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+						>
+						readonly defaultValue?: string
+					} & { readonly [x: string]: Schema.Json }
+				} & { readonly [x: string]: Schema.Json }
+			>
+		} & { readonly [x: string]: Schema.Json }
+		readonly createdAt: number
+		readonly sieOrder: number
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-		label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-		description: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-			Schema.Null,
-		]),
-		required: Schema.Boolean,
-		config: Schema.Struct({
-			placeholder: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			format: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 			),
-			customFormat: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+			type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+			label: Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+			description: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+				Schema.Null,
+			]),
+			required: Schema.Boolean,
+			config: Schema.StructWithRest(
+				Schema.Struct({
+					placeholder: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+					),
+					minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					format: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+					),
+					customFormat: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+					),
+					options: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						)
+					),
+					defaultValue: Schema.optionalKey(Schema.String),
+					parts: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									enabled: Schema.Boolean,
+									name: Schema.String,
+									type: Schema.Literals([
+										'Text',
+										'Number',
+										'Date',
+										'Checkbox',
+										'Select',
+										'Url',
+										'Regex',
+										'Address',
+										'Fullname',
+									]),
+									label: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									required: Schema.Boolean,
+									config: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												placeholder: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													)
+												),
+												minLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												minValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												format: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												customFormat: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												options: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																label: Schema.optionalKey(Schema.String),
+																value: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												defaultValue: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
-			options: Schema.optionalKey(Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))),
-			defaultValue: Schema.optionalKey(Schema.String),
-			parts: Schema.optionalKey(
-				Schema.Array(
-					Schema.Struct({
-						enabled: Schema.Boolean,
-						name: Schema.String,
-						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-						label: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-						),
-						description: Schema.optionalKey(Schema.String),
-						required: Schema.Boolean,
-						config: Schema.optionalKey(
-							Schema.Struct({
-								placeholder: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									)
-								),
-								minLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								minValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								format: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								customFormat: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								options: Schema.optionalKey(
-									Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-								),
-								defaultValue: Schema.optionalKey(Schema.String),
-							})
-						),
-					})
-				)
-			),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 		}),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type CreatePayload =
-	| {
+	| ({
 			readonly name: string
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly minLength?: number; readonly maxLength?: number }
-	  }
-	| {
+			readonly config?: { readonly placeholder?: string; readonly minLength?: number; readonly maxLength?: number } & {
+				readonly [x: string]: Schema.Json
+			}
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly name: string
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly minValue?: number; readonly maxValue?: number }
-	  }
-	| {
+			readonly config?: { readonly placeholder?: string; readonly minValue?: number; readonly maxValue?: number } & {
+				readonly [x: string]: Schema.Json
+			}
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly name: string
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly format: string; readonly customFormat?: string }
-	  }
-	| {
+			readonly config?: { readonly placeholder?: string; readonly format: string; readonly customFormat?: string } & {
+				readonly [x: string]: Schema.Json
+			}
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly name: string
 			readonly type: string
 			readonly label?: string
 			readonly required: boolean
-			readonly config?: { readonly defaultValue: string | string }
-	  }
-	| {
+			readonly config?: { readonly defaultValue: string | string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly name: string
 			readonly type: string
 			readonly label?: string
@@ -171,296 +227,426 @@ export type CreatePayload =
 			readonly required: boolean
 			readonly config: {
 				readonly placeholder?: string
-				readonly options: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-			}
-	  }
-	| {
+				readonly options: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly name: string
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: { readonly placeholder?: string }
-	  }
-	| {
+			readonly config?: { readonly placeholder?: string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly name: string
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config: { readonly placeholder?: string; readonly format: string }
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config: {
-				readonly parts: ReadonlyArray<{
-					readonly enabled: boolean
-					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-					readonly label?: string
-					readonly description?: string
-					readonly required: boolean
-					readonly config?: {
-						readonly placeholder?: string
-						readonly minLength?: number
-						readonly maxLength?: number
-						readonly minValue?: number
-						readonly maxValue?: number
-						readonly format?: string
-						readonly customFormat?: string
-						readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-						readonly defaultValue?: string
-					}
-					readonly name: 'formatted' | 'streetAddress' | 'locality' | 'region' | 'postalCode' | 'country'
-				}>
-			}
-	  }
-	| {
+			readonly config: { readonly placeholder?: string; readonly format: string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly name: string
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
 			readonly config: {
-				readonly parts: ReadonlyArray<{
-					readonly enabled: boolean
-					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-					readonly label?: string
-					readonly description?: string
-					readonly required: boolean
-					readonly config?: {
-						readonly placeholder?: string
-						readonly minLength?: number
-						readonly maxLength?: number
-						readonly minValue?: number
-						readonly maxValue?: number
-						readonly format?: string
-						readonly customFormat?: string
-						readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-						readonly defaultValue?: string
-					}
-					readonly name: 'givenName' | 'middleName' | 'familyName'
-				}>
-			}
-	  }
+				readonly parts: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+						readonly name: 'formatted' | 'streetAddress' | 'locality' | 'region' | 'postalCode' | 'country'
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config: {
+				readonly parts: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+						readonly name: 'givenName' | 'middleName' | 'familyName'
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
 export const CreatePayload = Schema.Union(
 	[
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Text"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.optionalKey(
-				Schema.Struct({
-					placeholder: Schema.optionalKey(Schema.String),
-					minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				})
-			),
-		}),
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Number"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.optionalKey(
-				Schema.Struct({
-					placeholder: Schema.optionalKey(Schema.String),
-					minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				})
-			),
-		}),
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Date"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.optionalKey(
-				Schema.Struct({
-					placeholder: Schema.optionalKey(Schema.String),
-					format: Schema.String,
-					customFormat: Schema.optionalKey(Schema.String),
-				})
-			),
-		}),
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Checkbox"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			required: Schema.Boolean.annotate({ format: 'false' }),
-			config: Schema.optionalKey(
-				Schema.Struct({
-					defaultValue: Schema.Union(
-						[Schema.String.annotate({ format: '"true"' }), Schema.String.annotate({ format: '"false"' })],
-						{ mode: 'oneOf' }
-					),
-				})
-			),
-		}),
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Select"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.Struct({
-				placeholder: Schema.optionalKey(Schema.String),
-				options: Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String })),
-			}),
-		}),
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Url"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.optionalKey(Schema.Struct({ placeholder: Schema.optionalKey(Schema.String) })),
-		}),
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Regex"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.Struct({ placeholder: Schema.optionalKey(Schema.String), format: Schema.String }),
-		}),
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Address"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.Struct({
-				parts: Schema.Array(
-					Schema.Struct({
-						enabled: Schema.Boolean,
-						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-						label: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-						),
-						description: Schema.optionalKey(Schema.String),
-						required: Schema.Boolean,
-						config: Schema.optionalKey(
-							Schema.Struct({
-								placeholder: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									)
-								),
-								minLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								minValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								format: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								customFormat: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								options: Schema.optionalKey(
-									Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-								),
-								defaultValue: Schema.optionalKey(Schema.String),
-							})
-						),
-						name: Schema.Literals(['formatted', 'streetAddress', 'locality', 'region', 'postalCode', 'country']),
-					})
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Text"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(Schema.String),
+							minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
 				),
 			}),
-		}),
-		Schema.Struct({
-			name: Schema.String,
-			type: Schema.String.annotate({ format: '"Fullname"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.Struct({
-				parts: Schema.Array(
-					Schema.Struct({
-						enabled: Schema.Boolean,
-						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-						label: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-						),
-						description: Schema.optionalKey(Schema.String),
-						required: Schema.Boolean,
-						config: Schema.optionalKey(
-							Schema.Struct({
-								placeholder: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									)
-								),
-								minLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								minValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								format: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								customFormat: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								options: Schema.optionalKey(
-									Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-								),
-								defaultValue: Schema.optionalKey(Schema.String),
-							})
-						),
-						name: Schema.Literals(['givenName', 'middleName', 'familyName']),
-					})
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Number"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(Schema.String),
+							minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
 				),
 			}),
-		}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Date"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(Schema.String),
+							format: Schema.String,
+							customFormat: Schema.optionalKey(Schema.String),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Checkbox"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				required: Schema.Boolean.annotate({ format: 'false' }),
+				config: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							defaultValue: Schema.Union(
+								[Schema.String.annotate({ format: '"true"' }), Schema.String.annotate({ format: '"false"' })],
+								{ mode: 'oneOf' }
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Select"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.StructWithRest(
+					Schema.Struct({
+						placeholder: Schema.optionalKey(Schema.String),
+						options: Schema.Array(
+							Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Url"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.optionalKey(
+					Schema.StructWithRest(Schema.Struct({ placeholder: Schema.optionalKey(Schema.String) }), [
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+					])
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Regex"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.StructWithRest(Schema.Struct({ placeholder: Schema.optionalKey(Schema.String), format: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				]),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Address"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.StructWithRest(
+					Schema.Struct({
+						parts: Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									enabled: Schema.Boolean,
+									type: Schema.Literals([
+										'Text',
+										'Number',
+										'Date',
+										'Checkbox',
+										'Select',
+										'Url',
+										'Regex',
+										'Address',
+										'Fullname',
+									]),
+									label: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									required: Schema.Boolean,
+									config: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												placeholder: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													)
+												),
+												minLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												minValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												format: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												customFormat: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												options: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																label: Schema.optionalKey(Schema.String),
+																value: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												defaultValue: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									name: Schema.Literals(['formatted', 'streetAddress', 'locality', 'region', 'postalCode', 'country']),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.String,
+				type: Schema.String.annotate({ format: '"Fullname"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.StructWithRest(
+					Schema.Struct({
+						parts: Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									enabled: Schema.Boolean,
+									type: Schema.Literals([
+										'Text',
+										'Number',
+										'Date',
+										'Checkbox',
+										'Select',
+										'Url',
+										'Regex',
+										'Address',
+										'Fullname',
+									]),
+									label: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									required: Schema.Boolean,
+									config: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												placeholder: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													)
+												),
+												minLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												minValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												format: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												customFormat: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												options: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																label: Schema.optionalKey(Schema.String),
+																value: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												defaultValue: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									name: Schema.Literals(['givenName', 'middleName', 'familyName']),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
@@ -481,101 +667,158 @@ export type CreateResponse = {
 		readonly maxValue?: number
 		readonly format?: string
 		readonly customFormat?: string
-		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
+		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
 		readonly defaultValue?: string
-		readonly parts?: ReadonlyArray<{
-			readonly enabled: boolean
-			readonly name: string
-			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: {
-				readonly placeholder?: string
-				readonly minLength?: number
-				readonly maxLength?: number
-				readonly minValue?: number
-				readonly maxValue?: number
-				readonly format?: string
-				readonly customFormat?: string
-				readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-				readonly defaultValue?: string
-			}
-		}>
-	}
+		readonly parts?: ReadonlyArray<
+			{
+				readonly enabled: boolean
+				readonly name: string
+				readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+				readonly label?: string
+				readonly description?: string
+				readonly required: boolean
+				readonly config?: {
+					readonly placeholder?: string
+					readonly minLength?: number
+					readonly maxLength?: number
+					readonly minValue?: number
+					readonly maxValue?: number
+					readonly format?: string
+					readonly customFormat?: string
+					readonly options?: ReadonlyArray<
+						{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+					>
+					readonly defaultValue?: string
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+		>
+	} & { readonly [x: string]: Schema.Json }
 	readonly createdAt: number
 	readonly sieOrder: number
-}
-export const CreateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-	label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-	description: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-		Schema.Null,
-	]),
-	required: Schema.Boolean,
-	config: Schema.Struct({
-		placeholder: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
+} & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		format: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 		),
-		customFormat: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+		type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+		label: Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+		description: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+			Schema.Null,
+		]),
+		required: Schema.Boolean,
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				placeholder: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+				),
+				minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				format: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+				),
+				customFormat: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+				),
+				options: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					)
+				),
+				defaultValue: Schema.optionalKey(Schema.String),
+				parts: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								enabled: Schema.Boolean,
+								name: Schema.String,
+								type: Schema.Literals([
+									'Text',
+									'Number',
+									'Date',
+									'Checkbox',
+									'Select',
+									'Url',
+									'Regex',
+									'Address',
+									'Fullname',
+								]),
+								label: Schema.optionalKey(
+									Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+								),
+								description: Schema.optionalKey(Schema.String),
+								required: Schema.Boolean,
+								config: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											placeholder: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(256).annotate({
+														expected: 'a string with at most 256 code points',
+													})
+												)
+											),
+											minLength: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											maxLength: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											minValue: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											maxValue: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											format: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												)
+											),
+											customFormat: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												)
+											),
+											options: Schema.optionalKey(
+												Schema.Array(
+													Schema.StructWithRest(
+														Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
+												)
+											),
+											defaultValue: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		options: Schema.optionalKey(Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))),
-		defaultValue: Schema.optionalKey(Schema.String),
-		parts: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					enabled: Schema.Boolean,
-					name: Schema.String,
-					type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-					label: Schema.optionalKey(
-						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-					),
-					description: Schema.optionalKey(Schema.String),
-					required: Schema.Boolean,
-					config: Schema.optionalKey(
-						Schema.Struct({
-							placeholder: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							format: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							customFormat: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							options: Schema.optionalKey(
-								Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-							),
-							defaultValue: Schema.optionalKey(Schema.String),
-						})
-					),
-				})
-			)
-		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetByNameResponse = {
 	readonly tenantId: string
@@ -593,414 +836,607 @@ export type GetByNameResponse = {
 		readonly maxValue?: number
 		readonly format?: string
 		readonly customFormat?: string
-		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
+		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
 		readonly defaultValue?: string
-		readonly parts?: ReadonlyArray<{
-			readonly enabled: boolean
-			readonly name: string
-			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: {
-				readonly placeholder?: string
-				readonly minLength?: number
-				readonly maxLength?: number
-				readonly minValue?: number
-				readonly maxValue?: number
-				readonly format?: string
-				readonly customFormat?: string
-				readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-				readonly defaultValue?: string
-			}
-		}>
-	}
+		readonly parts?: ReadonlyArray<
+			{
+				readonly enabled: boolean
+				readonly name: string
+				readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+				readonly label?: string
+				readonly description?: string
+				readonly required: boolean
+				readonly config?: {
+					readonly placeholder?: string
+					readonly minLength?: number
+					readonly maxLength?: number
+					readonly minValue?: number
+					readonly maxValue?: number
+					readonly format?: string
+					readonly customFormat?: string
+					readonly options?: ReadonlyArray<
+						{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+					>
+					readonly defaultValue?: string
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+		>
+	} & { readonly [x: string]: Schema.Json }
 	readonly createdAt: number
 	readonly sieOrder: number
-}
-export const GetByNameResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-	label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-	description: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-		Schema.Null,
-	]),
-	required: Schema.Boolean,
-	config: Schema.Struct({
-		placeholder: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
+} & { readonly [x: string]: Schema.Json }
+export const GetByNameResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		format: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 		),
-		customFormat: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+		type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+		label: Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+		description: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+			Schema.Null,
+		]),
+		required: Schema.Boolean,
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				placeholder: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+				),
+				minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				format: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+				),
+				customFormat: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+				),
+				options: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					)
+				),
+				defaultValue: Schema.optionalKey(Schema.String),
+				parts: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								enabled: Schema.Boolean,
+								name: Schema.String,
+								type: Schema.Literals([
+									'Text',
+									'Number',
+									'Date',
+									'Checkbox',
+									'Select',
+									'Url',
+									'Regex',
+									'Address',
+									'Fullname',
+								]),
+								label: Schema.optionalKey(
+									Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+								),
+								description: Schema.optionalKey(Schema.String),
+								required: Schema.Boolean,
+								config: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											placeholder: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(256).annotate({
+														expected: 'a string with at most 256 code points',
+													})
+												)
+											),
+											minLength: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											maxLength: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											minValue: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											maxValue: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											format: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												)
+											),
+											customFormat: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												)
+											),
+											options: Schema.optionalKey(
+												Schema.Array(
+													Schema.StructWithRest(
+														Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
+												)
+											),
+											defaultValue: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		options: Schema.optionalKey(Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))),
-		defaultValue: Schema.optionalKey(Schema.String),
-		parts: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					enabled: Schema.Boolean,
-					name: Schema.String,
-					type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-					label: Schema.optionalKey(
-						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-					),
-					description: Schema.optionalKey(Schema.String),
-					required: Schema.Boolean,
-					config: Schema.optionalKey(
-						Schema.Struct({
-							placeholder: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							format: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							customFormat: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							options: Schema.optionalKey(
-								Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-							),
-							defaultValue: Schema.optionalKey(Schema.String),
-						})
-					),
-				})
-			)
-		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateByNamePayload =
-	| {
+	| ({
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly minLength?: number; readonly maxLength?: number }
-	  }
-	| {
+			readonly config?: { readonly placeholder?: string; readonly minLength?: number; readonly maxLength?: number } & {
+				readonly [x: string]: Schema.Json
+			}
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly minValue?: number; readonly maxValue?: number }
-	  }
-	| {
+			readonly config?: { readonly placeholder?: string; readonly minValue?: number; readonly maxValue?: number } & {
+				readonly [x: string]: Schema.Json
+			}
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly format: string; readonly customFormat?: string }
-	  }
-	| {
+			readonly config?: { readonly placeholder?: string; readonly format: string; readonly customFormat?: string } & {
+				readonly [x: string]: Schema.Json
+			}
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly type: string
 			readonly label?: string
 			readonly required: boolean
-			readonly config?: { readonly defaultValue: string | string }
-	  }
-	| {
+			readonly config?: { readonly defaultValue: string | string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
 			readonly config: {
 				readonly placeholder?: string
-				readonly options: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-			}
-	  }
-	| {
+				readonly options: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: { readonly placeholder?: string }
-	  }
-	| {
+			readonly config?: { readonly placeholder?: string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config: { readonly placeholder?: string; readonly format: string }
-	  }
-	| {
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config: {
-				readonly parts: ReadonlyArray<{
-					readonly enabled: boolean
-					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-					readonly label?: string
-					readonly description?: string
-					readonly required: boolean
-					readonly config?: {
-						readonly placeholder?: string
-						readonly minLength?: number
-						readonly maxLength?: number
-						readonly minValue?: number
-						readonly maxValue?: number
-						readonly format?: string
-						readonly customFormat?: string
-						readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-						readonly defaultValue?: string
-					}
-					readonly name: 'formatted' | 'streetAddress' | 'locality' | 'region' | 'postalCode' | 'country'
-				}>
-			}
-	  }
-	| {
+			readonly config: { readonly placeholder?: string; readonly format: string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
 			readonly config: {
-				readonly parts: ReadonlyArray<{
-					readonly enabled: boolean
-					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-					readonly label?: string
-					readonly description?: string
-					readonly required: boolean
-					readonly config?: {
-						readonly placeholder?: string
-						readonly minLength?: number
-						readonly maxLength?: number
-						readonly minValue?: number
-						readonly maxValue?: number
-						readonly format?: string
-						readonly customFormat?: string
-						readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-						readonly defaultValue?: string
-					}
-					readonly name: 'givenName' | 'middleName' | 'familyName'
-				}>
-			}
-	  }
+				readonly parts: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+						readonly name: 'formatted' | 'streetAddress' | 'locality' | 'region' | 'postalCode' | 'country'
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config: {
+				readonly parts: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+						readonly name: 'givenName' | 'middleName' | 'familyName'
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
 export const UpdateByNamePayload = Schema.Union(
 	[
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Text"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.optionalKey(
-				Schema.Struct({
-					placeholder: Schema.optionalKey(Schema.String),
-					minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				})
-			),
-		}),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Number"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.optionalKey(
-				Schema.Struct({
-					placeholder: Schema.optionalKey(Schema.String),
-					minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				})
-			),
-		}),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Date"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.optionalKey(
-				Schema.Struct({
-					placeholder: Schema.optionalKey(Schema.String),
-					format: Schema.String,
-					customFormat: Schema.optionalKey(Schema.String),
-				})
-			),
-		}),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Checkbox"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			required: Schema.Boolean.annotate({ format: 'false' }),
-			config: Schema.optionalKey(
-				Schema.Struct({
-					defaultValue: Schema.Union(
-						[Schema.String.annotate({ format: '"true"' }), Schema.String.annotate({ format: '"false"' })],
-						{ mode: 'oneOf' }
-					),
-				})
-			),
-		}),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Select"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.Struct({
-				placeholder: Schema.optionalKey(Schema.String),
-				options: Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String })),
-			}),
-		}),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Url"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.optionalKey(Schema.Struct({ placeholder: Schema.optionalKey(Schema.String) })),
-		}),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Regex"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.Struct({ placeholder: Schema.optionalKey(Schema.String), format: Schema.String }),
-		}),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Address"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.Struct({
-				parts: Schema.Array(
-					Schema.Struct({
-						enabled: Schema.Boolean,
-						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-						label: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-						),
-						description: Schema.optionalKey(Schema.String),
-						required: Schema.Boolean,
-						config: Schema.optionalKey(
-							Schema.Struct({
-								placeholder: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									)
-								),
-								minLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								minValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								format: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								customFormat: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								options: Schema.optionalKey(
-									Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-								),
-								defaultValue: Schema.optionalKey(Schema.String),
-							})
-						),
-						name: Schema.Literals(['formatted', 'streetAddress', 'locality', 'region', 'postalCode', 'country']),
-					})
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Text"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(Schema.String),
+							minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
 				),
 			}),
-		}),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"Fullname"' }),
-			label: Schema.optionalKey(
-				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			),
-			description: Schema.optionalKey(Schema.String),
-			required: Schema.Boolean,
-			config: Schema.Struct({
-				parts: Schema.Array(
-					Schema.Struct({
-						enabled: Schema.Boolean,
-						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-						label: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-						),
-						description: Schema.optionalKey(Schema.String),
-						required: Schema.Boolean,
-						config: Schema.optionalKey(
-							Schema.Struct({
-								placeholder: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									)
-								),
-								minLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								minValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								format: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								customFormat: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								options: Schema.optionalKey(
-									Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-								),
-								defaultValue: Schema.optionalKey(Schema.String),
-							})
-						),
-						name: Schema.Literals(['givenName', 'middleName', 'familyName']),
-					})
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Number"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(Schema.String),
+							minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
 				),
 			}),
-		}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Date"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(Schema.String),
+							format: Schema.String,
+							customFormat: Schema.optionalKey(Schema.String),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Checkbox"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				required: Schema.Boolean.annotate({ format: 'false' }),
+				config: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							defaultValue: Schema.Union(
+								[Schema.String.annotate({ format: '"true"' }), Schema.String.annotate({ format: '"false"' })],
+								{ mode: 'oneOf' }
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Select"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.StructWithRest(
+					Schema.Struct({
+						placeholder: Schema.optionalKey(Schema.String),
+						options: Schema.Array(
+							Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Url"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.optionalKey(
+					Schema.StructWithRest(Schema.Struct({ placeholder: Schema.optionalKey(Schema.String) }), [
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+					])
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Regex"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.StructWithRest(Schema.Struct({ placeholder: Schema.optionalKey(Schema.String), format: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				]),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Address"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.StructWithRest(
+					Schema.Struct({
+						parts: Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									enabled: Schema.Boolean,
+									type: Schema.Literals([
+										'Text',
+										'Number',
+										'Date',
+										'Checkbox',
+										'Select',
+										'Url',
+										'Regex',
+										'Address',
+										'Fullname',
+									]),
+									label: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									required: Schema.Boolean,
+									config: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												placeholder: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													)
+												),
+												minLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												minValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												format: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												customFormat: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												options: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																label: Schema.optionalKey(Schema.String),
+																value: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												defaultValue: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									name: Schema.Literals(['formatted', 'streetAddress', 'locality', 'region', 'postalCode', 'country']),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"Fullname"' }),
+				label: Schema.optionalKey(
+					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				),
+				description: Schema.optionalKey(Schema.String),
+				required: Schema.Boolean,
+				config: Schema.StructWithRest(
+					Schema.Struct({
+						parts: Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									enabled: Schema.Boolean,
+									type: Schema.Literals([
+										'Text',
+										'Number',
+										'Date',
+										'Checkbox',
+										'Select',
+										'Url',
+										'Regex',
+										'Address',
+										'Fullname',
+									]),
+									label: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									required: Schema.Boolean,
+									config: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												placeholder: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													)
+												),
+												minLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												minValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												format: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												customFormat: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												options: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																label: Schema.optionalKey(Schema.String),
+																value: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												defaultValue: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									name: Schema.Literals(['givenName', 'middleName', 'familyName']),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
@@ -1021,698 +1457,1028 @@ export type UpdateByNameResponse = {
 		readonly maxValue?: number
 		readonly format?: string
 		readonly customFormat?: string
-		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
+		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
 		readonly defaultValue?: string
-		readonly parts?: ReadonlyArray<{
-			readonly enabled: boolean
+		readonly parts?: ReadonlyArray<
+			{
+				readonly enabled: boolean
+				readonly name: string
+				readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+				readonly label?: string
+				readonly description?: string
+				readonly required: boolean
+				readonly config?: {
+					readonly placeholder?: string
+					readonly minLength?: number
+					readonly maxLength?: number
+					readonly minValue?: number
+					readonly maxValue?: number
+					readonly format?: string
+					readonly customFormat?: string
+					readonly options?: ReadonlyArray<
+						{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+					>
+					readonly defaultValue?: string
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+		>
+	} & { readonly [x: string]: Schema.Json }
+	readonly createdAt: number
+	readonly sieOrder: number
+} & { readonly [x: string]: Schema.Json }
+export const UpdateByNameResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+		label: Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+		description: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+			Schema.Null,
+		]),
+		required: Schema.Boolean,
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				placeholder: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+				),
+				minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				format: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+				),
+				customFormat: Schema.optionalKey(
+					Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+				),
+				options: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					)
+				),
+				defaultValue: Schema.optionalKey(Schema.String),
+				parts: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								enabled: Schema.Boolean,
+								name: Schema.String,
+								type: Schema.Literals([
+									'Text',
+									'Number',
+									'Date',
+									'Checkbox',
+									'Select',
+									'Url',
+									'Regex',
+									'Address',
+									'Fullname',
+								]),
+								label: Schema.optionalKey(
+									Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+								),
+								description: Schema.optionalKey(Schema.String),
+								required: Schema.Boolean,
+								config: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											placeholder: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(256).annotate({
+														expected: 'a string with at most 256 code points',
+													})
+												)
+											),
+											minLength: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											maxLength: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											minValue: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											maxValue: Schema.optionalKey(
+												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+											),
+											format: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												)
+											),
+											customFormat: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												)
+											),
+											options: Schema.optionalKey(
+												Schema.Array(
+													Schema.StructWithRest(
+														Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
+												)
+											),
+											defaultValue: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateBatchPayload = ReadonlyArray<
+	| ({
 			readonly name: string
-			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+			readonly type: string
 			readonly label?: string
 			readonly description?: string
 			readonly required: boolean
-			readonly config?: {
-				readonly placeholder?: string
-				readonly minLength?: number
-				readonly maxLength?: number
-				readonly minValue?: number
-				readonly maxValue?: number
-				readonly format?: string
-				readonly customFormat?: string
-				readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-				readonly defaultValue?: string
+			readonly config?: { readonly placeholder?: string; readonly minLength?: number; readonly maxLength?: number } & {
+				readonly [x: string]: Schema.Json
 			}
-		}>
-	}
-	readonly createdAt: number
-	readonly sieOrder: number
-}
-export const UpdateByNameResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-	label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-	description: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-		Schema.Null,
-	]),
-	required: Schema.Boolean,
-	config: Schema.Struct({
-		placeholder: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-		),
-		minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		format: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-		),
-		customFormat: Schema.optionalKey(
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-		),
-		options: Schema.optionalKey(Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))),
-		defaultValue: Schema.optionalKey(Schema.String),
-		parts: Schema.optionalKey(
-			Schema.Array(
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config?: { readonly placeholder?: string; readonly minValue?: number; readonly maxValue?: number } & {
+				readonly [x: string]: Schema.Json
+			}
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config?: { readonly placeholder?: string; readonly format: string; readonly customFormat?: string } & {
+				readonly [x: string]: Schema.Json
+			}
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly required: boolean
+			readonly config?: { readonly defaultValue: string | string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config: {
+				readonly placeholder?: string
+				readonly options: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config?: { readonly placeholder?: string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config: { readonly placeholder?: string; readonly format: string } & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config: {
+				readonly parts: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+						readonly name: 'formatted' | 'streetAddress' | 'locality' | 'region' | 'postalCode' | 'country'
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
+			readonly name: string
+			readonly type: string
+			readonly label?: string
+			readonly description?: string
+			readonly required: boolean
+			readonly config: {
+				readonly parts: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+						readonly name: 'givenName' | 'middleName' | 'familyName'
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+>
+export const CreateBatchPayload = Schema.Array(
+	Schema.Union(
+		[
+			Schema.StructWithRest(
 				Schema.Struct({
-					enabled: Schema.Boolean,
 					name: Schema.String,
-					type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+					type: Schema.String.annotate({ format: '"Text"' }),
 					label: Schema.optionalKey(
 						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
 					),
 					description: Schema.optionalKey(Schema.String),
 					required: Schema.Boolean,
 					config: Schema.optionalKey(
-						Schema.Struct({
-							placeholder: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-							format: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							customFormat: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							options: Schema.optionalKey(
-								Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-							),
-							defaultValue: Schema.optionalKey(Schema.String),
-						})
-					),
-				})
-			)
-		),
-	}),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
-
-export type CreateBatchPayload = ReadonlyArray<
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly minLength?: number; readonly maxLength?: number }
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly minValue?: number; readonly maxValue?: number }
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: { readonly placeholder?: string; readonly format: string; readonly customFormat?: string }
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly required: boolean
-			readonly config?: { readonly defaultValue: string | string }
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config: {
-				readonly placeholder?: string
-				readonly options: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-			}
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: { readonly placeholder?: string }
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config: { readonly placeholder?: string; readonly format: string }
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config: {
-				readonly parts: ReadonlyArray<{
-					readonly enabled: boolean
-					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-					readonly label?: string
-					readonly description?: string
-					readonly required: boolean
-					readonly config?: {
-						readonly placeholder?: string
-						readonly minLength?: number
-						readonly maxLength?: number
-						readonly minValue?: number
-						readonly maxValue?: number
-						readonly format?: string
-						readonly customFormat?: string
-						readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-						readonly defaultValue?: string
-					}
-					readonly name: 'formatted' | 'streetAddress' | 'locality' | 'region' | 'postalCode' | 'country'
-				}>
-			}
-	  }
-	| {
-			readonly name: string
-			readonly type: string
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config: {
-				readonly parts: ReadonlyArray<{
-					readonly enabled: boolean
-					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-					readonly label?: string
-					readonly description?: string
-					readonly required: boolean
-					readonly config?: {
-						readonly placeholder?: string
-						readonly minLength?: number
-						readonly maxLength?: number
-						readonly minValue?: number
-						readonly maxValue?: number
-						readonly format?: string
-						readonly customFormat?: string
-						readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-						readonly defaultValue?: string
-					}
-					readonly name: 'givenName' | 'middleName' | 'familyName'
-				}>
-			}
-	  }
->
-export const CreateBatchPayload = Schema.Array(
-	Schema.Union(
-		[
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Text"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				description: Schema.optionalKey(Schema.String),
-				required: Schema.Boolean,
-				config: Schema.optionalKey(
-					Schema.Struct({
-						placeholder: Schema.optionalKey(Schema.String),
-						minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					})
-				),
-			}),
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Number"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				description: Schema.optionalKey(Schema.String),
-				required: Schema.Boolean,
-				config: Schema.optionalKey(
-					Schema.Struct({
-						placeholder: Schema.optionalKey(Schema.String),
-						minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					})
-				),
-			}),
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Date"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				description: Schema.optionalKey(Schema.String),
-				required: Schema.Boolean,
-				config: Schema.optionalKey(
-					Schema.Struct({
-						placeholder: Schema.optionalKey(Schema.String),
-						format: Schema.String,
-						customFormat: Schema.optionalKey(Schema.String),
-					})
-				),
-			}),
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Checkbox"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				required: Schema.Boolean.annotate({ format: 'false' }),
-				config: Schema.optionalKey(
-					Schema.Struct({
-						defaultValue: Schema.Union(
-							[Schema.String.annotate({ format: '"true"' }), Schema.String.annotate({ format: '"false"' })],
-							{ mode: 'oneOf' }
-						),
-					})
-				),
-			}),
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Select"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				description: Schema.optionalKey(Schema.String),
-				required: Schema.Boolean,
-				config: Schema.Struct({
-					placeholder: Schema.optionalKey(Schema.String),
-					options: Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String })),
-				}),
-			}),
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Url"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				description: Schema.optionalKey(Schema.String),
-				required: Schema.Boolean,
-				config: Schema.optionalKey(Schema.Struct({ placeholder: Schema.optionalKey(Schema.String) })),
-			}),
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Regex"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				description: Schema.optionalKey(Schema.String),
-				required: Schema.Boolean,
-				config: Schema.Struct({ placeholder: Schema.optionalKey(Schema.String), format: Schema.String }),
-			}),
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Address"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				description: Schema.optionalKey(Schema.String),
-				required: Schema.Boolean,
-				config: Schema.Struct({
-					parts: Schema.Array(
-						Schema.Struct({
-							enabled: Schema.Boolean,
-							type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-							label: Schema.optionalKey(
-								Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-							),
-							description: Schema.optionalKey(Schema.String),
-							required: Schema.Boolean,
-							config: Schema.optionalKey(
-								Schema.Struct({
-									placeholder: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-										)
-									),
-									minLength: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									maxLength: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									minValue: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									maxValue: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									format: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										)
-									),
-									customFormat: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										)
-									),
-									options: Schema.optionalKey(
-										Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-									),
-									defaultValue: Schema.optionalKey(Schema.String),
-								})
-							),
-							name: Schema.Literals(['formatted', 'streetAddress', 'locality', 'region', 'postalCode', 'country']),
-						})
+						Schema.StructWithRest(
+							Schema.Struct({
+								placeholder: Schema.optionalKey(Schema.String),
+								minLength: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								maxLength: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
 					),
 				}),
-			}),
-			Schema.Struct({
-				name: Schema.String,
-				type: Schema.String.annotate({ format: '"Fullname"' }),
-				label: Schema.optionalKey(
-					Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				),
-				description: Schema.optionalKey(Schema.String),
-				required: Schema.Boolean,
-				config: Schema.Struct({
-					parts: Schema.Array(
-						Schema.Struct({
-							enabled: Schema.Boolean,
-							type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-							label: Schema.optionalKey(
-								Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-							),
-							description: Schema.optionalKey(Schema.String),
-							required: Schema.Boolean,
-							config: Schema.optionalKey(
-								Schema.Struct({
-									placeholder: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-										)
-									),
-									minLength: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									maxLength: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									minValue: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									maxValue: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									format: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										)
-									),
-									customFormat: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										)
-									),
-									options: Schema.optionalKey(
-										Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-									),
-									defaultValue: Schema.optionalKey(Schema.String),
-								})
-							),
-							name: Schema.Literals(['givenName', 'middleName', 'familyName']),
-						})
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					type: Schema.String.annotate({ format: '"Number"' }),
+					label: Schema.optionalKey(
+						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+					),
+					description: Schema.optionalKey(Schema.String),
+					required: Schema.Boolean,
+					config: Schema.optionalKey(
+						Schema.StructWithRest(
+							Schema.Struct({
+								placeholder: Schema.optionalKey(Schema.String),
+								minValue: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								maxValue: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
 					),
 				}),
-			}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					type: Schema.String.annotate({ format: '"Date"' }),
+					label: Schema.optionalKey(
+						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+					),
+					description: Schema.optionalKey(Schema.String),
+					required: Schema.Boolean,
+					config: Schema.optionalKey(
+						Schema.StructWithRest(
+							Schema.Struct({
+								placeholder: Schema.optionalKey(Schema.String),
+								format: Schema.String,
+								customFormat: Schema.optionalKey(Schema.String),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					type: Schema.String.annotate({ format: '"Checkbox"' }),
+					label: Schema.optionalKey(
+						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+					),
+					required: Schema.Boolean.annotate({ format: 'false' }),
+					config: Schema.optionalKey(
+						Schema.StructWithRest(
+							Schema.Struct({
+								defaultValue: Schema.Union(
+									[Schema.String.annotate({ format: '"true"' }), Schema.String.annotate({ format: '"false"' })],
+									{ mode: 'oneOf' }
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					type: Schema.String.annotate({ format: '"Select"' }),
+					label: Schema.optionalKey(
+						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+					),
+					description: Schema.optionalKey(Schema.String),
+					required: Schema.Boolean,
+					config: Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(Schema.String),
+							options: Schema.Array(
+								Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+									Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+								])
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					type: Schema.String.annotate({ format: '"Url"' }),
+					label: Schema.optionalKey(
+						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+					),
+					description: Schema.optionalKey(Schema.String),
+					required: Schema.Boolean,
+					config: Schema.optionalKey(
+						Schema.StructWithRest(Schema.Struct({ placeholder: Schema.optionalKey(Schema.String) }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					type: Schema.String.annotate({ format: '"Regex"' }),
+					label: Schema.optionalKey(
+						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+					),
+					description: Schema.optionalKey(Schema.String),
+					required: Schema.Boolean,
+					config: Schema.StructWithRest(
+						Schema.Struct({ placeholder: Schema.optionalKey(Schema.String), format: Schema.String }),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					type: Schema.String.annotate({ format: '"Address"' }),
+					label: Schema.optionalKey(
+						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+					),
+					description: Schema.optionalKey(Schema.String),
+					required: Schema.Boolean,
+					config: Schema.StructWithRest(
+						Schema.Struct({
+							parts: Schema.Array(
+								Schema.StructWithRest(
+									Schema.Struct({
+										enabled: Schema.Boolean,
+										type: Schema.Literals([
+											'Text',
+											'Number',
+											'Date',
+											'Checkbox',
+											'Select',
+											'Url',
+											'Regex',
+											'Address',
+											'Fullname',
+										]),
+										label: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											)
+										),
+										description: Schema.optionalKey(Schema.String),
+										required: Schema.Boolean,
+										config: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													placeholder: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMaxCodePoints(256).annotate({
+																expected: 'a string with at most 256 code points',
+															})
+														)
+													),
+													minLength: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													maxLength: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													minValue: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													maxValue: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													format: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
+															})
+														)
+													),
+													customFormat: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
+															})
+														)
+													),
+													options: Schema.optionalKey(
+														Schema.Array(
+															Schema.StructWithRest(
+																Schema.Struct({
+																	label: Schema.optionalKey(Schema.String),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															)
+														)
+													),
+													defaultValue: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										name: Schema.Literals([
+											'formatted',
+											'streetAddress',
+											'locality',
+											'region',
+											'postalCode',
+											'country',
+										]),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					type: Schema.String.annotate({ format: '"Fullname"' }),
+					label: Schema.optionalKey(
+						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+					),
+					description: Schema.optionalKey(Schema.String),
+					required: Schema.Boolean,
+					config: Schema.StructWithRest(
+						Schema.Struct({
+							parts: Schema.Array(
+								Schema.StructWithRest(
+									Schema.Struct({
+										enabled: Schema.Boolean,
+										type: Schema.Literals([
+											'Text',
+											'Number',
+											'Date',
+											'Checkbox',
+											'Select',
+											'Url',
+											'Regex',
+											'Address',
+											'Fullname',
+										]),
+										label: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											)
+										),
+										description: Schema.optionalKey(Schema.String),
+										required: Schema.Boolean,
+										config: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													placeholder: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMaxCodePoints(256).annotate({
+																expected: 'a string with at most 256 code points',
+															})
+														)
+													),
+													minLength: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													maxLength: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													minValue: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													maxValue: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													format: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
+															})
+														)
+													),
+													customFormat: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
+															})
+														)
+													),
+													options: Schema.optionalKey(
+														Schema.Array(
+															Schema.StructWithRest(
+																Schema.Struct({
+																	label: Schema.optionalKey(Schema.String),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															)
+														)
+													),
+													defaultValue: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										name: Schema.Literals(['givenName', 'middleName', 'familyName']),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
 		],
 		{ mode: 'oneOf' }
 	)
 )
 
-export type CreateBatchResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-	readonly label: string
-	readonly description: string | null
-	readonly required: boolean
-	readonly config: {
-		readonly placeholder?: string
-		readonly minLength?: number
-		readonly maxLength?: number
-		readonly minValue?: number
-		readonly maxValue?: number
-		readonly format?: string
-		readonly customFormat?: string
-		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-		readonly defaultValue?: string
-		readonly parts?: ReadonlyArray<{
-			readonly enabled: boolean
-			readonly name: string
-			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: {
-				readonly placeholder?: string
-				readonly minLength?: number
-				readonly maxLength?: number
-				readonly minValue?: number
-				readonly maxValue?: number
-				readonly format?: string
-				readonly customFormat?: string
-				readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-				readonly defaultValue?: string
-			}
-		}>
-	}
-	readonly createdAt: number
-	readonly sieOrder: number
-}>
+export type CreateBatchResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly name: string
+		readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+		readonly label: string
+		readonly description: string | null
+		readonly required: boolean
+		readonly config: {
+			readonly placeholder?: string
+			readonly minLength?: number
+			readonly maxLength?: number
+			readonly minValue?: number
+			readonly maxValue?: number
+			readonly format?: string
+			readonly customFormat?: string
+			readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
+			readonly defaultValue?: string
+			readonly parts?: ReadonlyArray<
+				{
+					readonly enabled: boolean
+					readonly name: string
+					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+					readonly label?: string
+					readonly description?: string
+					readonly required: boolean
+					readonly config?: {
+						readonly placeholder?: string
+						readonly minLength?: number
+						readonly maxLength?: number
+						readonly minValue?: number
+						readonly maxValue?: number
+						readonly format?: string
+						readonly customFormat?: string
+						readonly options?: ReadonlyArray<
+							{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+						>
+						readonly defaultValue?: string
+					} & { readonly [x: string]: Schema.Json }
+				} & { readonly [x: string]: Schema.Json }
+			>
+		} & { readonly [x: string]: Schema.Json }
+		readonly createdAt: number
+		readonly sieOrder: number
+	} & { readonly [x: string]: Schema.Json }
+>
 export const CreateBatchResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-		label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-		description: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-			Schema.Null,
-		]),
-		required: Schema.Boolean,
-		config: Schema.Struct({
-			placeholder: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			format: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 			),
-			customFormat: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+			type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+			label: Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+			description: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+				Schema.Null,
+			]),
+			required: Schema.Boolean,
+			config: Schema.StructWithRest(
+				Schema.Struct({
+					placeholder: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+					),
+					minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					format: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+					),
+					customFormat: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+					),
+					options: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						)
+					),
+					defaultValue: Schema.optionalKey(Schema.String),
+					parts: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									enabled: Schema.Boolean,
+									name: Schema.String,
+									type: Schema.Literals([
+										'Text',
+										'Number',
+										'Date',
+										'Checkbox',
+										'Select',
+										'Url',
+										'Regex',
+										'Address',
+										'Fullname',
+									]),
+									label: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									required: Schema.Boolean,
+									config: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												placeholder: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													)
+												),
+												minLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												minValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												format: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												customFormat: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												options: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																label: Schema.optionalKey(Schema.String),
+																value: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												defaultValue: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
-			options: Schema.optionalKey(Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))),
-			defaultValue: Schema.optionalKey(Schema.String),
-			parts: Schema.optionalKey(
-				Schema.Array(
-					Schema.Struct({
-						enabled: Schema.Boolean,
-						name: Schema.String,
-						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-						label: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-						),
-						description: Schema.optionalKey(Schema.String),
-						required: Schema.Boolean,
-						config: Schema.optionalKey(
-							Schema.Struct({
-								placeholder: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									)
-								),
-								minLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								minValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								format: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								customFormat: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								options: Schema.optionalKey(
-									Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-								),
-								defaultValue: Schema.optionalKey(Schema.String),
-							})
-						),
-					})
-				)
-			),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 		}),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
-export type UpdateSieOrderPayload = { readonly order: ReadonlyArray<{ readonly name: string; readonly sieOrder: number }> }
-export const UpdateSieOrderPayload = Schema.Struct({
-	order: Schema.Array(
-		Schema.Struct({ name: Schema.String, sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })) })
-	),
-})
-
-export type UpdateSieOrderResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-	readonly label: string
-	readonly description: string | null
-	readonly required: boolean
-	readonly config: {
-		readonly placeholder?: string
-		readonly minLength?: number
-		readonly maxLength?: number
-		readonly minValue?: number
-		readonly maxValue?: number
-		readonly format?: string
-		readonly customFormat?: string
-		readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-		readonly defaultValue?: string
-		readonly parts?: ReadonlyArray<{
-			readonly enabled: boolean
-			readonly name: string
-			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-			readonly label?: string
-			readonly description?: string
-			readonly required: boolean
-			readonly config?: {
-				readonly placeholder?: string
-				readonly minLength?: number
-				readonly maxLength?: number
-				readonly minValue?: number
-				readonly maxValue?: number
-				readonly format?: string
-				readonly customFormat?: string
-				readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-				readonly defaultValue?: string
-			}
-		}>
-	}
-	readonly createdAt: number
-	readonly sieOrder: number
-}>
-export const UpdateSieOrderResponse = Schema.Array(
+export type UpdateSieOrderPayload = {
+	readonly order: ReadonlyArray<{ readonly name: string; readonly sieOrder: number } & { readonly [x: string]: Schema.Json }>
+} & { readonly [x: string]: Schema.Json }
+export const UpdateSieOrderPayload = Schema.StructWithRest(
 	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+		order: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.String,
+					sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
 		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-		label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-		description: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-			Schema.Null,
-		]),
-		required: Schema.Boolean,
-		config: Schema.Struct({
-			placeholder: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type UpdateSieOrderResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly name: string
+		readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+		readonly label: string
+		readonly description: string | null
+		readonly required: boolean
+		readonly config: {
+			readonly placeholder?: string
+			readonly minLength?: number
+			readonly maxLength?: number
+			readonly minValue?: number
+			readonly maxValue?: number
+			readonly format?: string
+			readonly customFormat?: string
+			readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }>
+			readonly defaultValue?: string
+			readonly parts?: ReadonlyArray<
+				{
+					readonly enabled: boolean
+					readonly name: string
+					readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+					readonly label?: string
+					readonly description?: string
+					readonly required: boolean
+					readonly config?: {
+						readonly placeholder?: string
+						readonly minLength?: number
+						readonly maxLength?: number
+						readonly minValue?: number
+						readonly maxValue?: number
+						readonly format?: string
+						readonly customFormat?: string
+						readonly options?: ReadonlyArray<
+							{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+						>
+						readonly defaultValue?: string
+					} & { readonly [x: string]: Schema.Json }
+				} & { readonly [x: string]: Schema.Json }
+			>
+		} & { readonly [x: string]: Schema.Json }
+		readonly createdAt: number
+		readonly sieOrder: number
+	} & { readonly [x: string]: Schema.Json }
+>
+export const UpdateSieOrderResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			format: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 			),
-			customFormat: Schema.optionalKey(
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
+			type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+			label: Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+			description: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+				Schema.Null,
+			]),
+			required: Schema.Boolean,
+			config: Schema.StructWithRest(
+				Schema.Struct({
+					placeholder: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+					),
+					minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					format: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+					),
+					customFormat: Schema.optionalKey(
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+					),
+					options: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						)
+					),
+					defaultValue: Schema.optionalKey(Schema.String),
+					parts: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									enabled: Schema.Boolean,
+									name: Schema.String,
+									type: Schema.Literals([
+										'Text',
+										'Number',
+										'Date',
+										'Checkbox',
+										'Select',
+										'Url',
+										'Regex',
+										'Address',
+										'Fullname',
+									]),
+									label: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									required: Schema.Boolean,
+									config: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												placeholder: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													)
+												),
+												minLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxLength: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												minValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												maxValue: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												format: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												customFormat: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													)
+												),
+												options: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																label: Schema.optionalKey(Schema.String),
+																value: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												defaultValue: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
-			options: Schema.optionalKey(Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))),
-			defaultValue: Schema.optionalKey(Schema.String),
-			parts: Schema.optionalKey(
-				Schema.Array(
-					Schema.Struct({
-						enabled: Schema.Boolean,
-						name: Schema.String,
-						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-						label: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-						),
-						description: Schema.optionalKey(Schema.String),
-						required: Schema.Boolean,
-						config: Schema.optionalKey(
-							Schema.Struct({
-								placeholder: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									)
-								),
-								minLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxLength: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								minValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								maxValue: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								format: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								customFormat: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-									)
-								),
-								options: Schema.optionalKey(
-									Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-								),
-								defaultValue: Schema.optionalKey(Schema.String),
-							})
-						),
-					})
-				)
-			),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 		}),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )

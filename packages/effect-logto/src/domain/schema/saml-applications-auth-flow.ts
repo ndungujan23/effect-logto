@@ -15,14 +15,19 @@ export const GetSamlAuthnParams = Schema.Struct({
 	SigAlg: Schema.optionalKey(Schema.String),
 	RelayState: Schema.optionalKey(
 		Schema.Union([
-			Schema.String.check(Schema.isMaxLength(512).annotate({ expected: 'a value with a length of at most 512' })),
+			Schema.String.check(Schema.isMaxCodePoints(512).annotate({ expected: 'a string with at most 512 code points' })),
 			Schema.Null,
 		])
 	),
 })
 
-export type CreateSamlAuthnFormUrlEncoded = { readonly SAMLRequest: string; readonly RelayState?: string }
-export const CreateSamlAuthnFormUrlEncoded = Schema.Struct({
-	SAMLRequest: Schema.String.annotate({ description: 'Base64-encoded SAML request message.' }),
-	RelayState: Schema.optionalKey(Schema.String.annotate({ description: 'Optional state parameter to be returned in the response.' })),
-})
+export type CreateSamlAuthnFormUrlEncoded = { readonly SAMLRequest: string; readonly RelayState?: string } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateSamlAuthnFormUrlEncoded = Schema.StructWithRest(
+	Schema.Struct({
+		SAMLRequest: Schema.String.annotate({ description: 'Base64-encoded SAML request message.' }),
+		RelayState: Schema.optionalKey(Schema.String.annotate({ description: 'Optional state parameter to be returned in the response.' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

@@ -4,15 +4,29 @@
 import * as Schema from 'effect/Schema'
 
 export type ListUserConsentScopesResponse = {
-	readonly organizationScopes: ReadonlyArray<{ readonly id: string; readonly name: string; readonly description: string | null }>
-	readonly resourceScopes: ReadonlyArray<{
-		readonly resource: { readonly id: string; readonly name: string; readonly indicator: string }
-		readonly scopes: ReadonlyArray<{ readonly id: string; readonly name: string; readonly description: string | null }>
-	}>
-	readonly organizationResourceScopes: ReadonlyArray<{
-		readonly resource: { readonly id: string; readonly name: string; readonly indicator: string }
-		readonly scopes: ReadonlyArray<{ readonly id: string; readonly name: string; readonly description: string | null }>
-	}>
+	readonly organizationScopes: ReadonlyArray<
+		{ readonly id: string; readonly name: string; readonly description: string | null } & { readonly [x: string]: Schema.Json }
+	>
+	readonly resourceScopes: ReadonlyArray<
+		{
+			readonly resource: { readonly id: string; readonly name: string; readonly indicator: string } & {
+				readonly [x: string]: Schema.Json
+			}
+			readonly scopes: ReadonlyArray<
+				{ readonly id: string; readonly name: string; readonly description: string | null } & { readonly [x: string]: Schema.Json }
+			>
+		} & { readonly [x: string]: Schema.Json }
+	>
+	readonly organizationResourceScopes: ReadonlyArray<
+		{
+			readonly resource: { readonly id: string; readonly name: string; readonly indicator: string } & {
+				readonly [x: string]: Schema.Json
+			}
+			readonly scopes: ReadonlyArray<
+				{ readonly id: string; readonly name: string; readonly description: string | null } & { readonly [x: string]: Schema.Json }
+			>
+		} & { readonly [x: string]: Schema.Json }
+	>
 	readonly userScopes: ReadonlyArray<
 		| 'profile'
 		| 'email'
@@ -26,82 +40,110 @@ export type ListUserConsentScopesResponse = {
 		| 'urn:logto:scope:sessions'
 		| 'urn:logto:scope:trusted_devices'
 	>
-}
-export const ListUserConsentScopesResponse = Schema.Struct({
-	organizationScopes: Schema.Array(
-		Schema.Struct({
-			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-			),
-			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-			),
-			description: Schema.Union([
-				Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-				Schema.Null,
-			]),
-		})
-	),
-	resourceScopes: Schema.Array(
-		Schema.Struct({
-			resource: Schema.Struct({
-				id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-				),
-				name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-				indicator: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-			}),
-			scopes: Schema.Array(
+} & { readonly [x: string]: Schema.Json }
+export const ListUserConsentScopesResponse = Schema.StructWithRest(
+	Schema.Struct({
+		organizationScopes: Schema.Array(
+			Schema.StructWithRest(
 				Schema.Struct({
 					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 					),
 					name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
+						Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 					),
-					description: Schema.Union([Schema.String, Schema.Null]),
-				})
-			),
-		})
-	),
-	organizationResourceScopes: Schema.Array(
-		Schema.Struct({
-			resource: Schema.Struct({
-				id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-				),
-				name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-				indicator: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-			}),
-			scopes: Schema.Array(
+					description: Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+						Schema.Null,
+					]),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		resourceScopes: Schema.Array(
+			Schema.StructWithRest(
 				Schema.Struct({
-					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+					resource: Schema.StructWithRest(
+						Schema.Struct({
+							id: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+							name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+							indicator: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 					),
-					name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
+					scopes: Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String.check(
+									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+								).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+								name: Schema.String.check(
+									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+								).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+								description: Schema.Union([Schema.String, Schema.Null]),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
 					),
-					description: Schema.Union([Schema.String, Schema.Null]),
-				})
-			),
-		})
-	),
-	userScopes: Schema.Array(
-		Schema.Literals([
-			'profile',
-			'email',
-			'phone',
-			'address',
-			'custom_data',
-			'identities',
-			'roles',
-			'urn:logto:scope:organizations',
-			'urn:logto:scope:organization_roles',
-			'urn:logto:scope:sessions',
-			'urn:logto:scope:trusted_devices',
-		])
-	),
-})
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		organizationResourceScopes: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					resource: Schema.StructWithRest(
+						Schema.Struct({
+							id: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+							name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+							indicator: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+					scopes: Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String.check(
+									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+								).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+								name: Schema.String.check(
+									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+								).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+								description: Schema.Union([Schema.String, Schema.Null]),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		userScopes: Schema.Array(
+			Schema.Literals([
+				'profile',
+				'email',
+				'phone',
+				'address',
+				'custom_data',
+				'identities',
+				'roles',
+				'urn:logto:scope:organizations',
+				'urn:logto:scope:organization_roles',
+				'urn:logto:scope:sessions',
+				'urn:logto:scope:trusted_devices',
+			])
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type AssignUserConsentScopesPayload = {
 	readonly organizationScopes?: ReadonlyArray<string>
@@ -120,26 +162,29 @@ export type AssignUserConsentScopesPayload = {
 		| 'urn:logto:scope:sessions'
 		| 'urn:logto:scope:trusted_devices'
 	>
-}
-export const AssignUserConsentScopesPayload = Schema.Struct({
-	organizationScopes: Schema.optionalKey(Schema.Array(Schema.String)),
-	resourceScopes: Schema.optionalKey(Schema.Array(Schema.String)),
-	organizationResourceScopes: Schema.optionalKey(Schema.Array(Schema.String)),
-	userScopes: Schema.optionalKey(
-		Schema.Array(
-			Schema.Literals([
-				'profile',
-				'email',
-				'phone',
-				'address',
-				'custom_data',
-				'identities',
-				'roles',
-				'urn:logto:scope:organizations',
-				'urn:logto:scope:organization_roles',
-				'urn:logto:scope:sessions',
-				'urn:logto:scope:trusted_devices',
-			])
-		)
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const AssignUserConsentScopesPayload = Schema.StructWithRest(
+	Schema.Struct({
+		organizationScopes: Schema.optionalKey(Schema.Array(Schema.String)),
+		resourceScopes: Schema.optionalKey(Schema.Array(Schema.String)),
+		organizationResourceScopes: Schema.optionalKey(Schema.Array(Schema.String)),
+		userScopes: Schema.optionalKey(
+			Schema.Array(
+				Schema.Literals([
+					'profile',
+					'email',
+					'phone',
+					'address',
+					'custom_data',
+					'identities',
+					'roles',
+					'urn:logto:scope:organizations',
+					'urn:logto:scope:organization_roles',
+					'urn:logto:scope:sessions',
+					'urn:logto:scope:trusted_devices',
+				])
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

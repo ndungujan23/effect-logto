@@ -15,40 +15,75 @@ import {
 } from '../../../domain/schema/connectors.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeConnectors = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): ConnectorsOperations => ({
+export const makeConnectors = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): ConnectorsOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/connectors`).pipe(
+		HttpClientRequest.get('/api/connectors').pipe(
 			HttpClientRequest.setUrlParams({ target: options?.params?.['target'] as any }),
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/connectors`).pipe(
+		HttpClientRequest.post('/api/connectors').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/connectors/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/connectors/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/connectors/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/connectors/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (id, options) =>
-		HttpClientRequest.patch(`/api/connectors/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/connectors/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	createTest: (factoryId, options) =>
-		HttpClientRequest.post(`/api/connectors/${encodeURIComponent(factoryId)}/test`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [factoryId], () => '/api/connectors/' + __encodePathParam(factoryId) + '/test').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	createAuthorizationUri: (connectorId, options) =>
-		HttpClientRequest.post(`/api/connectors/${encodeURIComponent(connectorId)}/authorization-uri`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateAuthorizationUriResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.post,
+			[connectorId],
+			() => '/api/connectors/' + __encodePathParam(connectorId) + '/authorization-uri'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateAuthorizationUriResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 })

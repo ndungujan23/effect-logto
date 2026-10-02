@@ -9,7 +9,11 @@ import { LogtoApiError } from '../../domain/error.ts'
 import { type SearchParams, toEntries } from '../../domain/search/search-params.ts'
 
 /** The helpers every generated operation adapter is built from. */
+import * as HttpClientError from 'effect/http/HttpClientError'
+
 export interface Transport {
+	readonly __encodePathParam: typeof __encodePathParam
+	readonly __makePathRequest: typeof __makePathRequest
 	readonly withResponse: <Config extends OperationConfig>(
 		config: Config | undefined
 	) => (
@@ -66,4 +70,33 @@ export const makeTransport = (httpClient: HttpClient.HttpClient.With<any, never>
 	decodeSuccess: schema => response => HttpClientResponse.schemaBodyJson(schema)(response) as Effect.Effect<any, any>,
 	unexpectedStatus,
 	searchParams: toEntries,
+	__encodePathParam,
+	__makePathRequest,
 })
+
+export const __encodePathParam = encodeURIComponent
+export const __makePathRequest = (
+	method: (url: string) => HttpClientRequest.HttpClientRequest,
+	parameters: ReadonlyArray<string>,
+	getPath: () => string
+) =>
+	Effect.suspend(() => {
+		const fail = (description: string, cause?: unknown) =>
+			Effect.fail(
+				new HttpClientError.HttpClientError({
+					reason: new HttpClientError.InvalidUrlError({ request: method(''), cause, description }),
+				})
+			)
+		for (const parameter of parameters) {
+			if (parameter === undefined || parameter === null) {
+				return fail(`Path parameter is missing`)
+			} else if (typeof parameter === 'string' && parameter.trim() === '') {
+				return fail(`Path parameter is empty`)
+			}
+		}
+		try {
+			return Effect.succeed(method(getPath()))
+		} catch (error) {
+			return fail(`Failed to create URL`, error)
+		}
+	})

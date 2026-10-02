@@ -3,21 +3,26 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type ListResponse = ReadonlyArray<{
-	readonly providerName: 'OIDC' | 'SAML' | 'AzureAD' | 'GoogleWorkspace' | 'Okta' | 'AzureAdOidc'
-	readonly providerType: 'oidc' | 'saml'
-	readonly logo: string
-	readonly logoDark: string
-	readonly description: string
-	readonly name: string
-}>
+export type ListResponse = ReadonlyArray<
+	{
+		readonly providerName: 'OIDC' | 'SAML' | 'AzureAD' | 'GoogleWorkspace' | 'Okta' | 'AzureAdOidc'
+		readonly providerType: 'oidc' | 'saml'
+		readonly logo: string
+		readonly logoDark: string
+		readonly description: string
+		readonly name: string
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		providerName: Schema.Literals(['OIDC', 'SAML', 'AzureAD', 'GoogleWorkspace', 'Okta', 'AzureAdOidc']),
-		providerType: Schema.Literals(['oidc', 'saml']),
-		logo: Schema.String,
-		logoDark: Schema.String,
-		description: Schema.String,
-		name: Schema.String,
-	})
+	Schema.StructWithRest(
+		Schema.Struct({
+			providerName: Schema.Literals(['OIDC', 'SAML', 'AzureAD', 'GoogleWorkspace', 'Okta', 'AzureAdOidc']),
+			providerType: Schema.Literals(['oidc', 'saml']),
+			logo: Schema.String,
+			logoDark: Schema.String,
+			description: Schema.String,
+			name: Schema.String,
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )

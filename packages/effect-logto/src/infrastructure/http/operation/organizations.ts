@@ -25,9 +25,16 @@ import {
 } from '../../../domain/schema/organizations.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeOrganizations = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): OrganizationsOperations => ({
+export const makeOrganizations = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): OrganizationsOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/organizations`).pipe(
+		HttpClientRequest.get('/api/organizations').pipe(
 			HttpClientRequest.setUrlParams({
 				q: options?.params?.['q'] as any,
 				showFeatured: options?.params?.['showFeatured'] as any,
@@ -37,199 +44,424 @@ export const makeOrganizations = ({ withResponse, decodeSuccess, unexpectedStatu
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/organizations`).pipe(
+		HttpClientRequest.post('/api/organizations').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/organizations/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/organizations/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/organizations/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (id, options) =>
-		HttpClientRequest.patch(`/api/organizations/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/organizations/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	listUsers: (id, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}/users`).pipe(
-			HttpClientRequest.setUrlParams({
-				q: options?.params?.['q'] as any,
-				organizationRoleId: options?.params?.['organizationRoleId'] as any,
-				page: options?.params?.['page'] as any,
-				page_size: options?.params?.['page_size'] as any,
-			}),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUsersResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/organizations/' + __encodePathParam(id) + '/users').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						q: options?.params?.['q'] as any,
+						organizationRoleId: options?.params?.['organizationRoleId'] as any,
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUsersResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceUsers: (id, options) =>
-		HttpClientRequest.put(`/api/organizations/${encodeURIComponent(id)}/users`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.put, [id], () => '/api/organizations/' + __encodePathParam(id) + '/users').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	addUsers: (id, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/users`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AddUsersResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/organizations/' + __encodePathParam(id) + '/users').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AddUsersResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteUser: (id, userId, options) =>
-		HttpClientRequest.delete(`/api/organizations/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, userId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	assignRolesToUsers: (id, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/users/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/organizations/' + __encodePathParam(id) + '/users/roles').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listUserRoles: (id, userId, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/roles`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUserRolesResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[id, userId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUserRolesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceUserRoles: (id, userId, options) =>
-		HttpClientRequest.put(`/api/organizations/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.put,
+			[id, userId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	assignRolesToUser: (id, userId, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AssignRolesToUserResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.post,
+			[id, userId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AssignRolesToUserResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteUserRole: (id, userId, organizationRoleId, options) =>
-		HttpClientRequest.delete(
-			`/api/organizations/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/roles/${encodeURIComponent(organizationRoleId)}`
-		).pipe(withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))),
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, userId, organizationRoleId],
+			() =>
+				'/api/organizations/' +
+				__encodePathParam(id) +
+				'/users/' +
+				__encodePathParam(userId) +
+				'/roles/' +
+				__encodePathParam(organizationRoleId) +
+				''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
+		),
 	listUserScopes: (id, userId, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/scopes`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUserScopesResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[id, userId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + '/scopes'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUserScopesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listApplications: (id, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}/applications`).pipe(
-			HttpClientRequest.setUrlParams({
-				q: options?.params?.['q'] as any,
-				page: options?.params?.['page'] as any,
-				page_size: options?.params?.['page_size'] as any,
-			}),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListApplicationsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/organizations/' + __encodePathParam(id) + '/applications').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						q: options?.params?.['q'] as any,
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListApplicationsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceApplications: (id, options) =>
-		HttpClientRequest.put(`/api/organizations/${encodeURIComponent(id)}/applications`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.put, [id], () => '/api/organizations/' + __encodePathParam(id) + '/applications').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	addApplications: (id, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/applications`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/organizations/' + __encodePathParam(id) + '/applications').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteApplication: (id, applicationId, options) =>
-		HttpClientRequest.delete(`/api/organizations/${encodeURIComponent(id)}/applications/${encodeURIComponent(applicationId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, applicationId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/applications/' + __encodePathParam(applicationId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	assignRolesToApplications: (id, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/applications/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/organizations/' + __encodePathParam(id) + '/applications/roles').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listApplicationRoles: (id, applicationId, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}/applications/${encodeURIComponent(applicationId)}/roles`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListApplicationRolesResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[id, applicationId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/applications/' + __encodePathParam(applicationId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListApplicationRolesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceApplicationRoles: (id, applicationId, options) =>
-		HttpClientRequest.put(`/api/organizations/${encodeURIComponent(id)}/applications/${encodeURIComponent(applicationId)}/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.put,
+			[id, applicationId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/applications/' + __encodePathParam(applicationId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	assignRolesToApplication: (id, applicationId, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/applications/${encodeURIComponent(applicationId)}/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.post,
+			[id, applicationId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/applications/' + __encodePathParam(applicationId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteApplicationRole: (id, applicationId, organizationRoleId, options) =>
-		HttpClientRequest.delete(
-			`/api/organizations/${encodeURIComponent(id)}/applications/${encodeURIComponent(applicationId)}/roles/${encodeURIComponent(organizationRoleId)}`
-		).pipe(withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))),
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, applicationId, organizationRoleId],
+			() =>
+				'/api/organizations/' +
+				__encodePathParam(id) +
+				'/applications/' +
+				__encodePathParam(applicationId) +
+				'/roles/' +
+				__encodePathParam(organizationRoleId) +
+				''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
+		),
 	listJitEmailDomains: (id, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}/jit/email-domains`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListJitEmailDomainsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/email-domains').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListJitEmailDomainsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceJitEmailDomains: (id, options) =>
-		HttpClientRequest.put(`/api/organizations/${encodeURIComponent(id)}/jit/email-domains`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.put, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/email-domains').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	createJitEmailDomain: (id, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/jit/email-domains`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateJitEmailDomainResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/email-domains').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateJitEmailDomainResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteJitEmailDomain: (id, emailDomain, options) =>
-		HttpClientRequest.delete(`/api/organizations/${encodeURIComponent(id)}/jit/email-domains/${encodeURIComponent(emailDomain)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, emailDomain],
+			() => '/api/organizations/' + __encodePathParam(id) + '/jit/email-domains/' + __encodePathParam(emailDomain) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listJitRoles: (id, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}/jit/roles`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListJitRolesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/roles').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListJitRolesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceJitRoles: (id, options) =>
-		HttpClientRequest.put(`/api/organizations/${encodeURIComponent(id)}/jit/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.put, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/roles').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	createJitRole: (id, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/jit/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/roles').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteJitRole: (id, organizationRoleId, options) =>
-		HttpClientRequest.delete(`/api/organizations/${encodeURIComponent(id)}/jit/roles/${encodeURIComponent(organizationRoleId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, organizationRoleId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/jit/roles/' + __encodePathParam(organizationRoleId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listJitSsoConnectors: (id, options) =>
-		HttpClientRequest.get(`/api/organizations/${encodeURIComponent(id)}/jit/sso-connectors`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListJitSsoConnectorsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/sso-connectors').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListJitSsoConnectorsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceJitSsoConnectors: (id, options) =>
-		HttpClientRequest.put(`/api/organizations/${encodeURIComponent(id)}/jit/sso-connectors`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.put, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/sso-connectors').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	createJitSsoConnector: (id, options) =>
-		HttpClientRequest.post(`/api/organizations/${encodeURIComponent(id)}/jit/sso-connectors`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/organizations/' + __encodePathParam(id) + '/jit/sso-connectors').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteJitSsoConnector: (id, ssoConnectorId, options) =>
-		HttpClientRequest.delete(
-			`/api/organizations/${encodeURIComponent(id)}/jit/sso-connectors/${encodeURIComponent(ssoConnectorId)}`
-		).pipe(withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))),
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, ssoConnectorId],
+			() => '/api/organizations/' + __encodePathParam(id) + '/jit/sso-connectors/' + __encodePathParam(ssoConnectorId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
+		),
 })

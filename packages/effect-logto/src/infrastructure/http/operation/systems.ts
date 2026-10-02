@@ -8,9 +8,16 @@ import type { SystemsOperations } from '../../../application/operation/systems.t
 import { GetApplicationConfigResponse } from '../../../domain/schema/systems.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeSystems = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): SystemsOperations => ({
+export const makeSystems = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): SystemsOperations => ({
 	getApplicationConfig: options =>
-		HttpClientRequest.get(`/api/systems/application`).pipe(
+		HttpClientRequest.get('/api/systems/application').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetApplicationConfigResponse), orElse: unexpectedStatus })
 			)

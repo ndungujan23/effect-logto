@@ -8,21 +8,28 @@ import type { DashboardOperations } from '../../../application/operation/dashboa
 import { GetActiveUserCountsResponse, GetNewUserCountsResponse, GetTotalUserCountResponse } from '../../../domain/schema/dashboard.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeDashboard = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): DashboardOperations => ({
+export const makeDashboard = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): DashboardOperations => ({
 	getTotalUserCount: options =>
-		HttpClientRequest.get(`/api/dashboard/users/total`).pipe(
+		HttpClientRequest.get('/api/dashboard/users/total').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetTotalUserCountResponse), orElse: unexpectedStatus })
 			)
 		),
 	getNewUserCounts: options =>
-		HttpClientRequest.get(`/api/dashboard/users/new`).pipe(
+		HttpClientRequest.get('/api/dashboard/users/new').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetNewUserCountsResponse), orElse: unexpectedStatus })
 			)
 		),
 	getActiveUserCounts: options =>
-		HttpClientRequest.get(`/api/dashboard/users/active`).pipe(
+		HttpClientRequest.get('/api/dashboard/users/active').pipe(
 			HttpClientRequest.setUrlParams({ date: options?.params?.['date'] as any }),
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetActiveUserCountsResponse), orElse: unexpectedStatus })

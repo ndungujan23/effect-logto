@@ -14,18 +14,20 @@ export const makeCaptchaProvider = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): CaptchaProviderOperations => ({
 	get: options =>
-		HttpClientRequest.get(`/api/captcha-provider`).pipe(
+		HttpClientRequest.get('/api/captcha-provider').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
 		),
 	update: options =>
-		HttpClientRequest.put(`/api/captcha-provider`).pipe(
+		HttpClientRequest.put('/api/captcha-provider').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
 		),
 	delete: options =>
-		HttpClientRequest.delete(`/api/captcha-provider`).pipe(
+		HttpClientRequest.delete('/api/captcha-provider').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 })

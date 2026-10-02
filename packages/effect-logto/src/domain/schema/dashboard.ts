@@ -3,55 +3,83 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type GetTotalUserCountResponse = { readonly totalUserCount: number }
-export const GetTotalUserCountResponse = Schema.Struct({
-	totalUserCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+export type GetTotalUserCountResponse = { readonly totalUserCount: number } & { readonly [x: string]: Schema.Json }
+export const GetTotalUserCountResponse = Schema.StructWithRest(
+	Schema.Struct({ totalUserCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })) }),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetNewUserCountsResponse = {
-	readonly today: { readonly count: number; readonly delta: number }
-	readonly last7Days: { readonly count: number; readonly delta: number }
-}
-export const GetNewUserCountsResponse = Schema.Struct({
-	today: Schema.Struct({
-		count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	readonly today: { readonly count: number; readonly delta: number } & { readonly [x: string]: Schema.Json }
+	readonly last7Days: { readonly count: number; readonly delta: number } & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const GetNewUserCountsResponse = Schema.StructWithRest(
+	Schema.Struct({
+		today: Schema.StructWithRest(
+			Schema.Struct({
+				count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		last7Days: Schema.StructWithRest(
+			Schema.Struct({
+				count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	}),
-	last7Days: Schema.Struct({
-		count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetActiveUserCountsParams = { readonly date?: string }
 export const GetActiveUserCountsParams = Schema.Struct({
 	date: Schema.optionalKey(
 		Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^\d{4}(-\d{2}){2}$/).annotate({ expected: 'a string matching the RegExp ^\\d{4}(-\\d{2}){2}$' })
+			Schema.isPattern(/^\d{4}(-\d{2}){2}$/u).annotate({ expected: 'a string matching the RegExp ^\\d{4}(-\\d{2}){2}$' })
 		)
 	),
 })
 
 export type GetActiveUserCountsResponse = {
-	readonly dauCurve: ReadonlyArray<{ readonly date: string; readonly count: number }>
-	readonly dau: { readonly count: number; readonly delta: number }
-	readonly wau: { readonly count: number; readonly delta: number }
-	readonly mau: { readonly count: number; readonly delta: number }
-}
-export const GetActiveUserCountsResponse = Schema.Struct({
-	dauCurve: Schema.Array(
-		Schema.Struct({ date: Schema.String, count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })) })
-	),
-	dau: Schema.Struct({
-		count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	readonly dauCurve: ReadonlyArray<{ readonly date: string; readonly count: number } & { readonly [x: string]: Schema.Json }>
+	readonly dau: { readonly count: number; readonly delta: number } & { readonly [x: string]: Schema.Json }
+	readonly wau: { readonly count: number; readonly delta: number } & { readonly [x: string]: Schema.Json }
+	readonly mau: { readonly count: number; readonly delta: number } & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const GetActiveUserCountsResponse = Schema.StructWithRest(
+	Schema.Struct({
+		dauCurve: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					date: Schema.String,
+					count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		dau: Schema.StructWithRest(
+			Schema.Struct({
+				count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		wau: Schema.StructWithRest(
+			Schema.Struct({
+				count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		mau: Schema.StructWithRest(
+			Schema.Struct({
+				count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	}),
-	wau: Schema.Struct({
-		count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	}),
-	mau: Schema.Struct({
-		count: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		delta: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

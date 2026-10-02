@@ -19,30 +19,33 @@ export type GetServiceStatusResponse = {
 	>
 	readonly maxUploadFileSize?: number
 	readonly isExperienceAvatarUploadEnabled?: boolean
-}
-export const GetServiceStatusResponse = Schema.Struct({
-	status: Schema.Union([Schema.String.annotate({ format: '"ready"' }), Schema.String.annotate({ format: '"not_configured"' })], {
-		mode: 'oneOf',
+} & { readonly [x: string]: Schema.Json }
+export const GetServiceStatusResponse = Schema.StructWithRest(
+	Schema.Struct({
+		status: Schema.Union([Schema.String.annotate({ format: '"ready"' }), Schema.String.annotate({ format: '"not_configured"' })], {
+			mode: 'oneOf',
+		}),
+		allowUploadMimeTypes: Schema.optionalKey(
+			Schema.Array(
+				Schema.Literals([
+					'image/jpeg',
+					'image/png',
+					'image/gif',
+					'image/vnd.microsoft.icon',
+					'image/x-icon',
+					'image/svg+xml',
+					'image/tiff',
+					'image/webp',
+					'image/bmp',
+					'application/zip',
+				])
+			)
+		),
+		maxUploadFileSize: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+		isExperienceAvatarUploadEnabled: Schema.optionalKey(Schema.Boolean),
 	}),
-	allowUploadMimeTypes: Schema.optionalKey(
-		Schema.Array(
-			Schema.Literals([
-				'image/jpeg',
-				'image/png',
-				'image/gif',
-				'image/vnd.microsoft.icon',
-				'image/x-icon',
-				'image/svg+xml',
-				'image/tiff',
-				'image/webp',
-				'image/bmp',
-				'application/zip',
-			])
-		)
-	),
-	maxUploadFileSize: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	isExperienceAvatarUploadEnabled: Schema.optionalKey(Schema.Boolean),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateFormData =
 	| null
@@ -65,5 +68,7 @@ export const CreateFormData = Schema.Union([
 	Schema.Array(Schema.Json.annotate({ expected: 'JSON value' })),
 ])
 
-export type CreateResponse = { readonly url: string }
-export const CreateResponse = Schema.Struct({ url: Schema.String })
+export type CreateResponse = { readonly url: string } & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(Schema.Struct({ url: Schema.String }), [
+	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+])

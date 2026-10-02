@@ -16,9 +16,16 @@ import {
 } from '../../../domain/schema/hooks.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeHooks = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): HooksOperations => ({
+export const makeHooks = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): HooksOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/hooks`).pipe(
+		HttpClientRequest.get('/api/hooks').pipe(
 			HttpClientRequest.setUrlParams({
 				includeExecutionStats: options?.params?.['includeExecutionStats'] as any,
 				page: options?.params?.['page'] as any,
@@ -27,47 +34,75 @@ export const makeHooks = ({ withResponse, decodeSuccess, unexpectedStatus, searc
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/hooks`).pipe(
+		HttpClientRequest.post('/api/hooks').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/hooks/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.setUrlParams({ includeExecutionStats: options?.params?.['includeExecutionStats'] as any }),
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/hooks/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({ includeExecutionStats: options?.params?.['includeExecutionStats'] as any }),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/hooks/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/hooks/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (id, options) =>
-		HttpClientRequest.patch(`/api/hooks/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/hooks/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	listRecentLogs: (id, options) =>
-		HttpClientRequest.get(`/api/hooks/${encodeURIComponent(id)}/recent-logs`).pipe(
-			HttpClientRequest.setUrlParams({
-				logKey: options?.params?.['logKey'] as any,
-				enableCap: options?.params?.['enableCap'] as any,
-				start_time: options?.params?.['start_time'] as any,
-				end_time: options?.params?.['end_time'] as any,
-				page: options?.params?.['page'] as any,
-				page_size: options?.params?.['page_size'] as any,
-			}),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListRecentLogsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/hooks/' + __encodePathParam(id) + '/recent-logs').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						logKey: options?.params?.['logKey'] as any,
+						enableCap: options?.params?.['enableCap'] as any,
+						start_time: options?.params?.['start_time'] as any,
+						end_time: options?.params?.['end_time'] as any,
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListRecentLogsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createTest: (id, options) =>
-		HttpClientRequest.post(`/api/hooks/${encodeURIComponent(id)}/test`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/hooks/' + __encodePathParam(id) + '/test').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updateSigningKey: (id, options) =>
-		HttpClientRequest.patch(`/api/hooks/${encodeURIComponent(id)}/signing-key`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateSigningKeyResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/hooks/' + __encodePathParam(id) + '/signing-key').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateSigningKeyResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 })

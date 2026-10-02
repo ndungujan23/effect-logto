@@ -12,13 +12,15 @@ export const GetSignInExperienceConfigParams = Schema.Struct({
 export type GetSignInExperienceConfigResponse = {
 	readonly tenantId: string
 	readonly id: string
-	readonly color: { readonly primaryColor: string; readonly isDarkModeEnabled: boolean; readonly darkPrimaryColor: string }
+	readonly color: { readonly primaryColor: string; readonly isDarkModeEnabled: boolean; readonly darkPrimaryColor: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly branding: {
 		readonly logoUrl?: string
 		readonly darkLogoUrl?: string
 		readonly favicon?: string
 		readonly darkFavicon?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly hideLogtoBranding: boolean
 	readonly languageInfo: {
 		readonly autoDetect: boolean
@@ -153,44 +155,51 @@ export type GetSignInExperienceConfigResponse = {
 			| 'zh-MO'
 			| 'zh-TW'
 			| 'zz-TR'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly termsOfUseUrl: string | null
 	readonly privacyPolicyUrl: string | null
 	readonly agreeToTermsPolicy: 'Automatic' | 'ManualRegistrationOnly' | 'Manual'
 	readonly signIn: {
-		readonly methods: ReadonlyArray<{
-			readonly identifier: 'username' | 'email' | 'phone'
-			readonly password: boolean
-			readonly verificationCode: boolean
-			readonly isPasswordPrimary: boolean
-		}>
-	}
+		readonly methods: ReadonlyArray<
+			{
+				readonly identifier: 'username' | 'email' | 'phone'
+				readonly password: boolean
+				readonly verificationCode: boolean
+				readonly isPasswordPrimary: boolean
+			} & { readonly [x: string]: Schema.Json }
+		>
+	} & { readonly [x: string]: Schema.Json }
 	readonly signUp: {
 		readonly identifiers: ReadonlyArray<'username' | 'email' | 'phone'>
 		readonly password: boolean
 		readonly verify: boolean
-		readonly secondaryIdentifiers?: ReadonlyArray<{
-			readonly identifier: 'username' | 'email' | 'phone' | 'emailOrPhone'
-			readonly verify?: boolean
-		}>
+		readonly secondaryIdentifiers?: ReadonlyArray<
+			{ readonly identifier: 'username' | 'email' | 'phone' | 'emailOrPhone'; readonly verify?: boolean } & {
+				readonly [x: string]: Schema.Json
+			}
+		>
+	} & { readonly [x: string]: Schema.Json }
+	readonly socialSignIn: { readonly automaticAccountLinking?: boolean; readonly skipRequiredIdentifiers?: boolean } & {
+		readonly [x: string]: Schema.Json
 	}
-	readonly socialSignIn: { readonly automaticAccountLinking?: boolean; readonly skipRequiredIdentifiers?: boolean }
 	readonly socialSignInConnectorTargets: ReadonlyArray<string>
 	readonly signInMode: 'SignIn' | 'Register' | 'SignInAndRegister'
 	readonly customCss: string | null
 	readonly customContent: { readonly [x: string]: string }
 	readonly customUiAssets: ({ readonly id: string; readonly createdAt: number } & { readonly [x: string]: Schema.Json }) | null
-	readonly customUiCsp: { readonly scriptSrc?: ReadonlyArray<string>; readonly connectSrc?: ReadonlyArray<string> }
+	readonly customUiCsp: { readonly scriptSrc?: ReadonlyArray<string>; readonly connectSrc?: ReadonlyArray<string> } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly passwordPolicy: {
-		readonly length?: { readonly min: number; readonly max: number }
-		readonly characterTypes?: { readonly min: number }
+		readonly length?: { readonly min: number; readonly max: number } & { readonly [x: string]: Schema.Json }
+		readonly characterTypes?: { readonly min: number } & { readonly [x: string]: Schema.Json }
 		readonly rejects?: {
 			readonly pwned: boolean
 			readonly repetitionAndSequence: boolean
 			readonly userInfo: boolean
 			readonly words: ReadonlyArray<string>
-		}
-	}
+		} & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
 	readonly mfa: {
 		readonly factors: ReadonlyArray<'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'>
 		readonly policy:
@@ -202,40 +211,47 @@ export type GetSignInExperienceConfigResponse = {
 			| 'PromptAtSignInAndSignUpMandatory'
 			| 'PromptOnlyAtSignInMandatory'
 		readonly organizationRequiredMfaPolicy?: 'NoPrompt' | 'Mandatory'
-	}
-	readonly adaptiveMfa: { readonly enabled?: boolean }
+	} & { readonly [x: string]: Schema.Json }
+	readonly adaptiveMfa: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
 	readonly singleSignOnEnabled: boolean
 	readonly supportEmail: string | null
 	readonly supportWebsiteUrl: string | null
 	readonly unknownSessionRedirectUrl: string | null
-	readonly captchaPolicy: { readonly enabled?: boolean }
-	readonly sentinelPolicy: { readonly maxAttempts?: number; readonly lockoutDuration?: number }
-	readonly verificationCodePolicy: { readonly expirationDuration?: number; readonly maxRetryAttempts?: number }
-	readonly passkeySignIn: { readonly enabled?: boolean; readonly showPasskeyButton?: boolean; readonly allowAutofill?: boolean }
-	readonly signUpProfileFields: ReadonlyArray<{ readonly name: string }> | null
+	readonly captchaPolicy: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
+	readonly sentinelPolicy: { readonly maxAttempts?: number; readonly lockoutDuration?: number } & { readonly [x: string]: Schema.Json }
+	readonly verificationCodePolicy: { readonly expirationDuration?: number; readonly maxRetryAttempts?: number } & {
+		readonly [x: string]: Schema.Json
+	}
+	readonly passkeySignIn: { readonly enabled?: boolean; readonly showPasskeyButton?: boolean; readonly allowAutofill?: boolean } & {
+		readonly [x: string]: Schema.Json
+	}
+	readonly signUpProfileFields: ReadonlyArray<{ readonly name: string } & { readonly [x: string]: Schema.Json }> | null
 	readonly passwordExpiration:
-		| { readonly enabled?: boolean }
-		| { readonly enabled: boolean; readonly validPeriodDays: number; readonly enabledAt?: number }
+		| ({ readonly enabled?: boolean } & { readonly [x: string]: Schema.Json })
+		| ({ readonly enabled: boolean; readonly validPeriodDays: number; readonly enabledAt?: number } & {
+				readonly [x: string]: Schema.Json
+		  })
 	readonly usernamePolicy: { readonly [x: string]: Schema.Json }
-	readonly trustedDevice?: { readonly enabled?: boolean; readonly durationDays?: number }
-	readonly socialConnectors: ReadonlyArray<{
-		readonly id: string
-		readonly target: string
-		readonly name: { readonly [x: string]: Schema.Json }
-		readonly logo: string
-		readonly logoDark: string | null
-		readonly fromEmail?: string
-		readonly platform: 'Native' | 'Universal' | 'Web' | null
-		readonly isStandard?: boolean
-		readonly isTokenStorageSupported?: boolean
-	}>
-	readonly ssoConnectors: ReadonlyArray<{
-		readonly id: string
-		readonly connectorName: string
-		readonly logo: string
-		readonly darkLogo?: string
-	}>
-	readonly forgotPassword: { readonly phone: boolean; readonly email: boolean }
+	readonly trustedDevice?: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
+	readonly socialConnectors: ReadonlyArray<
+		{
+			readonly id: string
+			readonly target: string
+			readonly name: { readonly [x: string]: Schema.Json }
+			readonly logo: string
+			readonly logoDark: string | null
+			readonly fromEmail?: string
+			readonly platform: 'Native' | 'Universal' | 'Web' | null
+			readonly isStandard?: boolean
+			readonly isTokenStorageSupported?: boolean
+		} & { readonly [x: string]: Schema.Json }
+	>
+	readonly ssoConnectors: ReadonlyArray<
+		{ readonly id: string; readonly connectorName: string; readonly logo: string; readonly darkLogo?: string } & {
+			readonly [x: string]: Schema.Json
+		}
+	>
+	readonly forgotPassword: { readonly phone: boolean; readonly email: boolean } & { readonly [x: string]: Schema.Json }
 	readonly isDevelopmentTenant: boolean
 	readonly googleOneTap?: {
 		readonly isEnabled?: boolean
@@ -244,613 +260,848 @@ export type GetSignInExperienceConfigResponse = {
 		readonly itpSupport?: boolean
 		readonly clientId: string
 		readonly connectorId: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly captchaConfig?: {
 		readonly type: 'RecaptchaEnterprise' | 'Turnstile'
 		readonly siteKey: string
 		readonly domain?: string
 		readonly mode?: 'invisible' | 'checkbox'
-	}
-	readonly customProfileFields: ReadonlyArray<{
-		readonly tenantId: string
-		readonly id: string
-		readonly name: string
-		readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-		readonly label: string
-		readonly description: string | null
-		readonly required: boolean
-		readonly config: {
-			readonly placeholder?: string
-			readonly minLength?: number
-			readonly maxLength?: number
-			readonly minValue?: number
-			readonly maxValue?: number
-			readonly format?: string
-			readonly customFormat?: string
-			readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-			readonly defaultValue?: string
-			readonly parts?: ReadonlyArray<{
-				readonly enabled: boolean
-				readonly name: string
-				readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-				readonly label?: string
-				readonly description?: string
-				readonly required: boolean
-				readonly config?: {
-					readonly placeholder?: string
-					readonly minLength?: number
-					readonly maxLength?: number
-					readonly minValue?: number
-					readonly maxValue?: number
-					readonly format?: string
-					readonly customFormat?: string
-					readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-					readonly defaultValue?: string
-				}
-			}>
-		}
-		readonly createdAt: number
-		readonly sieOrder: number
-	}>
-	readonly customProfileFieldCatalog?: ReadonlyArray<{
-		readonly tenantId: string
-		readonly id: string
-		readonly name: string
-		readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-		readonly label: string
-		readonly description: string | null
-		readonly required: boolean
-		readonly config: {
-			readonly placeholder?: string
-			readonly minLength?: number
-			readonly maxLength?: number
-			readonly minValue?: number
-			readonly maxValue?: number
-			readonly format?: string
-			readonly customFormat?: string
-			readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-			readonly defaultValue?: string
-			readonly parts?: ReadonlyArray<{
-				readonly enabled: boolean
-				readonly name: string
-				readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-				readonly label?: string
-				readonly description?: string
-				readonly required: boolean
-				readonly config?: {
-					readonly placeholder?: string
-					readonly minLength?: number
-					readonly maxLength?: number
-					readonly minValue?: number
-					readonly maxValue?: number
-					readonly format?: string
-					readonly customFormat?: string
-					readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-					readonly defaultValue?: string
-				}
-			}>
-		}
-		readonly createdAt: number
-		readonly sieOrder: number
-	}>
-}
-export const GetSignInExperienceConfigResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	color: Schema.Struct({
-		primaryColor: Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-				expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-			})
+	} & { readonly [x: string]: Schema.Json }
+	readonly customProfileFields: ReadonlyArray<
+		{
+			readonly tenantId: string
+			readonly id: string
+			readonly name: string
+			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+			readonly label: string
+			readonly description: string | null
+			readonly required: boolean
+			readonly config: {
+				readonly placeholder?: string
+				readonly minLength?: number
+				readonly maxLength?: number
+				readonly minValue?: number
+				readonly maxValue?: number
+				readonly format?: string
+				readonly customFormat?: string
+				readonly options?: ReadonlyArray<
+					{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+				>
+				readonly defaultValue?: string
+				readonly parts?: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly name: string
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+			readonly createdAt: number
+			readonly sieOrder: number
+		} & { readonly [x: string]: Schema.Json }
+	>
+	readonly customProfileFieldCatalog?: ReadonlyArray<
+		{
+			readonly tenantId: string
+			readonly id: string
+			readonly name: string
+			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+			readonly label: string
+			readonly description: string | null
+			readonly required: boolean
+			readonly config: {
+				readonly placeholder?: string
+				readonly minLength?: number
+				readonly maxLength?: number
+				readonly minValue?: number
+				readonly maxValue?: number
+				readonly format?: string
+				readonly customFormat?: string
+				readonly options?: ReadonlyArray<
+					{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+				>
+				readonly defaultValue?: string
+				readonly parts?: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly name: string
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+			readonly createdAt: number
+			readonly sieOrder: number
+		} & { readonly [x: string]: Schema.Json }
+	>
+} & { readonly [x: string]: Schema.Json }
+export const GetSignInExperienceConfigResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		isDarkModeEnabled: Schema.Boolean,
-		darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-				expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-			})
-		),
-	}),
-	branding: Schema.Struct({
-		logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-	}),
-	hideLogtoBranding: Schema.Boolean,
-	languageInfo: Schema.Struct({
-		autoDetect: Schema.Boolean,
-		fallbackLanguage: Schema.Literals([
-			'af-ZA',
-			'am-ET',
-			'ar',
-			'ar-AR',
-			'as-IN',
-			'az-AZ',
-			'be-BY',
-			'bg-BG',
-			'bn-IN',
-			'br-FR',
-			'bs-BA',
-			'ca-ES',
-			'cb-IQ',
-			'co-FR',
-			'cs',
-			'cs-CZ',
-			'cx-PH',
-			'cy-GB',
-			'da-DK',
-			'de',
-			'de-DE',
-			'el-GR',
-			'en',
-			'en-GB',
-			'en-US',
-			'eo-EO',
-			'es',
-			'es-ES',
-			'es-419',
-			'es-MX',
-			'et-EE',
-			'eu-ES',
-			'fa-IR',
-			'ff-NG',
-			'fi',
-			'fi-FI',
-			'fo-FO',
-			'fr',
-			'fr-CA',
-			'fr-FR',
-			'fy-NL',
-			'ga-IE',
-			'gl-ES',
-			'gn-PY',
-			'gu-IN',
-			'ha-NG',
-			'he-IL',
-			'hi-IN',
-			'hr-HR',
-			'ht-HT',
-			'hu-HU',
-			'hy-AM',
-			'id-ID',
-			'ik-US',
-			'is-IS',
-			'it',
-			'it-IT',
-			'iu-CA',
-			'ja',
-			'ja-JP',
-			'ja-KS',
-			'jv-ID',
-			'ka-GE',
-			'kk-KZ',
-			'km-KH',
-			'kn-IN',
-			'ko',
-			'ko-KR',
-			'ku-TR',
-			'ky-KG',
-			'lo-LA',
-			'lt-LT',
-			'lv-LV',
-			'mg-MG',
-			'mk-MK',
-			'ml-IN',
-			'mn-MN',
-			'mr-IN',
-			'ms-MY',
-			'mt-MT',
-			'my-MM',
-			'nb-NO',
-			'ne-NP',
-			'nl',
-			'nl-BE',
-			'nl-NL',
-			'nn-NO',
-			'or-IN',
-			'pa-IN',
-			'pl-PL',
-			'ps-AF',
-			'pt',
-			'pt-BR',
-			'pt-PT',
-			'ro-RO',
-			'ru',
-			'ru-RU',
-			'rw-RW',
-			'sc-IT',
-			'si-LK',
-			'sk-SK',
-			'sl-SI',
-			'sn-ZW',
-			'sq-AL',
-			'sr-RS',
-			'sv',
-			'sv-SE',
-			'sw-KE',
-			'sy-SY',
-			'sz-PL',
-			'ta-IN',
-			'te-IN',
-			'tg-TJ',
-			'th',
-			'th-TH',
-			'tl-PH',
-			'tr',
-			'tr-TR',
-			'tt-RU',
-			'tz-MA',
-			'uk-UA',
-			'ur-PK',
-			'uz-UZ',
-			'vi-VN',
-			'zh',
-			'zh-CN',
-			'zh-HK',
-			'zh-MO',
-			'zh-TW',
-			'zz-TR',
-		]),
-	}),
-	termsOfUseUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	privacyPolicyUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	agreeToTermsPolicy: Schema.Literals(['Automatic', 'ManualRegistrationOnly', 'Manual']),
-	signIn: Schema.Struct({
-		methods: Schema.Array(
+		color: Schema.StructWithRest(
 			Schema.Struct({
-				identifier: Schema.Literals(['username', 'email', 'phone']),
-				password: Schema.Boolean,
-				verificationCode: Schema.Boolean,
-				isPasswordPrimary: Schema.Boolean,
-			})
-		),
-	}),
-	signUp: Schema.Struct({
-		identifiers: Schema.Array(Schema.Literals(['username', 'email', 'phone'])),
-		password: Schema.Boolean,
-		verify: Schema.Boolean,
-		secondaryIdentifiers: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					identifier: Schema.Union([Schema.Literals(['username', 'email', 'phone']), Schema.Literal('emailOrPhone')], {
-						mode: 'oneOf',
-					}),
-					verify: Schema.optionalKey(Schema.Boolean),
-				})
-			)
-		),
-	}),
-	socialSignIn: Schema.Struct({
-		automaticAccountLinking: Schema.optionalKey(Schema.Boolean),
-		skipRequiredIdentifiers: Schema.optionalKey(Schema.Boolean),
-	}),
-	socialSignInConnectorTargets: Schema.Array(Schema.String),
-	signInMode: Schema.Literals(['SignIn', 'Register', 'SignInAndRegister']),
-	customCss: Schema.Union([Schema.String, Schema.Null]),
-	customContent: Schema.Record(Schema.String, Schema.String),
-	customUiAssets: Schema.Union([
-		Schema.StructWithRest(
-			Schema.Struct({
-				id: Schema.String,
-				createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				primaryColor: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+					})
+				),
+				isDarkModeEnabled: Schema.Boolean,
+				darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+					})
+				),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		Schema.Null,
-	]),
-	customUiCsp: Schema.Struct({
-		scriptSrc: Schema.optionalKey(Schema.Array(Schema.String)),
-		connectSrc: Schema.optionalKey(Schema.Array(Schema.String)),
-	}),
-	passwordPolicy: Schema.Struct({
-		length: Schema.optionalKey(
+		branding: Schema.StructWithRest(
 			Schema.Struct({
-				min: Schema.Number.annotate({ default: 8 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				max: Schema.Number.annotate({ default: 256 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			})
+				logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		characterTypes: Schema.optionalKey(
+		hideLogtoBranding: Schema.Boolean,
+		languageInfo: Schema.StructWithRest(
 			Schema.Struct({
-				min: Schema.Number.annotate({ default: 1 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			})
+				autoDetect: Schema.Boolean,
+				fallbackLanguage: Schema.Literals([
+					'af-ZA',
+					'am-ET',
+					'ar',
+					'ar-AR',
+					'as-IN',
+					'az-AZ',
+					'be-BY',
+					'bg-BG',
+					'bn-IN',
+					'br-FR',
+					'bs-BA',
+					'ca-ES',
+					'cb-IQ',
+					'co-FR',
+					'cs',
+					'cs-CZ',
+					'cx-PH',
+					'cy-GB',
+					'da-DK',
+					'de',
+					'de-DE',
+					'el-GR',
+					'en',
+					'en-GB',
+					'en-US',
+					'eo-EO',
+					'es',
+					'es-ES',
+					'es-419',
+					'es-MX',
+					'et-EE',
+					'eu-ES',
+					'fa-IR',
+					'ff-NG',
+					'fi',
+					'fi-FI',
+					'fo-FO',
+					'fr',
+					'fr-CA',
+					'fr-FR',
+					'fy-NL',
+					'ga-IE',
+					'gl-ES',
+					'gn-PY',
+					'gu-IN',
+					'ha-NG',
+					'he-IL',
+					'hi-IN',
+					'hr-HR',
+					'ht-HT',
+					'hu-HU',
+					'hy-AM',
+					'id-ID',
+					'ik-US',
+					'is-IS',
+					'it',
+					'it-IT',
+					'iu-CA',
+					'ja',
+					'ja-JP',
+					'ja-KS',
+					'jv-ID',
+					'ka-GE',
+					'kk-KZ',
+					'km-KH',
+					'kn-IN',
+					'ko',
+					'ko-KR',
+					'ku-TR',
+					'ky-KG',
+					'lo-LA',
+					'lt-LT',
+					'lv-LV',
+					'mg-MG',
+					'mk-MK',
+					'ml-IN',
+					'mn-MN',
+					'mr-IN',
+					'ms-MY',
+					'mt-MT',
+					'my-MM',
+					'nb-NO',
+					'ne-NP',
+					'nl',
+					'nl-BE',
+					'nl-NL',
+					'nn-NO',
+					'or-IN',
+					'pa-IN',
+					'pl-PL',
+					'ps-AF',
+					'pt',
+					'pt-BR',
+					'pt-PT',
+					'ro-RO',
+					'ru',
+					'ru-RU',
+					'rw-RW',
+					'sc-IT',
+					'si-LK',
+					'sk-SK',
+					'sl-SI',
+					'sn-ZW',
+					'sq-AL',
+					'sr-RS',
+					'sv',
+					'sv-SE',
+					'sw-KE',
+					'sy-SY',
+					'sz-PL',
+					'ta-IN',
+					'te-IN',
+					'tg-TJ',
+					'th',
+					'th-TH',
+					'tl-PH',
+					'tr',
+					'tr-TR',
+					'tt-RU',
+					'tz-MA',
+					'uk-UA',
+					'ur-PK',
+					'uz-UZ',
+					'vi-VN',
+					'zh',
+					'zh-CN',
+					'zh-HK',
+					'zh-MO',
+					'zh-TW',
+					'zz-TR',
+				]),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		rejects: Schema.optionalKey(
-			Schema.Struct({
-				pwned: Schema.Boolean.annotate({ default: true }),
-				repetitionAndSequence: Schema.Boolean.annotate({ default: true }),
-				userInfo: Schema.Boolean.annotate({ default: true }),
-				words: Schema.Array(Schema.String).annotate({ default: [] }),
-			})
-		),
-	}),
-	mfa: Schema.Struct({
-		factors: Schema.Array(Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])),
-		policy: Schema.Literals([
-			'UserControlled',
-			'Mandatory',
-			'PromptOnlyAtSignIn',
-			'PromptAtSignInAndSignUp',
-			'NoPrompt',
-			'PromptAtSignInAndSignUpMandatory',
-			'PromptOnlyAtSignInMandatory',
+		termsOfUseUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
 		]),
-		organizationRequiredMfaPolicy: Schema.optionalKey(Schema.Literals(['NoPrompt', 'Mandatory'])),
-	}),
-	adaptiveMfa: Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }),
-	singleSignOnEnabled: Schema.Boolean,
-	supportEmail: Schema.Union([Schema.String, Schema.Null]),
-	supportWebsiteUrl: Schema.Union([Schema.String, Schema.Null]),
-	unknownSessionRedirectUrl: Schema.Union([Schema.String, Schema.Null]),
-	captchaPolicy: Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }),
-	sentinelPolicy: Schema.Struct({
-		maxAttempts: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		lockoutDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	verificationCodePolicy: Schema.Struct({
-		expirationDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		maxRetryAttempts: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	passkeySignIn: Schema.Struct({
-		enabled: Schema.optionalKey(Schema.Boolean),
-		showPasskeyButton: Schema.optionalKey(Schema.Boolean),
-		allowAutofill: Schema.optionalKey(Schema.Boolean),
-	}),
-	signUpProfileFields: Schema.Union([Schema.Array(Schema.Struct({ name: Schema.String })), Schema.Null]),
-	passwordExpiration: Schema.Union(
-		[
-			Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean.annotate({ format: 'false' })) }),
+		privacyPolicyUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		agreeToTermsPolicy: Schema.Literals(['Automatic', 'ManualRegistrationOnly', 'Manual']),
+		signIn: Schema.StructWithRest(
 			Schema.Struct({
-				enabled: Schema.Boolean.annotate({ format: 'true' }),
-				validPeriodDays: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				enabledAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			}),
-		],
-		{ mode: 'oneOf' }
-	),
-	usernamePolicy: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Validator function',
-	}),
-	trustedDevice: Schema.optionalKey(
-		Schema.Struct({
-			enabled: Schema.optionalKey(Schema.Boolean),
-			durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		})
-	),
-	socialConnectors: Schema.Array(
-		Schema.Struct({
-			id: Schema.String,
-			target: Schema.String,
-			name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-				description: 'Validator function',
-			}),
-			logo: Schema.String,
-			logoDark: Schema.Union([Schema.String, Schema.Null]),
-			fromEmail: Schema.optionalKey(Schema.String),
-			platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
-			isStandard: Schema.optionalKey(Schema.Boolean),
-			isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
-		})
-	),
-	ssoConnectors: Schema.Array(
-		Schema.Struct({ id: Schema.String, connectorName: Schema.String, logo: Schema.String, darkLogo: Schema.optionalKey(Schema.String) })
-	),
-	forgotPassword: Schema.Struct({ phone: Schema.Boolean, email: Schema.Boolean }),
-	isDevelopmentTenant: Schema.Boolean,
-	googleOneTap: Schema.optionalKey(
-		Schema.Struct({
-			isEnabled: Schema.optionalKey(Schema.Boolean),
-			autoSelect: Schema.optionalKey(Schema.Boolean),
-			closeOnTapOutside: Schema.optionalKey(Schema.Boolean),
-			itpSupport: Schema.optionalKey(Schema.Boolean),
-			clientId: Schema.String,
-			connectorId: Schema.String,
-		})
-	),
-	captchaConfig: Schema.optionalKey(
-		Schema.Struct({
-			type: Schema.Literals(['RecaptchaEnterprise', 'Turnstile']),
-			siteKey: Schema.String,
-			domain: Schema.optionalKey(Schema.String),
-			mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
-		})
-	),
-	customProfileFields: Schema.Array(
-		Schema.Struct({
-			tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-			),
-			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-			),
-			type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-			label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-			description: Schema.Union([
-				Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-				Schema.Null,
-			]),
-			required: Schema.Boolean,
-			config: Schema.Struct({
-				placeholder: Schema.optionalKey(
-					Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-				),
-				minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				format: Schema.optionalKey(
-					Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-				),
-				customFormat: Schema.optionalKey(
-					Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-				),
-				options: Schema.optionalKey(
-					Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-				),
-				defaultValue: Schema.optionalKey(Schema.String),
-				parts: Schema.optionalKey(
-					Schema.Array(
+				methods: Schema.Array(
+					Schema.StructWithRest(
 						Schema.Struct({
-							enabled: Schema.Boolean,
-							name: Schema.String,
-							type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-							label: Schema.optionalKey(
-								Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-							),
-							description: Schema.optionalKey(Schema.String),
-							required: Schema.Boolean,
-							config: Schema.optionalKey(
-								Schema.Struct({
-									placeholder: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-										)
-									),
-									minLength: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									maxLength: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									minValue: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									maxValue: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									format: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										)
-									),
-									customFormat: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										)
-									),
-									options: Schema.optionalKey(
-										Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-									),
-									defaultValue: Schema.optionalKey(Schema.String),
-								})
-							),
-						})
+							identifier: Schema.Literals(['username', 'email', 'phone']),
+							password: Schema.Boolean,
+							verificationCode: Schema.Boolean,
+							isPasswordPrimary: Schema.Boolean,
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 					)
 				),
 			}),
-			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		})
-	),
-	customProfileFieldCatalog: Schema.optionalKey(
-		Schema.Array(
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		signUp: Schema.StructWithRest(
 			Schema.Struct({
-				tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-				id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-				),
-				name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-				),
-				type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-				label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-				description: Schema.Union([
-					Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-					Schema.Null,
-				]),
-				required: Schema.Boolean,
-				config: Schema.Struct({
-					placeholder: Schema.optionalKey(
-						Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-					),
-					minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					format: Schema.optionalKey(
-						Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-					),
-					customFormat: Schema.optionalKey(
-						Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-					),
-					options: Schema.optionalKey(
-						Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-					),
-					defaultValue: Schema.optionalKey(Schema.String),
-					parts: Schema.optionalKey(
-						Schema.Array(
+				identifiers: Schema.Array(Schema.Literals(['username', 'email', 'phone'])),
+				password: Schema.Boolean,
+				verify: Schema.Boolean,
+				secondaryIdentifiers: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
 							Schema.Struct({
-								enabled: Schema.Boolean,
-								name: Schema.String,
-								type: Schema.Literals([
-									'Text',
-									'Number',
-									'Date',
-									'Checkbox',
-									'Select',
-									'Url',
-									'Regex',
-									'Address',
-									'Fullname',
-								]),
-								label: Schema.optionalKey(
-									Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+								identifier: Schema.Union(
+									[Schema.Literals(['username', 'email', 'phone']), Schema.Literal('emailOrPhone')],
+									{ mode: 'oneOf' }
 								),
-								description: Schema.optionalKey(Schema.String),
-								required: Schema.Boolean,
-								config: Schema.optionalKey(
-									Schema.Struct({
-										placeholder: Schema.optionalKey(
-											Schema.String.check(
-												Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-											)
-										),
-										minLength: Schema.optionalKey(
-											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-										),
-										maxLength: Schema.optionalKey(
-											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-										),
-										minValue: Schema.optionalKey(
-											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-										),
-										maxValue: Schema.optionalKey(
-											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-										),
-										format: Schema.optionalKey(
-											Schema.String.check(
-												Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-											)
-										),
-										customFormat: Schema.optionalKey(
-											Schema.String.check(
-												Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-											)
-										),
-										options: Schema.optionalKey(
-											Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-										),
-										defaultValue: Schema.optionalKey(Schema.String),
-									})
-								),
-							})
+								verify: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						)
-					),
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		socialSignIn: Schema.StructWithRest(
+			Schema.Struct({
+				automaticAccountLinking: Schema.optionalKey(Schema.Boolean),
+				skipRequiredIdentifiers: Schema.optionalKey(Schema.Boolean),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		socialSignInConnectorTargets: Schema.Array(Schema.String),
+		signInMode: Schema.Literals(['SignIn', 'Register', 'SignInAndRegister']),
+		customCss: Schema.Union([Schema.String, Schema.Null]),
+		customContent: Schema.Record(Schema.String, Schema.String),
+		customUiAssets: Schema.Union([
+			Schema.StructWithRest(
+				Schema.Struct({
+					id: Schema.String,
+					createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 				}),
-				createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			})
-		)
-	),
-})
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.Null,
+		]),
+		customUiCsp: Schema.StructWithRest(
+			Schema.Struct({
+				scriptSrc: Schema.optionalKey(Schema.Array(Schema.String)),
+				connectSrc: Schema.optionalKey(Schema.Array(Schema.String)),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		passwordPolicy: Schema.StructWithRest(
+			Schema.Struct({
+				length: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							min: Schema.Number.annotate({ default: 8 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+							max: Schema.Number.annotate({ default: 256 }).check(
+								Schema.isFinite().annotate({ expected: 'a finite number' })
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				characterTypes: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							min: Schema.Number.annotate({ default: 1 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				rejects: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							pwned: Schema.Boolean.annotate({ default: true }),
+							repetitionAndSequence: Schema.Boolean.annotate({ default: true }),
+							userInfo: Schema.Boolean.annotate({ default: true }),
+							words: Schema.Array(Schema.String).annotate({ default: [] }),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		mfa: Schema.StructWithRest(
+			Schema.Struct({
+				factors: Schema.Array(
+					Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])
+				),
+				policy: Schema.Literals([
+					'UserControlled',
+					'Mandatory',
+					'PromptOnlyAtSignIn',
+					'PromptAtSignInAndSignUp',
+					'NoPrompt',
+					'PromptAtSignInAndSignUpMandatory',
+					'PromptOnlyAtSignInMandatory',
+				]),
+				organizationRequiredMfaPolicy: Schema.optionalKey(Schema.Literals(['NoPrompt', 'Mandatory'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		adaptiveMfa: Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		singleSignOnEnabled: Schema.Boolean,
+		supportEmail: Schema.Union([Schema.String, Schema.Null]),
+		supportWebsiteUrl: Schema.Union([Schema.String, Schema.Null]),
+		unknownSessionRedirectUrl: Schema.Union([Schema.String, Schema.Null]),
+		captchaPolicy: Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		sentinelPolicy: Schema.StructWithRest(
+			Schema.Struct({
+				maxAttempts: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				lockoutDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		verificationCodePolicy: Schema.StructWithRest(
+			Schema.Struct({
+				expirationDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				maxRetryAttempts: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		passkeySignIn: Schema.StructWithRest(
+			Schema.Struct({
+				enabled: Schema.optionalKey(Schema.Boolean),
+				showPasskeyButton: Schema.optionalKey(Schema.Boolean),
+				allowAutofill: Schema.optionalKey(Schema.Boolean),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		signUpProfileFields: Schema.Union([
+			Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ name: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
+			),
+			Schema.Null,
+		]),
+		passwordExpiration: Schema.Union(
+			[
+				Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean.annotate({ format: 'false' })) }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				]),
+				Schema.StructWithRest(
+					Schema.Struct({
+						enabled: Schema.Boolean.annotate({ format: 'true' }),
+						validPeriodDays: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						enabledAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			],
+			{ mode: 'oneOf' }
+		),
+		usernamePolicy: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Validator function',
+		}),
+		trustedDevice: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					enabled: Schema.optionalKey(Schema.Boolean),
+					durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		socialConnectors: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					id: Schema.String,
+					target: Schema.String,
+					name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+						description: 'Validator function',
+					}),
+					logo: Schema.String,
+					logoDark: Schema.Union([Schema.String, Schema.Null]),
+					fromEmail: Schema.optionalKey(Schema.String),
+					platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
+					isStandard: Schema.optionalKey(Schema.Boolean),
+					isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		ssoConnectors: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					id: Schema.String,
+					connectorName: Schema.String,
+					logo: Schema.String,
+					darkLogo: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		forgotPassword: Schema.StructWithRest(Schema.Struct({ phone: Schema.Boolean, email: Schema.Boolean }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		isDevelopmentTenant: Schema.Boolean,
+		googleOneTap: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					isEnabled: Schema.optionalKey(Schema.Boolean),
+					autoSelect: Schema.optionalKey(Schema.Boolean),
+					closeOnTapOutside: Schema.optionalKey(Schema.Boolean),
+					itpSupport: Schema.optionalKey(Schema.Boolean),
+					clientId: Schema.String,
+					connectorId: Schema.String,
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		captchaConfig: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					type: Schema.Literals(['RecaptchaEnterprise', 'Turnstile']),
+					siteKey: Schema.String,
+					domain: Schema.optionalKey(Schema.String),
+					mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customProfileFields: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					tenantId: Schema.String.check(
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+					),
+					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+					),
+					name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+						Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+					),
+					type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+					label: Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+					description: Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+						Schema.Null,
+					]),
+					required: Schema.Boolean,
+					config: Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(
+								Schema.String.check(
+									Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+								)
+							),
+							minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							format: Schema.optionalKey(
+								Schema.String.check(
+									Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+								)
+							),
+							customFormat: Schema.optionalKey(
+								Schema.String.check(
+									Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+								)
+							),
+							options: Schema.optionalKey(
+								Schema.Array(
+									Schema.StructWithRest(
+										Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								)
+							),
+							defaultValue: Schema.optionalKey(Schema.String),
+							parts: Schema.optionalKey(
+								Schema.Array(
+									Schema.StructWithRest(
+										Schema.Struct({
+											enabled: Schema.Boolean,
+											name: Schema.String,
+											type: Schema.Literals([
+												'Text',
+												'Number',
+												'Date',
+												'Checkbox',
+												'Select',
+												'Url',
+												'Regex',
+												'Address',
+												'Fullname',
+											]),
+											label: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												)
+											),
+											description: Schema.optionalKey(Schema.String),
+											required: Schema.Boolean,
+											config: Schema.optionalKey(
+												Schema.StructWithRest(
+													Schema.Struct({
+														placeholder: Schema.optionalKey(
+															Schema.String.check(
+																Schema.isMaxCodePoints(256).annotate({
+																	expected: 'a string with at most 256 code points',
+																})
+															)
+														),
+														minLength: Schema.optionalKey(
+															Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+														),
+														maxLength: Schema.optionalKey(
+															Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+														),
+														minValue: Schema.optionalKey(
+															Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+														),
+														maxValue: Schema.optionalKey(
+															Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+														),
+														format: Schema.optionalKey(
+															Schema.String.check(
+																Schema.isMaxCodePoints(128).annotate({
+																	expected: 'a string with at most 128 code points',
+																})
+															)
+														),
+														customFormat: Schema.optionalKey(
+															Schema.String.check(
+																Schema.isMaxCodePoints(128).annotate({
+																	expected: 'a string with at most 128 code points',
+																})
+															)
+														),
+														options: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		label: Schema.optionalKey(Schema.String),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+														defaultValue: Schema.optionalKey(Schema.String),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												)
+											),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								)
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+					createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customProfileFieldCatalog: Schema.optionalKey(
+			Schema.Array(
+				Schema.StructWithRest(
+					Schema.Struct({
+						tenantId: Schema.String.check(
+							Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+						),
+						id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+							Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+						),
+						name: Schema.String.check(
+							Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+						).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+						label: Schema.String.check(
+							Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+						),
+						description: Schema.Union([
+							Schema.String.check(
+								Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+							),
+							Schema.Null,
+						]),
+						required: Schema.Boolean,
+						config: Schema.StructWithRest(
+							Schema.Struct({
+								placeholder: Schema.optionalKey(
+									Schema.String.check(
+										Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+									)
+								),
+								minLength: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								maxLength: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								minValue: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								maxValue: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								format: Schema.optionalKey(
+									Schema.String.check(
+										Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+									)
+								),
+								customFormat: Schema.optionalKey(
+									Schema.String.check(
+										Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+									)
+								),
+								options: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								defaultValue: Schema.optionalKey(Schema.String),
+								parts: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												enabled: Schema.Boolean,
+												name: Schema.String,
+												type: Schema.Literals([
+													'Text',
+													'Number',
+													'Date',
+													'Checkbox',
+													'Select',
+													'Url',
+													'Regex',
+													'Address',
+													'Fullname',
+												]),
+												label: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													)
+												),
+												description: Schema.optionalKey(Schema.String),
+												required: Schema.Boolean,
+												config: Schema.optionalKey(
+													Schema.StructWithRest(
+														Schema.Struct({
+															placeholder: Schema.optionalKey(
+																Schema.String.check(
+																	Schema.isMaxCodePoints(256).annotate({
+																		expected: 'a string with at most 256 code points',
+																	})
+																)
+															),
+															minLength: Schema.optionalKey(
+																Schema.Number.check(
+																	Schema.isFinite().annotate({ expected: 'a finite number' })
+																)
+															),
+															maxLength: Schema.optionalKey(
+																Schema.Number.check(
+																	Schema.isFinite().annotate({ expected: 'a finite number' })
+																)
+															),
+															minValue: Schema.optionalKey(
+																Schema.Number.check(
+																	Schema.isFinite().annotate({ expected: 'a finite number' })
+																)
+															),
+															maxValue: Schema.optionalKey(
+																Schema.Number.check(
+																	Schema.isFinite().annotate({ expected: 'a finite number' })
+																)
+															),
+															format: Schema.optionalKey(
+																Schema.String.check(
+																	Schema.isMaxCodePoints(128).annotate({
+																		expected: 'a string with at most 128 code points',
+																	})
+																)
+															),
+															customFormat: Schema.optionalKey(
+																Schema.String.check(
+																	Schema.isMaxCodePoints(128).annotate({
+																		expected: 'a string with at most 128 code points',
+																	})
+																)
+															),
+															options: Schema.optionalKey(
+																Schema.Array(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			label: Schema.optionalKey(Schema.String),
+																			value: Schema.String,
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																)
+															),
+															defaultValue: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				)
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetSignInExperiencePhrasesParams = { readonly lng?: string }
 export const GetSignInExperiencePhrasesParams = Schema.Struct({ lng: Schema.optionalKey(Schema.String) })
@@ -872,13 +1123,15 @@ export const GetExperienceParams = Schema.Struct({
 export type GetExperienceResponse = {
 	readonly tenantId: string
 	readonly id: string
-	readonly color: { readonly primaryColor: string; readonly isDarkModeEnabled: boolean; readonly darkPrimaryColor: string }
+	readonly color: { readonly primaryColor: string; readonly isDarkModeEnabled: boolean; readonly darkPrimaryColor: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly branding: {
 		readonly logoUrl?: string
 		readonly darkLogoUrl?: string
 		readonly favicon?: string
 		readonly darkFavicon?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly hideLogtoBranding: boolean
 	readonly languageInfo: {
 		readonly autoDetect: boolean
@@ -1013,44 +1266,51 @@ export type GetExperienceResponse = {
 			| 'zh-MO'
 			| 'zh-TW'
 			| 'zz-TR'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly termsOfUseUrl: string | null
 	readonly privacyPolicyUrl: string | null
 	readonly agreeToTermsPolicy: 'Automatic' | 'ManualRegistrationOnly' | 'Manual'
 	readonly signIn: {
-		readonly methods: ReadonlyArray<{
-			readonly identifier: 'username' | 'email' | 'phone'
-			readonly password: boolean
-			readonly verificationCode: boolean
-			readonly isPasswordPrimary: boolean
-		}>
-	}
+		readonly methods: ReadonlyArray<
+			{
+				readonly identifier: 'username' | 'email' | 'phone'
+				readonly password: boolean
+				readonly verificationCode: boolean
+				readonly isPasswordPrimary: boolean
+			} & { readonly [x: string]: Schema.Json }
+		>
+	} & { readonly [x: string]: Schema.Json }
 	readonly signUp: {
 		readonly identifiers: ReadonlyArray<'username' | 'email' | 'phone'>
 		readonly password: boolean
 		readonly verify: boolean
-		readonly secondaryIdentifiers?: ReadonlyArray<{
-			readonly identifier: 'username' | 'email' | 'phone' | 'emailOrPhone'
-			readonly verify?: boolean
-		}>
+		readonly secondaryIdentifiers?: ReadonlyArray<
+			{ readonly identifier: 'username' | 'email' | 'phone' | 'emailOrPhone'; readonly verify?: boolean } & {
+				readonly [x: string]: Schema.Json
+			}
+		>
+	} & { readonly [x: string]: Schema.Json }
+	readonly socialSignIn: { readonly automaticAccountLinking?: boolean; readonly skipRequiredIdentifiers?: boolean } & {
+		readonly [x: string]: Schema.Json
 	}
-	readonly socialSignIn: { readonly automaticAccountLinking?: boolean; readonly skipRequiredIdentifiers?: boolean }
 	readonly socialSignInConnectorTargets: ReadonlyArray<string>
 	readonly signInMode: 'SignIn' | 'Register' | 'SignInAndRegister'
 	readonly customCss: string | null
 	readonly customContent: { readonly [x: string]: string }
 	readonly customUiAssets: ({ readonly id: string; readonly createdAt: number } & { readonly [x: string]: Schema.Json }) | null
-	readonly customUiCsp: { readonly scriptSrc?: ReadonlyArray<string>; readonly connectSrc?: ReadonlyArray<string> }
+	readonly customUiCsp: { readonly scriptSrc?: ReadonlyArray<string>; readonly connectSrc?: ReadonlyArray<string> } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly passwordPolicy: {
-		readonly length?: { readonly min: number; readonly max: number }
-		readonly characterTypes?: { readonly min: number }
+		readonly length?: { readonly min: number; readonly max: number } & { readonly [x: string]: Schema.Json }
+		readonly characterTypes?: { readonly min: number } & { readonly [x: string]: Schema.Json }
 		readonly rejects?: {
 			readonly pwned: boolean
 			readonly repetitionAndSequence: boolean
 			readonly userInfo: boolean
 			readonly words: ReadonlyArray<string>
-		}
-	}
+		} & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
 	readonly mfa: {
 		readonly factors: ReadonlyArray<'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'>
 		readonly policy:
@@ -1062,40 +1322,47 @@ export type GetExperienceResponse = {
 			| 'PromptAtSignInAndSignUpMandatory'
 			| 'PromptOnlyAtSignInMandatory'
 		readonly organizationRequiredMfaPolicy?: 'NoPrompt' | 'Mandatory'
-	}
-	readonly adaptiveMfa: { readonly enabled?: boolean }
+	} & { readonly [x: string]: Schema.Json }
+	readonly adaptiveMfa: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
 	readonly singleSignOnEnabled: boolean
 	readonly supportEmail: string | null
 	readonly supportWebsiteUrl: string | null
 	readonly unknownSessionRedirectUrl: string | null
-	readonly captchaPolicy: { readonly enabled?: boolean }
-	readonly sentinelPolicy: { readonly maxAttempts?: number; readonly lockoutDuration?: number }
-	readonly verificationCodePolicy: { readonly expirationDuration?: number; readonly maxRetryAttempts?: number }
-	readonly passkeySignIn: { readonly enabled?: boolean; readonly showPasskeyButton?: boolean; readonly allowAutofill?: boolean }
-	readonly signUpProfileFields: ReadonlyArray<{ readonly name: string }> | null
+	readonly captchaPolicy: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
+	readonly sentinelPolicy: { readonly maxAttempts?: number; readonly lockoutDuration?: number } & { readonly [x: string]: Schema.Json }
+	readonly verificationCodePolicy: { readonly expirationDuration?: number; readonly maxRetryAttempts?: number } & {
+		readonly [x: string]: Schema.Json
+	}
+	readonly passkeySignIn: { readonly enabled?: boolean; readonly showPasskeyButton?: boolean; readonly allowAutofill?: boolean } & {
+		readonly [x: string]: Schema.Json
+	}
+	readonly signUpProfileFields: ReadonlyArray<{ readonly name: string } & { readonly [x: string]: Schema.Json }> | null
 	readonly passwordExpiration:
-		| { readonly enabled?: boolean }
-		| { readonly enabled: boolean; readonly validPeriodDays: number; readonly enabledAt?: number }
+		| ({ readonly enabled?: boolean } & { readonly [x: string]: Schema.Json })
+		| ({ readonly enabled: boolean; readonly validPeriodDays: number; readonly enabledAt?: number } & {
+				readonly [x: string]: Schema.Json
+		  })
 	readonly usernamePolicy: { readonly [x: string]: Schema.Json }
-	readonly trustedDevice?: { readonly enabled?: boolean; readonly durationDays?: number }
-	readonly socialConnectors: ReadonlyArray<{
-		readonly id: string
-		readonly target: string
-		readonly name: { readonly [x: string]: Schema.Json }
-		readonly logo: string
-		readonly logoDark: string | null
-		readonly fromEmail?: string
-		readonly platform: 'Native' | 'Universal' | 'Web' | null
-		readonly isStandard?: boolean
-		readonly isTokenStorageSupported?: boolean
-	}>
-	readonly ssoConnectors: ReadonlyArray<{
-		readonly id: string
-		readonly connectorName: string
-		readonly logo: string
-		readonly darkLogo?: string
-	}>
-	readonly forgotPassword: { readonly phone: boolean; readonly email: boolean }
+	readonly trustedDevice?: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
+	readonly socialConnectors: ReadonlyArray<
+		{
+			readonly id: string
+			readonly target: string
+			readonly name: { readonly [x: string]: Schema.Json }
+			readonly logo: string
+			readonly logoDark: string | null
+			readonly fromEmail?: string
+			readonly platform: 'Native' | 'Universal' | 'Web' | null
+			readonly isStandard?: boolean
+			readonly isTokenStorageSupported?: boolean
+		} & { readonly [x: string]: Schema.Json }
+	>
+	readonly ssoConnectors: ReadonlyArray<
+		{ readonly id: string; readonly connectorName: string; readonly logo: string; readonly darkLogo?: string } & {
+			readonly [x: string]: Schema.Json
+		}
+	>
+	readonly forgotPassword: { readonly phone: boolean; readonly email: boolean } & { readonly [x: string]: Schema.Json }
 	readonly isDevelopmentTenant: boolean
 	readonly googleOneTap?: {
 		readonly isEnabled?: boolean
@@ -1104,613 +1371,848 @@ export type GetExperienceResponse = {
 		readonly itpSupport?: boolean
 		readonly clientId: string
 		readonly connectorId: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly captchaConfig?: {
 		readonly type: 'RecaptchaEnterprise' | 'Turnstile'
 		readonly siteKey: string
 		readonly domain?: string
 		readonly mode?: 'invisible' | 'checkbox'
-	}
-	readonly customProfileFields: ReadonlyArray<{
-		readonly tenantId: string
-		readonly id: string
-		readonly name: string
-		readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-		readonly label: string
-		readonly description: string | null
-		readonly required: boolean
-		readonly config: {
-			readonly placeholder?: string
-			readonly minLength?: number
-			readonly maxLength?: number
-			readonly minValue?: number
-			readonly maxValue?: number
-			readonly format?: string
-			readonly customFormat?: string
-			readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-			readonly defaultValue?: string
-			readonly parts?: ReadonlyArray<{
-				readonly enabled: boolean
-				readonly name: string
-				readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-				readonly label?: string
-				readonly description?: string
-				readonly required: boolean
-				readonly config?: {
-					readonly placeholder?: string
-					readonly minLength?: number
-					readonly maxLength?: number
-					readonly minValue?: number
-					readonly maxValue?: number
-					readonly format?: string
-					readonly customFormat?: string
-					readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-					readonly defaultValue?: string
-				}
-			}>
-		}
-		readonly createdAt: number
-		readonly sieOrder: number
-	}>
-	readonly customProfileFieldCatalog?: ReadonlyArray<{
-		readonly tenantId: string
-		readonly id: string
-		readonly name: string
-		readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-		readonly label: string
-		readonly description: string | null
-		readonly required: boolean
-		readonly config: {
-			readonly placeholder?: string
-			readonly minLength?: number
-			readonly maxLength?: number
-			readonly minValue?: number
-			readonly maxValue?: number
-			readonly format?: string
-			readonly customFormat?: string
-			readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-			readonly defaultValue?: string
-			readonly parts?: ReadonlyArray<{
-				readonly enabled: boolean
-				readonly name: string
-				readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
-				readonly label?: string
-				readonly description?: string
-				readonly required: boolean
-				readonly config?: {
-					readonly placeholder?: string
-					readonly minLength?: number
-					readonly maxLength?: number
-					readonly minValue?: number
-					readonly maxValue?: number
-					readonly format?: string
-					readonly customFormat?: string
-					readonly options?: ReadonlyArray<{ readonly label?: string; readonly value: string }>
-					readonly defaultValue?: string
-				}
-			}>
-		}
-		readonly createdAt: number
-		readonly sieOrder: number
-	}>
-}
-export const GetExperienceResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	color: Schema.Struct({
-		primaryColor: Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-				expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-			})
+	} & { readonly [x: string]: Schema.Json }
+	readonly customProfileFields: ReadonlyArray<
+		{
+			readonly tenantId: string
+			readonly id: string
+			readonly name: string
+			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+			readonly label: string
+			readonly description: string | null
+			readonly required: boolean
+			readonly config: {
+				readonly placeholder?: string
+				readonly minLength?: number
+				readonly maxLength?: number
+				readonly minValue?: number
+				readonly maxValue?: number
+				readonly format?: string
+				readonly customFormat?: string
+				readonly options?: ReadonlyArray<
+					{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+				>
+				readonly defaultValue?: string
+				readonly parts?: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly name: string
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+			readonly createdAt: number
+			readonly sieOrder: number
+		} & { readonly [x: string]: Schema.Json }
+	>
+	readonly customProfileFieldCatalog?: ReadonlyArray<
+		{
+			readonly tenantId: string
+			readonly id: string
+			readonly name: string
+			readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+			readonly label: string
+			readonly description: string | null
+			readonly required: boolean
+			readonly config: {
+				readonly placeholder?: string
+				readonly minLength?: number
+				readonly maxLength?: number
+				readonly minValue?: number
+				readonly maxValue?: number
+				readonly format?: string
+				readonly customFormat?: string
+				readonly options?: ReadonlyArray<
+					{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+				>
+				readonly defaultValue?: string
+				readonly parts?: ReadonlyArray<
+					{
+						readonly enabled: boolean
+						readonly name: string
+						readonly type: 'Text' | 'Number' | 'Date' | 'Checkbox' | 'Select' | 'Url' | 'Regex' | 'Address' | 'Fullname'
+						readonly label?: string
+						readonly description?: string
+						readonly required: boolean
+						readonly config?: {
+							readonly placeholder?: string
+							readonly minLength?: number
+							readonly maxLength?: number
+							readonly minValue?: number
+							readonly maxValue?: number
+							readonly format?: string
+							readonly customFormat?: string
+							readonly options?: ReadonlyArray<
+								{ readonly label?: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+							>
+							readonly defaultValue?: string
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
+				>
+			} & { readonly [x: string]: Schema.Json }
+			readonly createdAt: number
+			readonly sieOrder: number
+		} & { readonly [x: string]: Schema.Json }
+	>
+} & { readonly [x: string]: Schema.Json }
+export const GetExperienceResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		isDarkModeEnabled: Schema.Boolean,
-		darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-				expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-			})
-		),
-	}),
-	branding: Schema.Struct({
-		logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-	}),
-	hideLogtoBranding: Schema.Boolean,
-	languageInfo: Schema.Struct({
-		autoDetect: Schema.Boolean,
-		fallbackLanguage: Schema.Literals([
-			'af-ZA',
-			'am-ET',
-			'ar',
-			'ar-AR',
-			'as-IN',
-			'az-AZ',
-			'be-BY',
-			'bg-BG',
-			'bn-IN',
-			'br-FR',
-			'bs-BA',
-			'ca-ES',
-			'cb-IQ',
-			'co-FR',
-			'cs',
-			'cs-CZ',
-			'cx-PH',
-			'cy-GB',
-			'da-DK',
-			'de',
-			'de-DE',
-			'el-GR',
-			'en',
-			'en-GB',
-			'en-US',
-			'eo-EO',
-			'es',
-			'es-ES',
-			'es-419',
-			'es-MX',
-			'et-EE',
-			'eu-ES',
-			'fa-IR',
-			'ff-NG',
-			'fi',
-			'fi-FI',
-			'fo-FO',
-			'fr',
-			'fr-CA',
-			'fr-FR',
-			'fy-NL',
-			'ga-IE',
-			'gl-ES',
-			'gn-PY',
-			'gu-IN',
-			'ha-NG',
-			'he-IL',
-			'hi-IN',
-			'hr-HR',
-			'ht-HT',
-			'hu-HU',
-			'hy-AM',
-			'id-ID',
-			'ik-US',
-			'is-IS',
-			'it',
-			'it-IT',
-			'iu-CA',
-			'ja',
-			'ja-JP',
-			'ja-KS',
-			'jv-ID',
-			'ka-GE',
-			'kk-KZ',
-			'km-KH',
-			'kn-IN',
-			'ko',
-			'ko-KR',
-			'ku-TR',
-			'ky-KG',
-			'lo-LA',
-			'lt-LT',
-			'lv-LV',
-			'mg-MG',
-			'mk-MK',
-			'ml-IN',
-			'mn-MN',
-			'mr-IN',
-			'ms-MY',
-			'mt-MT',
-			'my-MM',
-			'nb-NO',
-			'ne-NP',
-			'nl',
-			'nl-BE',
-			'nl-NL',
-			'nn-NO',
-			'or-IN',
-			'pa-IN',
-			'pl-PL',
-			'ps-AF',
-			'pt',
-			'pt-BR',
-			'pt-PT',
-			'ro-RO',
-			'ru',
-			'ru-RU',
-			'rw-RW',
-			'sc-IT',
-			'si-LK',
-			'sk-SK',
-			'sl-SI',
-			'sn-ZW',
-			'sq-AL',
-			'sr-RS',
-			'sv',
-			'sv-SE',
-			'sw-KE',
-			'sy-SY',
-			'sz-PL',
-			'ta-IN',
-			'te-IN',
-			'tg-TJ',
-			'th',
-			'th-TH',
-			'tl-PH',
-			'tr',
-			'tr-TR',
-			'tt-RU',
-			'tz-MA',
-			'uk-UA',
-			'ur-PK',
-			'uz-UZ',
-			'vi-VN',
-			'zh',
-			'zh-CN',
-			'zh-HK',
-			'zh-MO',
-			'zh-TW',
-			'zz-TR',
-		]),
-	}),
-	termsOfUseUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	privacyPolicyUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	agreeToTermsPolicy: Schema.Literals(['Automatic', 'ManualRegistrationOnly', 'Manual']),
-	signIn: Schema.Struct({
-		methods: Schema.Array(
+		color: Schema.StructWithRest(
 			Schema.Struct({
-				identifier: Schema.Literals(['username', 'email', 'phone']),
-				password: Schema.Boolean,
-				verificationCode: Schema.Boolean,
-				isPasswordPrimary: Schema.Boolean,
-			})
-		),
-	}),
-	signUp: Schema.Struct({
-		identifiers: Schema.Array(Schema.Literals(['username', 'email', 'phone'])),
-		password: Schema.Boolean,
-		verify: Schema.Boolean,
-		secondaryIdentifiers: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					identifier: Schema.Union([Schema.Literals(['username', 'email', 'phone']), Schema.Literal('emailOrPhone')], {
-						mode: 'oneOf',
-					}),
-					verify: Schema.optionalKey(Schema.Boolean),
-				})
-			)
-		),
-	}),
-	socialSignIn: Schema.Struct({
-		automaticAccountLinking: Schema.optionalKey(Schema.Boolean),
-		skipRequiredIdentifiers: Schema.optionalKey(Schema.Boolean),
-	}),
-	socialSignInConnectorTargets: Schema.Array(Schema.String),
-	signInMode: Schema.Literals(['SignIn', 'Register', 'SignInAndRegister']),
-	customCss: Schema.Union([Schema.String, Schema.Null]),
-	customContent: Schema.Record(Schema.String, Schema.String),
-	customUiAssets: Schema.Union([
-		Schema.StructWithRest(
-			Schema.Struct({
-				id: Schema.String,
-				createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				primaryColor: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+					})
+				),
+				isDarkModeEnabled: Schema.Boolean,
+				darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+					})
+				),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		Schema.Null,
-	]),
-	customUiCsp: Schema.Struct({
-		scriptSrc: Schema.optionalKey(Schema.Array(Schema.String)),
-		connectSrc: Schema.optionalKey(Schema.Array(Schema.String)),
-	}),
-	passwordPolicy: Schema.Struct({
-		length: Schema.optionalKey(
+		branding: Schema.StructWithRest(
 			Schema.Struct({
-				min: Schema.Number.annotate({ default: 8 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				max: Schema.Number.annotate({ default: 256 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			})
+				logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		characterTypes: Schema.optionalKey(
+		hideLogtoBranding: Schema.Boolean,
+		languageInfo: Schema.StructWithRest(
 			Schema.Struct({
-				min: Schema.Number.annotate({ default: 1 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			})
+				autoDetect: Schema.Boolean,
+				fallbackLanguage: Schema.Literals([
+					'af-ZA',
+					'am-ET',
+					'ar',
+					'ar-AR',
+					'as-IN',
+					'az-AZ',
+					'be-BY',
+					'bg-BG',
+					'bn-IN',
+					'br-FR',
+					'bs-BA',
+					'ca-ES',
+					'cb-IQ',
+					'co-FR',
+					'cs',
+					'cs-CZ',
+					'cx-PH',
+					'cy-GB',
+					'da-DK',
+					'de',
+					'de-DE',
+					'el-GR',
+					'en',
+					'en-GB',
+					'en-US',
+					'eo-EO',
+					'es',
+					'es-ES',
+					'es-419',
+					'es-MX',
+					'et-EE',
+					'eu-ES',
+					'fa-IR',
+					'ff-NG',
+					'fi',
+					'fi-FI',
+					'fo-FO',
+					'fr',
+					'fr-CA',
+					'fr-FR',
+					'fy-NL',
+					'ga-IE',
+					'gl-ES',
+					'gn-PY',
+					'gu-IN',
+					'ha-NG',
+					'he-IL',
+					'hi-IN',
+					'hr-HR',
+					'ht-HT',
+					'hu-HU',
+					'hy-AM',
+					'id-ID',
+					'ik-US',
+					'is-IS',
+					'it',
+					'it-IT',
+					'iu-CA',
+					'ja',
+					'ja-JP',
+					'ja-KS',
+					'jv-ID',
+					'ka-GE',
+					'kk-KZ',
+					'km-KH',
+					'kn-IN',
+					'ko',
+					'ko-KR',
+					'ku-TR',
+					'ky-KG',
+					'lo-LA',
+					'lt-LT',
+					'lv-LV',
+					'mg-MG',
+					'mk-MK',
+					'ml-IN',
+					'mn-MN',
+					'mr-IN',
+					'ms-MY',
+					'mt-MT',
+					'my-MM',
+					'nb-NO',
+					'ne-NP',
+					'nl',
+					'nl-BE',
+					'nl-NL',
+					'nn-NO',
+					'or-IN',
+					'pa-IN',
+					'pl-PL',
+					'ps-AF',
+					'pt',
+					'pt-BR',
+					'pt-PT',
+					'ro-RO',
+					'ru',
+					'ru-RU',
+					'rw-RW',
+					'sc-IT',
+					'si-LK',
+					'sk-SK',
+					'sl-SI',
+					'sn-ZW',
+					'sq-AL',
+					'sr-RS',
+					'sv',
+					'sv-SE',
+					'sw-KE',
+					'sy-SY',
+					'sz-PL',
+					'ta-IN',
+					'te-IN',
+					'tg-TJ',
+					'th',
+					'th-TH',
+					'tl-PH',
+					'tr',
+					'tr-TR',
+					'tt-RU',
+					'tz-MA',
+					'uk-UA',
+					'ur-PK',
+					'uz-UZ',
+					'vi-VN',
+					'zh',
+					'zh-CN',
+					'zh-HK',
+					'zh-MO',
+					'zh-TW',
+					'zz-TR',
+				]),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		rejects: Schema.optionalKey(
-			Schema.Struct({
-				pwned: Schema.Boolean.annotate({ default: true }),
-				repetitionAndSequence: Schema.Boolean.annotate({ default: true }),
-				userInfo: Schema.Boolean.annotate({ default: true }),
-				words: Schema.Array(Schema.String).annotate({ default: [] }),
-			})
-		),
-	}),
-	mfa: Schema.Struct({
-		factors: Schema.Array(Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])),
-		policy: Schema.Literals([
-			'UserControlled',
-			'Mandatory',
-			'PromptOnlyAtSignIn',
-			'PromptAtSignInAndSignUp',
-			'NoPrompt',
-			'PromptAtSignInAndSignUpMandatory',
-			'PromptOnlyAtSignInMandatory',
+		termsOfUseUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
 		]),
-		organizationRequiredMfaPolicy: Schema.optionalKey(Schema.Literals(['NoPrompt', 'Mandatory'])),
-	}),
-	adaptiveMfa: Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }),
-	singleSignOnEnabled: Schema.Boolean,
-	supportEmail: Schema.Union([Schema.String, Schema.Null]),
-	supportWebsiteUrl: Schema.Union([Schema.String, Schema.Null]),
-	unknownSessionRedirectUrl: Schema.Union([Schema.String, Schema.Null]),
-	captchaPolicy: Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }),
-	sentinelPolicy: Schema.Struct({
-		maxAttempts: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		lockoutDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	verificationCodePolicy: Schema.Struct({
-		expirationDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		maxRetryAttempts: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	passkeySignIn: Schema.Struct({
-		enabled: Schema.optionalKey(Schema.Boolean),
-		showPasskeyButton: Schema.optionalKey(Schema.Boolean),
-		allowAutofill: Schema.optionalKey(Schema.Boolean),
-	}),
-	signUpProfileFields: Schema.Union([Schema.Array(Schema.Struct({ name: Schema.String })), Schema.Null]),
-	passwordExpiration: Schema.Union(
-		[
-			Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean.annotate({ format: 'false' })) }),
+		privacyPolicyUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		agreeToTermsPolicy: Schema.Literals(['Automatic', 'ManualRegistrationOnly', 'Manual']),
+		signIn: Schema.StructWithRest(
 			Schema.Struct({
-				enabled: Schema.Boolean.annotate({ format: 'true' }),
-				validPeriodDays: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				enabledAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			}),
-		],
-		{ mode: 'oneOf' }
-	),
-	usernamePolicy: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Validator function',
-	}),
-	trustedDevice: Schema.optionalKey(
-		Schema.Struct({
-			enabled: Schema.optionalKey(Schema.Boolean),
-			durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		})
-	),
-	socialConnectors: Schema.Array(
-		Schema.Struct({
-			id: Schema.String,
-			target: Schema.String,
-			name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-				description: 'Validator function',
-			}),
-			logo: Schema.String,
-			logoDark: Schema.Union([Schema.String, Schema.Null]),
-			fromEmail: Schema.optionalKey(Schema.String),
-			platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
-			isStandard: Schema.optionalKey(Schema.Boolean),
-			isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
-		})
-	),
-	ssoConnectors: Schema.Array(
-		Schema.Struct({ id: Schema.String, connectorName: Schema.String, logo: Schema.String, darkLogo: Schema.optionalKey(Schema.String) })
-	),
-	forgotPassword: Schema.Struct({ phone: Schema.Boolean, email: Schema.Boolean }),
-	isDevelopmentTenant: Schema.Boolean,
-	googleOneTap: Schema.optionalKey(
-		Schema.Struct({
-			isEnabled: Schema.optionalKey(Schema.Boolean),
-			autoSelect: Schema.optionalKey(Schema.Boolean),
-			closeOnTapOutside: Schema.optionalKey(Schema.Boolean),
-			itpSupport: Schema.optionalKey(Schema.Boolean),
-			clientId: Schema.String,
-			connectorId: Schema.String,
-		})
-	),
-	captchaConfig: Schema.optionalKey(
-		Schema.Struct({
-			type: Schema.Literals(['RecaptchaEnterprise', 'Turnstile']),
-			siteKey: Schema.String,
-			domain: Schema.optionalKey(Schema.String),
-			mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
-		})
-	),
-	customProfileFields: Schema.Array(
-		Schema.Struct({
-			tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-			),
-			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-			),
-			type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-			label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-			description: Schema.Union([
-				Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-				Schema.Null,
-			]),
-			required: Schema.Boolean,
-			config: Schema.Struct({
-				placeholder: Schema.optionalKey(
-					Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-				),
-				minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				format: Schema.optionalKey(
-					Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-				),
-				customFormat: Schema.optionalKey(
-					Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-				),
-				options: Schema.optionalKey(
-					Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-				),
-				defaultValue: Schema.optionalKey(Schema.String),
-				parts: Schema.optionalKey(
-					Schema.Array(
+				methods: Schema.Array(
+					Schema.StructWithRest(
 						Schema.Struct({
-							enabled: Schema.Boolean,
-							name: Schema.String,
-							type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-							label: Schema.optionalKey(
-								Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-							),
-							description: Schema.optionalKey(Schema.String),
-							required: Schema.Boolean,
-							config: Schema.optionalKey(
-								Schema.Struct({
-									placeholder: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-										)
-									),
-									minLength: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									maxLength: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									minValue: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									maxValue: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									format: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										)
-									),
-									customFormat: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										)
-									),
-									options: Schema.optionalKey(
-										Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-									),
-									defaultValue: Schema.optionalKey(Schema.String),
-								})
-							),
-						})
+							identifier: Schema.Literals(['username', 'email', 'phone']),
+							password: Schema.Boolean,
+							verificationCode: Schema.Boolean,
+							isPasswordPrimary: Schema.Boolean,
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 					)
 				),
 			}),
-			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		})
-	),
-	customProfileFieldCatalog: Schema.optionalKey(
-		Schema.Array(
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		signUp: Schema.StructWithRest(
 			Schema.Struct({
-				tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-				id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-				),
-				name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-				),
-				type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
-				label: Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-				description: Schema.Union([
-					Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-					Schema.Null,
-				]),
-				required: Schema.Boolean,
-				config: Schema.Struct({
-					placeholder: Schema.optionalKey(
-						Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-					),
-					minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					format: Schema.optionalKey(
-						Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-					),
-					customFormat: Schema.optionalKey(
-						Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-					),
-					options: Schema.optionalKey(
-						Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-					),
-					defaultValue: Schema.optionalKey(Schema.String),
-					parts: Schema.optionalKey(
-						Schema.Array(
+				identifiers: Schema.Array(Schema.Literals(['username', 'email', 'phone'])),
+				password: Schema.Boolean,
+				verify: Schema.Boolean,
+				secondaryIdentifiers: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
 							Schema.Struct({
-								enabled: Schema.Boolean,
-								name: Schema.String,
-								type: Schema.Literals([
-									'Text',
-									'Number',
-									'Date',
-									'Checkbox',
-									'Select',
-									'Url',
-									'Regex',
-									'Address',
-									'Fullname',
-								]),
-								label: Schema.optionalKey(
-									Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+								identifier: Schema.Union(
+									[Schema.Literals(['username', 'email', 'phone']), Schema.Literal('emailOrPhone')],
+									{ mode: 'oneOf' }
 								),
-								description: Schema.optionalKey(Schema.String),
-								required: Schema.Boolean,
-								config: Schema.optionalKey(
-									Schema.Struct({
-										placeholder: Schema.optionalKey(
-											Schema.String.check(
-												Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-											)
-										),
-										minLength: Schema.optionalKey(
-											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-										),
-										maxLength: Schema.optionalKey(
-											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-										),
-										minValue: Schema.optionalKey(
-											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-										),
-										maxValue: Schema.optionalKey(
-											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-										),
-										format: Schema.optionalKey(
-											Schema.String.check(
-												Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-											)
-										),
-										customFormat: Schema.optionalKey(
-											Schema.String.check(
-												Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-											)
-										),
-										options: Schema.optionalKey(
-											Schema.Array(Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }))
-										),
-										defaultValue: Schema.optionalKey(Schema.String),
-									})
-								),
-							})
+								verify: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						)
-					),
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		socialSignIn: Schema.StructWithRest(
+			Schema.Struct({
+				automaticAccountLinking: Schema.optionalKey(Schema.Boolean),
+				skipRequiredIdentifiers: Schema.optionalKey(Schema.Boolean),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		socialSignInConnectorTargets: Schema.Array(Schema.String),
+		signInMode: Schema.Literals(['SignIn', 'Register', 'SignInAndRegister']),
+		customCss: Schema.Union([Schema.String, Schema.Null]),
+		customContent: Schema.Record(Schema.String, Schema.String),
+		customUiAssets: Schema.Union([
+			Schema.StructWithRest(
+				Schema.Struct({
+					id: Schema.String,
+					createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 				}),
-				createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			})
-		)
-	),
-})
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.Null,
+		]),
+		customUiCsp: Schema.StructWithRest(
+			Schema.Struct({
+				scriptSrc: Schema.optionalKey(Schema.Array(Schema.String)),
+				connectSrc: Schema.optionalKey(Schema.Array(Schema.String)),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		passwordPolicy: Schema.StructWithRest(
+			Schema.Struct({
+				length: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							min: Schema.Number.annotate({ default: 8 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+							max: Schema.Number.annotate({ default: 256 }).check(
+								Schema.isFinite().annotate({ expected: 'a finite number' })
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				characterTypes: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							min: Schema.Number.annotate({ default: 1 }).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				rejects: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							pwned: Schema.Boolean.annotate({ default: true }),
+							repetitionAndSequence: Schema.Boolean.annotate({ default: true }),
+							userInfo: Schema.Boolean.annotate({ default: true }),
+							words: Schema.Array(Schema.String).annotate({ default: [] }),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		mfa: Schema.StructWithRest(
+			Schema.Struct({
+				factors: Schema.Array(
+					Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])
+				),
+				policy: Schema.Literals([
+					'UserControlled',
+					'Mandatory',
+					'PromptOnlyAtSignIn',
+					'PromptAtSignInAndSignUp',
+					'NoPrompt',
+					'PromptAtSignInAndSignUpMandatory',
+					'PromptOnlyAtSignInMandatory',
+				]),
+				organizationRequiredMfaPolicy: Schema.optionalKey(Schema.Literals(['NoPrompt', 'Mandatory'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		adaptiveMfa: Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		singleSignOnEnabled: Schema.Boolean,
+		supportEmail: Schema.Union([Schema.String, Schema.Null]),
+		supportWebsiteUrl: Schema.Union([Schema.String, Schema.Null]),
+		unknownSessionRedirectUrl: Schema.Union([Schema.String, Schema.Null]),
+		captchaPolicy: Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		sentinelPolicy: Schema.StructWithRest(
+			Schema.Struct({
+				maxAttempts: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				lockoutDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		verificationCodePolicy: Schema.StructWithRest(
+			Schema.Struct({
+				expirationDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				maxRetryAttempts: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		passkeySignIn: Schema.StructWithRest(
+			Schema.Struct({
+				enabled: Schema.optionalKey(Schema.Boolean),
+				showPasskeyButton: Schema.optionalKey(Schema.Boolean),
+				allowAutofill: Schema.optionalKey(Schema.Boolean),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		signUpProfileFields: Schema.Union([
+			Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ name: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
+			),
+			Schema.Null,
+		]),
+		passwordExpiration: Schema.Union(
+			[
+				Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean.annotate({ format: 'false' })) }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				]),
+				Schema.StructWithRest(
+					Schema.Struct({
+						enabled: Schema.Boolean.annotate({ format: 'true' }),
+						validPeriodDays: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						enabledAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			],
+			{ mode: 'oneOf' }
+		),
+		usernamePolicy: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Validator function',
+		}),
+		trustedDevice: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					enabled: Schema.optionalKey(Schema.Boolean),
+					durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		socialConnectors: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					id: Schema.String,
+					target: Schema.String,
+					name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+						description: 'Validator function',
+					}),
+					logo: Schema.String,
+					logoDark: Schema.Union([Schema.String, Schema.Null]),
+					fromEmail: Schema.optionalKey(Schema.String),
+					platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
+					isStandard: Schema.optionalKey(Schema.Boolean),
+					isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		ssoConnectors: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					id: Schema.String,
+					connectorName: Schema.String,
+					logo: Schema.String,
+					darkLogo: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		forgotPassword: Schema.StructWithRest(Schema.Struct({ phone: Schema.Boolean, email: Schema.Boolean }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		isDevelopmentTenant: Schema.Boolean,
+		googleOneTap: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					isEnabled: Schema.optionalKey(Schema.Boolean),
+					autoSelect: Schema.optionalKey(Schema.Boolean),
+					closeOnTapOutside: Schema.optionalKey(Schema.Boolean),
+					itpSupport: Schema.optionalKey(Schema.Boolean),
+					clientId: Schema.String,
+					connectorId: Schema.String,
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		captchaConfig: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					type: Schema.Literals(['RecaptchaEnterprise', 'Turnstile']),
+					siteKey: Schema.String,
+					domain: Schema.optionalKey(Schema.String),
+					mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customProfileFields: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					tenantId: Schema.String.check(
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+					),
+					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+					),
+					name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+						Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+					),
+					type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+					label: Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+					description: Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+						Schema.Null,
+					]),
+					required: Schema.Boolean,
+					config: Schema.StructWithRest(
+						Schema.Struct({
+							placeholder: Schema.optionalKey(
+								Schema.String.check(
+									Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+								)
+							),
+							minLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							maxLength: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							minValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							maxValue: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+							format: Schema.optionalKey(
+								Schema.String.check(
+									Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+								)
+							),
+							customFormat: Schema.optionalKey(
+								Schema.String.check(
+									Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+								)
+							),
+							options: Schema.optionalKey(
+								Schema.Array(
+									Schema.StructWithRest(
+										Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								)
+							),
+							defaultValue: Schema.optionalKey(Schema.String),
+							parts: Schema.optionalKey(
+								Schema.Array(
+									Schema.StructWithRest(
+										Schema.Struct({
+											enabled: Schema.Boolean,
+											name: Schema.String,
+											type: Schema.Literals([
+												'Text',
+												'Number',
+												'Date',
+												'Checkbox',
+												'Select',
+												'Url',
+												'Regex',
+												'Address',
+												'Fullname',
+											]),
+											label: Schema.optionalKey(
+												Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												)
+											),
+											description: Schema.optionalKey(Schema.String),
+											required: Schema.Boolean,
+											config: Schema.optionalKey(
+												Schema.StructWithRest(
+													Schema.Struct({
+														placeholder: Schema.optionalKey(
+															Schema.String.check(
+																Schema.isMaxCodePoints(256).annotate({
+																	expected: 'a string with at most 256 code points',
+																})
+															)
+														),
+														minLength: Schema.optionalKey(
+															Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+														),
+														maxLength: Schema.optionalKey(
+															Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+														),
+														minValue: Schema.optionalKey(
+															Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+														),
+														maxValue: Schema.optionalKey(
+															Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+														),
+														format: Schema.optionalKey(
+															Schema.String.check(
+																Schema.isMaxCodePoints(128).annotate({
+																	expected: 'a string with at most 128 code points',
+																})
+															)
+														),
+														customFormat: Schema.optionalKey(
+															Schema.String.check(
+																Schema.isMaxCodePoints(128).annotate({
+																	expected: 'a string with at most 128 code points',
+																})
+															)
+														),
+														options: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		label: Schema.optionalKey(Schema.String),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+														defaultValue: Schema.optionalKey(Schema.String),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												)
+											),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								)
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+					createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customProfileFieldCatalog: Schema.optionalKey(
+			Schema.Array(
+				Schema.StructWithRest(
+					Schema.Struct({
+						tenantId: Schema.String.check(
+							Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+						),
+						id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+							Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+						),
+						name: Schema.String.check(
+							Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+						).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+						type: Schema.Literals(['Text', 'Number', 'Date', 'Checkbox', 'Select', 'Url', 'Regex', 'Address', 'Fullname']),
+						label: Schema.String.check(
+							Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+						),
+						description: Schema.Union([
+							Schema.String.check(
+								Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+							),
+							Schema.Null,
+						]),
+						required: Schema.Boolean,
+						config: Schema.StructWithRest(
+							Schema.Struct({
+								placeholder: Schema.optionalKey(
+									Schema.String.check(
+										Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+									)
+								),
+								minLength: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								maxLength: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								minValue: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								maxValue: Schema.optionalKey(
+									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								),
+								format: Schema.optionalKey(
+									Schema.String.check(
+										Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+									)
+								),
+								customFormat: Schema.optionalKey(
+									Schema.String.check(
+										Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+									)
+								),
+								options: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({ label: Schema.optionalKey(Schema.String), value: Schema.String }),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								defaultValue: Schema.optionalKey(Schema.String),
+								parts: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												enabled: Schema.Boolean,
+												name: Schema.String,
+												type: Schema.Literals([
+													'Text',
+													'Number',
+													'Date',
+													'Checkbox',
+													'Select',
+													'Url',
+													'Regex',
+													'Address',
+													'Fullname',
+												]),
+												label: Schema.optionalKey(
+													Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													)
+												),
+												description: Schema.optionalKey(Schema.String),
+												required: Schema.Boolean,
+												config: Schema.optionalKey(
+													Schema.StructWithRest(
+														Schema.Struct({
+															placeholder: Schema.optionalKey(
+																Schema.String.check(
+																	Schema.isMaxCodePoints(256).annotate({
+																		expected: 'a string with at most 256 code points',
+																	})
+																)
+															),
+															minLength: Schema.optionalKey(
+																Schema.Number.check(
+																	Schema.isFinite().annotate({ expected: 'a finite number' })
+																)
+															),
+															maxLength: Schema.optionalKey(
+																Schema.Number.check(
+																	Schema.isFinite().annotate({ expected: 'a finite number' })
+																)
+															),
+															minValue: Schema.optionalKey(
+																Schema.Number.check(
+																	Schema.isFinite().annotate({ expected: 'a finite number' })
+																)
+															),
+															maxValue: Schema.optionalKey(
+																Schema.Number.check(
+																	Schema.isFinite().annotate({ expected: 'a finite number' })
+																)
+															),
+															format: Schema.optionalKey(
+																Schema.String.check(
+																	Schema.isMaxCodePoints(128).annotate({
+																		expected: 'a string with at most 128 code points',
+																	})
+																)
+															),
+															customFormat: Schema.optionalKey(
+																Schema.String.check(
+																	Schema.isMaxCodePoints(128).annotate({
+																		expected: 'a string with at most 128 code points',
+																	})
+																)
+															),
+															options: Schema.optionalKey(
+																Schema.Array(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			label: Schema.optionalKey(Schema.String),
+																			value: Schema.String,
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																)
+															),
+															defaultValue: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						sieOrder: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				)
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetAccountCenterResponse = {
 	readonly tenantId: string
@@ -1729,37 +2231,50 @@ export type GetAccountCenterResponse = {
 		readonly mfa?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly passkey?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly session?: 'Off' | 'ReadOnly' | 'Edit'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly webauthnRelatedOrigins: ReadonlyArray<string>
 	readonly deleteAccountUrl: string | null
 	readonly customCss: string | null
-	readonly profileFields: ReadonlyArray<{ readonly name: string }> | null
-}
-export const GetAccountCenterResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	enabled: Schema.Boolean,
-	fields: Schema.Struct({
-		name: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		avatar: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		profile: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		email: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		phone: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		password: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		username: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		social: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		customData: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+	readonly profileFields: ReadonlyArray<{ readonly name: string } & { readonly [x: string]: Schema.Json }> | null
+} & { readonly [x: string]: Schema.Json }
+export const GetAccountCenterResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		enabled: Schema.Boolean,
+		fields: Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				avatar: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				profile: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				email: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				phone: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				password: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				username: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				social: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				customData: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		webauthnRelatedOrigins: Schema.Array(Schema.String),
+		deleteAccountUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		customCss: Schema.Union([Schema.String, Schema.Null]),
+		profileFields: Schema.Union([
+			Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ name: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
+			),
+			Schema.Null,
+		]),
 	}),
-	webauthnRelatedOrigins: Schema.Array(Schema.String),
-	deleteAccountUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	customCss: Schema.Union([Schema.String, Schema.Null]),
-	profileFields: Schema.Union([Schema.Array(Schema.Struct({ name: Schema.String })), Schema.Null]),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

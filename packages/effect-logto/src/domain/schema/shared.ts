@@ -10,13 +10,18 @@ export const ApplicationLegacySecret = Schema.String.annotate({
 	identifier: 'ApplicationLegacySecret',
 })
 
-export type CreateSamlAuthnRequestJson = { readonly SAMLRequest: string; readonly RelayState?: string | null }
-export const CreateSamlAuthnRequestJson = Schema.Struct({
-	SAMLRequest: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-	RelayState: Schema.optionalKey(
-		Schema.Union([
-			Schema.String.check(Schema.isMaxLength(512).annotate({ expected: 'a value with a length of at most 512' })),
-			Schema.Null,
-		])
-	),
-})
+export type CreateSamlAuthnRequestJson = { readonly SAMLRequest: string; readonly RelayState?: string | null } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateSamlAuthnRequestJson = Schema.StructWithRest(
+	Schema.Struct({
+		SAMLRequest: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+		RelayState: Schema.optionalKey(
+			Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(512).annotate({ expected: 'a string with at most 512 code points' })),
+				Schema.Null,
+			])
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

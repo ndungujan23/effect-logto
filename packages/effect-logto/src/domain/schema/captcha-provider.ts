@@ -7,105 +7,144 @@ export type GetResponse = {
 	readonly tenantId: string
 	readonly id: string
 	readonly config:
-		| { readonly type: string; readonly siteKey: string; readonly secretKey: string }
-		| {
+		| ({ readonly type: string; readonly siteKey: string; readonly secretKey: string } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: string
 				readonly siteKey: string
 				readonly secretKey: string
 				readonly projectId: string
 				readonly domain?: string
 				readonly mode?: 'invisible' | 'checkbox'
-		  }
+		  } & { readonly [x: string]: Schema.Json })
 	readonly createdAt: number
 	readonly updatedAt: number
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	config: Schema.Union(
-		[
-			Schema.Struct({ type: Schema.String.annotate({ format: '"Turnstile"' }), siteKey: Schema.String, secretKey: Schema.String }),
-			Schema.Struct({
-				type: Schema.String.annotate({ format: '"RecaptchaEnterprise"' }),
-				siteKey: Schema.String,
-				secretKey: Schema.String,
-				projectId: Schema.String,
-				domain: Schema.optionalKey(Schema.String),
-				mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
-			}),
-		],
-		{ mode: 'oneOf' }
-	),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		config: Schema.Union(
+			[
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"Turnstile"' }),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"RecaptchaEnterprise"' }),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
+						projectId: Schema.String,
+						domain: Schema.optionalKey(Schema.String),
+						mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			],
+			{ mode: 'oneOf' }
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdatePayload = {
 	readonly config:
-		| { readonly type: string; readonly siteKey: string; readonly secretKey: string }
-		| {
+		| ({ readonly type: string; readonly siteKey: string; readonly secretKey: string } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: string
 				readonly siteKey: string
 				readonly secretKey: string
 				readonly projectId: string
 				readonly domain?: string
 				readonly mode?: 'invisible' | 'checkbox'
-		  }
-}
-export const UpdatePayload = Schema.Struct({
-	config: Schema.Union(
-		[
-			Schema.Struct({ type: Schema.String.annotate({ format: '"Turnstile"' }), siteKey: Schema.String, secretKey: Schema.String }),
-			Schema.Struct({
-				type: Schema.String.annotate({ format: '"RecaptchaEnterprise"' }),
-				siteKey: Schema.String,
-				secretKey: Schema.String,
-				projectId: Schema.String,
-				domain: Schema.optionalKey(Schema.String),
-				mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
-			}),
-		],
-		{ mode: 'oneOf' }
-	).annotate({ description: 'The captcha provider config.' }),
-})
+		  } & { readonly [x: string]: Schema.Json })
+} & { readonly [x: string]: Schema.Json }
+export const UpdatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		config: Schema.Union(
+			[
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"Turnstile"' }),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"RecaptchaEnterprise"' }),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
+						projectId: Schema.String,
+						domain: Schema.optionalKey(Schema.String),
+						mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			],
+			{ mode: 'oneOf' }
+		).annotate({ description: 'The captcha provider config.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateResponse = {
 	readonly tenantId: string
 	readonly id: string
 	readonly config:
-		| { readonly type: string; readonly siteKey: string; readonly secretKey: string }
-		| {
+		| ({ readonly type: string; readonly siteKey: string; readonly secretKey: string } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: string
 				readonly siteKey: string
 				readonly secretKey: string
 				readonly projectId: string
 				readonly domain?: string
 				readonly mode?: 'invisible' | 'checkbox'
-		  }
+		  } & { readonly [x: string]: Schema.Json })
 	readonly createdAt: number
 	readonly updatedAt: number
-}
-export const UpdateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	config: Schema.Union(
-		[
-			Schema.Struct({ type: Schema.String.annotate({ format: '"Turnstile"' }), siteKey: Schema.String, secretKey: Schema.String }),
-			Schema.Struct({
-				type: Schema.String.annotate({ format: '"RecaptchaEnterprise"' }),
-				siteKey: Schema.String,
-				secretKey: Schema.String,
-				projectId: Schema.String,
-				domain: Schema.optionalKey(Schema.String),
-				mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
-			}),
-		],
-		{ mode: 'oneOf' }
-	),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpdateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		config: Schema.Union(
+			[
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"Turnstile"' }),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"RecaptchaEnterprise"' }),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
+						projectId: Schema.String,
+						domain: Schema.optionalKey(Schema.String),
+						mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			],
+			{ mode: 'oneOf' }
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

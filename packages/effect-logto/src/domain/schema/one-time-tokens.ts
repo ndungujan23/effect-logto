@@ -12,7 +12,7 @@ export type ListParams = {
 export const ListParams = Schema.Struct({
 	email: Schema.optionalKey(
 		Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^\S+@\S+\.\S+$/).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+			Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
 		)
 	),
 	status: Schema.optionalKey(Schema.Literals(['active', 'consumed', 'revoked', 'expired'])),
@@ -28,39 +28,47 @@ export const ListParams = Schema.Struct({
 	),
 })
 
-export type ListResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly email: string
-	readonly token: string
-	readonly context: {
-		readonly jitOrganizationIds?: ReadonlyArray<string>
-		readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-	}
-	readonly status: 'active' | 'consumed' | 'revoked' | 'expired'
-	readonly createdAt: number
-	readonly expiresAt: number
-}>
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly email: string
+		readonly token: string
+		readonly context: {
+			readonly jitOrganizationIds?: ReadonlyArray<string>
+			readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
+		} & { readonly [x: string]: Schema.Json }
+		readonly status: 'active' | 'consumed' | 'revoked' | 'expired'
+		readonly createdAt: number
+		readonly expiresAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		),
-		context: Schema.Struct({
-			jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-			interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			),
+			context: Schema.StructWithRest(
+				Schema.Struct({
+					jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+					interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 		}),
-		status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type AddPayload = {
@@ -68,28 +76,34 @@ export type AddPayload = {
 	readonly context?: {
 		readonly jitOrganizationIds?: ReadonlyArray<string>
 		readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly expiresIn?: number
-}
-export const AddPayload = Schema.Struct({
-	email: Schema.String.annotate({ description: 'The email address to associate with the one-time token.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-	context: Schema.optionalKey(
-		Schema.Struct({
-			jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-			interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
-		}).annotate({
-			description:
-				'Additional context to store with the one-time token. Set `interactionEvent` to scope the token to a specific flow, such as `ForgotPassword` for reset-password magic links.',
-		})
-	),
-	expiresIn: Schema.optionalKey(
-		Schema.Number.annotate({
-			description: 'The expiration time in seconds. If not provided, defaults to 10 mins (600 seconds).',
-		}).check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const AddPayload = Schema.StructWithRest(
+	Schema.Struct({
+		email: Schema.String.annotate({ description: 'The email address to associate with the one-time token.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+		context: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+					interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			).annotate({
+				description:
+					'Additional context to store with the one-time token. Set `interactionEvent` to scope the token to a specific flow, such as `ForgotPassword` for reset-password magic links.',
+			})
+		),
+		expiresIn: Schema.optionalKey(
+			Schema.Number.annotate({
+				description: 'The expiration time in seconds. If not provided, defaults to 10 mins (600 seconds).',
+			}).check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type AddResponse = {
 	readonly tenantId: string
@@ -99,30 +113,36 @@ export type AddResponse = {
 	readonly context: {
 		readonly jitOrganizationIds?: ReadonlyArray<string>
 		readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly status: 'active' | 'consumed' | 'revoked' | 'expired'
 	readonly createdAt: number
 	readonly expiresAt: number
-}
-export const AddResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	context: Schema.Struct({
-		jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-		interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+} & { readonly [x: string]: Schema.Json }
+export const AddResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		context: Schema.StructWithRest(
+			Schema.Struct({
+				jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+				interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetResponse = {
 	readonly tenantId: string
@@ -132,40 +152,49 @@ export type GetResponse = {
 	readonly context: {
 		readonly jitOrganizationIds?: ReadonlyArray<string>
 		readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly status: 'active' | 'consumed' | 'revoked' | 'expired'
 	readonly createdAt: number
 	readonly expiresAt: number
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	context: Schema.Struct({
-		jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-		interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		context: Schema.StructWithRest(
+			Schema.Struct({
+				jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+				interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type VerifyPayload = { readonly token: string; readonly email: string }
-export const VerifyPayload = Schema.Struct({
-	token: Schema.String.annotate({ description: 'The one-time token to verify.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-	email: Schema.String.annotate({ description: 'The email address associated with the one-time token.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-})
+export type VerifyPayload = { readonly token: string; readonly email: string } & { readonly [x: string]: Schema.Json }
+export const VerifyPayload = Schema.StructWithRest(
+	Schema.Struct({
+		token: Schema.String.annotate({ description: 'The one-time token to verify.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+		email: Schema.String.annotate({ description: 'The email address associated with the one-time token.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifyResponse = {
 	readonly tenantId: string
@@ -175,37 +204,48 @@ export type VerifyResponse = {
 	readonly context: {
 		readonly jitOrganizationIds?: ReadonlyArray<string>
 		readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly status: 'active' | 'consumed' | 'revoked' | 'expired'
 	readonly createdAt: number
 	readonly expiresAt: number
-}
-export const VerifyResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	context: Schema.Struct({
-		jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-		interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+} & { readonly [x: string]: Schema.Json }
+export const VerifyResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		context: Schema.StructWithRest(
+			Schema.Struct({
+				jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+				interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type ReplaceStatusPayload = { readonly status: 'active' | 'consumed' | 'revoked' | 'expired' }
-export const ReplaceStatusPayload = Schema.Struct({
-	status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']).annotate({
-		description: 'The new status of the one-time token.',
+export type ReplaceStatusPayload = { readonly status: 'active' | 'consumed' | 'revoked' | 'expired' } & {
+	readonly [x: string]: Schema.Json
+}
+export const ReplaceStatusPayload = Schema.StructWithRest(
+	Schema.Struct({
+		status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']).annotate({
+			description: 'The new status of the one-time token.',
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ReplaceStatusResponse = {
 	readonly tenantId: string
@@ -215,27 +255,33 @@ export type ReplaceStatusResponse = {
 	readonly context: {
 		readonly jitOrganizationIds?: ReadonlyArray<string>
 		readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly status: 'active' | 'consumed' | 'revoked' | 'expired'
 	readonly createdAt: number
 	readonly expiresAt: number
-}
-export const ReplaceStatusResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	context: Schema.Struct({
-		jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-		interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+} & { readonly [x: string]: Schema.Json }
+export const ReplaceStatusResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		email: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		token: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		context: Schema.StructWithRest(
+			Schema.Struct({
+				jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+				interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	status: Schema.Literals(['active', 'consumed', 'revoked', 'expired']),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

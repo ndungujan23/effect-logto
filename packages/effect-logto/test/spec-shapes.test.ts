@@ -23,7 +23,7 @@ describe('nullable enums (OpenAPI 3.0 `nullable: true` beside `enum`)', () => {
 	test.each([
 		['connector platform', element(Connectors.ListResponse).fields.platform, 'Web'],
 		['hook event (legacy single-event field)', element(Hooks.ListResponse).fields.event, 'User.Created'],
-		['user passwordAlgorithm', Users.GetResponse.fields.passwordAlgorithm, 'Argon2id'],
+		['user passwordAlgorithm', Users.GetResponse.schema.fields.passwordAlgorithm, 'Argon2id'],
 	])('%s accepts null as well as its literals', (_, schema, literal) => {
 		// Logto sends null here: `platform` for non-social connectors, `event` for hooks using `events`,
 		// `passwordAlgorithm` for users without a password.

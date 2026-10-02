@@ -3,5 +3,10 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type DeletePayload = { readonly targetType: 'User' | 'App'; readonly targets: ReadonlyArray<string> }
-export const DeletePayload = Schema.Struct({ targetType: Schema.Literals(['User', 'App']), targets: Schema.Array(Schema.String) })
+export type DeletePayload = { readonly targetType: 'User' | 'App'; readonly targets: ReadonlyArray<string> } & {
+	readonly [x: string]: Schema.Json
+}
+export const DeletePayload = Schema.StructWithRest(
+	Schema.Struct({ targetType: Schema.Literals(['User', 'App']), targets: Schema.Array(Schema.String) }),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

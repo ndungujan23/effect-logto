@@ -13,9 +13,11 @@ export const makeSsoConnectorProviders = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): SsoConnectorProvidersOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/sso-connector-providers`).pipe(
+		HttpClientRequest.get('/api/sso-connector-providers').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 })

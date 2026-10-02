@@ -13,9 +13,11 @@ export const makeSentinelActivities = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): SentinelActivitiesOperations => ({
 	delete: options =>
-		HttpClientRequest.post(`/api/sentinel-activities/delete`).pipe(
+		HttpClientRequest.post('/api/sentinel-activities/delete').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),

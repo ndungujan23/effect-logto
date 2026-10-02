@@ -18,9 +18,16 @@ import {
 } from '../../../domain/schema/resources.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeResources = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): ResourcesOperations => ({
+export const makeResources = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): ResourcesOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/resources`).pipe(
+		HttpClientRequest.get('/api/resources').pipe(
 			HttpClientRequest.setUrlParams({
 				includeScopes: options?.params?.['includeScopes'] as any,
 				page: options?.params?.['page'] as any,
@@ -29,54 +36,101 @@ export const makeResources = ({ withResponse, decodeSuccess, unexpectedStatus, s
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/resources`).pipe(
+		HttpClientRequest.post('/api/resources').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/resources/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/resources/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/resources/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/resources/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (id, options) =>
-		HttpClientRequest.patch(`/api/resources/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/resources/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	updateIsDefault: (id, options) =>
-		HttpClientRequest.patch(`/api/resources/${encodeURIComponent(id)}/is-default`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateIsDefaultResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/resources/' + __encodePathParam(id) + '/is-default').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateIsDefaultResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listScopes: (resourceId, options) =>
-		HttpClientRequest.get(`/api/resources/${encodeURIComponent(resourceId)}/scopes`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListScopesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [resourceId], () => '/api/resources/' + __encodePathParam(resourceId) + '/scopes').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListScopesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createScope: (resourceId, options) =>
-		HttpClientRequest.post(`/api/resources/${encodeURIComponent(resourceId)}/scopes`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateScopeResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [resourceId], () => '/api/resources/' + __encodePathParam(resourceId) + '/scopes').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateScopeResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteScope: (resourceId, scopeId, options) =>
-		HttpClientRequest.delete(`/api/resources/${encodeURIComponent(resourceId)}/scopes/${encodeURIComponent(scopeId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[resourceId, scopeId],
+			() => '/api/resources/' + __encodePathParam(resourceId) + '/scopes/' + __encodePathParam(scopeId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updateScope: (resourceId, scopeId, options) =>
-		HttpClientRequest.patch(`/api/resources/${encodeURIComponent(resourceId)}/scopes/${encodeURIComponent(scopeId)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateScopeResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[resourceId, scopeId],
+			() => '/api/resources/' + __encodePathParam(resourceId) + '/scopes/' + __encodePathParam(scopeId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateScopeResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 })

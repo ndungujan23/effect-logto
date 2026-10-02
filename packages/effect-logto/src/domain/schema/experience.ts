@@ -3,37 +3,55 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type InitInteractionPayload = { readonly interactionEvent: 'SignIn' | 'Register' | 'ForgotPassword'; readonly captchaToken?: string }
-export const InitInteractionPayload = Schema.Struct({
-	interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']),
-	captchaToken: Schema.optionalKey(Schema.String),
-})
-
-export type UpdateInteractionEventPayload = { readonly interactionEvent: 'SignIn' | 'Register' | 'ForgotPassword' }
-export const UpdateInteractionEventPayload = Schema.Struct({
-	interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']).annotate({
-		description: 'The type of the interaction event. Only `SignIn` and `Register` are supported.',
+export type InitInteractionPayload = {
+	readonly interactionEvent: 'SignIn' | 'Register' | 'ForgotPassword'
+	readonly captchaToken?: string
+} & { readonly [x: string]: Schema.Json }
+export const InitInteractionPayload = Schema.StructWithRest(
+	Schema.Struct({
+		interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']),
+		captchaToken: Schema.optionalKey(Schema.String),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type IdentifyUserPayload = { readonly verificationId?: string; readonly linkSocialIdentity?: boolean }
-export const IdentifyUserPayload = Schema.Struct({
-	verificationId: Schema.optionalKey(
-		Schema.String.annotate({
-			description:
-				"The ID of the verification record used to identify the user. <br/>- For `SignIn` and `ForgotPassword` interactions: Required to verify the user's identity. <br/>- For `Register` interaction: Optional. If provided, new profile(s) will be attached to the registration session using the information from the verification record and trigger the account creation attempt. If not provided, the user account creation attempt will be triggered using the existing profile data in the interaction.",
-		})
-	),
-	linkSocialIdentity: Schema.optionalKey(
-		Schema.Boolean.annotate({
-			description:
-				"Applies only to the SignIn interaction and is used when a SocialVerification type verification ID is provided. <br/>- If `true`, the user is identified using the verified email or phone number from the social identity provider, and the social identity is linked to the user's account. <br/>- If `false` or not provided, the API identifies the user solely through the social identity. <br/>This parameter is used to link a non-existing social identity to a related user account identified by the verified email or phone number.",
-		})
-	),
-})
+export type UpdateInteractionEventPayload = { readonly interactionEvent: 'SignIn' | 'Register' | 'ForgotPassword' } & {
+	readonly [x: string]: Schema.Json
+}
+export const UpdateInteractionEventPayload = Schema.StructWithRest(
+	Schema.Struct({
+		interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']).annotate({
+			description: 'The type of the interaction event. Only `SignIn` and `Register` are supported.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type SubmitInteractionResponse = { readonly redirectTo: string }
-export const SubmitInteractionResponse = Schema.Struct({ redirectTo: Schema.String })
+export type IdentifyUserPayload = { readonly verificationId?: string; readonly linkSocialIdentity?: boolean } & {
+	readonly [x: string]: Schema.Json
+}
+export const IdentifyUserPayload = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.optionalKey(
+			Schema.String.annotate({
+				description:
+					"The ID of the verification record used to identify the user. <br/>- For `SignIn` and `ForgotPassword` interactions: Required to verify the user's identity. <br/>- For `Register` interaction: Optional. If provided, new profile(s) will be attached to the registration session using the information from the verification record and trigger the account creation attempt. If not provided, the user account creation attempt will be triggered using the existing profile data in the interaction.",
+			})
+		),
+		linkSocialIdentity: Schema.optionalKey(
+			Schema.Boolean.annotate({
+				description:
+					"Applies only to the SignIn interaction and is used when a SocialVerification type verification ID is provided. <br/>- If `true`, the user is identified using the verified email or phone number from the social identity provider, and the social identity is linked to the user's account. <br/>- If `false` or not provided, the API identifies the user solely through the social identity. <br/>This parameter is used to link a non-existing social identity to a related user account identified by the verified email or phone number.",
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type SubmitInteractionResponse = { readonly redirectTo: string } & { readonly [x: string]: Schema.Json }
+export const SubmitInteractionResponse = Schema.StructWithRest(Schema.Struct({ redirectTo: Schema.String }), [
+	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+])
 
 export type GetInteractionResponse = {
 	readonly interactionEvent: 'SignIn' | 'Register' | 'ForgotPassword'
@@ -63,8 +81,8 @@ export type GetInteractionResponse = {
 				readonly region?: string
 				readonly postalCode?: string
 				readonly country?: string
-			}
-		}
+			} & { readonly [x: string]: Schema.Json }
+		} & { readonly [x: string]: Schema.Json }
 		readonly customData?: { readonly [x: string]: Schema.Json }
 		readonly socialIdentity?: {
 			readonly target: string
@@ -75,46 +93,32 @@ export type GetInteractionResponse = {
 				readonly name?: string
 				readonly avatar?: string
 				readonly rawData?: Schema.Json
-			}
-		}
+			} & { readonly [x: string]: Schema.Json }
+		} & { readonly [x: string]: Schema.Json }
 		readonly enterpriseSsoIdentity?: {
 			readonly identityId: string
 			readonly ssoConnectorId: string
 			readonly issuer: string
 			readonly detail: { readonly [x: string]: Schema.Json }
-		}
+		} & { readonly [x: string]: Schema.Json }
 		readonly syncedEnterpriseSsoIdentity?: {
 			readonly identityId: string
 			readonly issuer: string
 			readonly detail: { readonly [x: string]: Schema.Json }
-		}
+		} & { readonly [x: string]: Schema.Json }
 		readonly jitOrganizationIds?: ReadonlyArray<string>
 		readonly submitted?: boolean
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly verificationRecords?: ReadonlyArray<
-		| {
+		| ({
 				readonly id: string
 				readonly type: string
-				readonly identifier: { readonly type: 'username' | 'email' | 'phone' | 'userId'; readonly value: string }
+				readonly identifier: { readonly type: 'username' | 'email' | 'phone' | 'userId'; readonly value: string } & {
+					readonly [x: string]: Schema.Json
+				}
 				readonly verified: boolean
-		  }
-		| {
-				readonly id: string
-				readonly templateType:
-					| 'SignIn'
-					| 'Register'
-					| 'ForgotPassword'
-					| 'OrganizationInvitation'
-					| 'Generic'
-					| 'UserPermissionValidation'
-					| 'BindNewIdentifier'
-					| 'MfaVerification'
-					| 'BindMfa'
-				readonly verified: boolean
-				readonly type: string
-				readonly identifier: { readonly type: string; readonly value: string }
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly id: string
 				readonly templateType:
 					| 'SignIn'
@@ -128,9 +132,9 @@ export type GetInteractionResponse = {
 					| 'BindMfa'
 				readonly verified: boolean
 				readonly type: string
-				readonly identifier: { readonly type: string; readonly value: string }
-		  }
-		| {
+				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly id: string
 				readonly templateType:
 					| 'SignIn'
@@ -144,9 +148,9 @@ export type GetInteractionResponse = {
 					| 'BindMfa'
 				readonly verified: boolean
 				readonly type: string
-				readonly identifier: { readonly type: string; readonly value: string }
-		  }
-		| {
+				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly id: string
 				readonly templateType:
 					| 'SignIn'
@@ -160,9 +164,25 @@ export type GetInteractionResponse = {
 					| 'BindMfa'
 				readonly verified: boolean
 				readonly type: string
-				readonly identifier: { readonly type: string; readonly value: string }
-		  }
-		| {
+				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
+				readonly id: string
+				readonly templateType:
+					| 'SignIn'
+					| 'Register'
+					| 'ForgotPassword'
+					| 'OrganizationInvitation'
+					| 'Generic'
+					| 'UserPermissionValidation'
+					| 'BindNewIdentifier'
+					| 'MfaVerification'
+					| 'BindMfa'
+				readonly verified: boolean
+				readonly type: string
+				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly id: string
 				readonly connectorId: string
 				readonly type: string
@@ -173,9 +193,9 @@ export type GetInteractionResponse = {
 					readonly name?: string
 					readonly avatar?: string
 					readonly rawData?: Schema.Json
-				}
-		  }
-		| {
+				} & { readonly [x: string]: Schema.Json }
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly id: string
 				readonly connectorId: string
 				readonly type: string
@@ -186,641 +206,897 @@ export type GetInteractionResponse = {
 					readonly name?: string
 					readonly avatar?: string
 					readonly rawData?: Schema.Json
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly issuer?: string
-		  }
-		| { readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean }
-		| { readonly id: string; readonly type: string; readonly userId: string; readonly code?: string }
-		| { readonly id: string; readonly verified: boolean; readonly type: string; readonly userId: string }
-		| { readonly id: string; readonly verified: boolean; readonly type: string; readonly userId?: string }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({ readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean } & {
+				readonly [x: string]: Schema.Json
+		  })
+		| ({ readonly id: string; readonly type: string; readonly userId: string; readonly code?: string } & {
+				readonly [x: string]: Schema.Json
+		  })
+		| ({ readonly id: string; readonly verified: boolean; readonly type: string; readonly userId: string } & {
+				readonly [x: string]: Schema.Json
+		  })
+		| ({ readonly id: string; readonly verified: boolean; readonly type: string; readonly userId?: string } & {
+				readonly [x: string]: Schema.Json
+		  })
+		| ({
 				readonly id: string
 				readonly type: string
-				readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
-		  }
-		| {
+				readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & {
+					readonly [x: string]: Schema.Json
+				}
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly id: string
 				readonly type: string
 				readonly verified: boolean
-				readonly identifier: { readonly type: string; readonly value: string }
+				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
 				readonly oneTimeTokenContext?: {
 					readonly jitOrganizationIds?: ReadonlyArray<string>
 					readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-				}
-		  }
+				} & { readonly [x: string]: Schema.Json }
+		  } & { readonly [x: string]: Schema.Json })
 	>
 	readonly mfa?: {
 		readonly mfaEnabled?: boolean
 		readonly mfaSkipped?: boolean
 		readonly passkeySkipped?: boolean
-		readonly totp?: { readonly type: string }
-		readonly webAuthn?: ReadonlyArray<{
-			readonly type: string
-			readonly rpId: string
-			readonly credentialId: string
-			readonly publicKey: string
-			readonly transports: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
-			readonly counter: number
-			readonly agent: string
-			readonly name?: string
-		}>
-		readonly backupCode?: { readonly type: string }
-	}
+		readonly totp?: { readonly type: string } & { readonly [x: string]: Schema.Json }
+		readonly webAuthn?: ReadonlyArray<
+			{
+				readonly type: string
+				readonly rpId: string
+				readonly credentialId: string
+				readonly publicKey: string
+				readonly transports: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
+				readonly counter: number
+				readonly agent: string
+				readonly name?: string
+			} & { readonly [x: string]: Schema.Json }
+		>
+		readonly backupCode?: { readonly type: string } & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
 	readonly signInContext?: { readonly [x: string]: string }
-	readonly captcha?: { readonly verified: boolean; readonly skipped: boolean }
-}
-export const GetInteractionResponse = Schema.Struct({
-	interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']),
-	userId: Schema.optionalKey(Schema.String),
-	profile: Schema.Struct({
-		avatar: Schema.optionalKey(
-			Schema.Union([
-				Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-				Schema.Null,
-			])
-		),
-		name: Schema.optionalKey(
-			Schema.Union([
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-				Schema.Null,
-			])
-		),
-		username: Schema.optionalKey(
-			Schema.Union([
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-				Schema.Null,
-			])
-		),
-		primaryEmail: Schema.optionalKey(
-			Schema.Union([
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-				Schema.Null,
-			])
-		),
-		primaryPhone: Schema.optionalKey(
-			Schema.Union([
-				Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-				Schema.Null,
-			])
-		),
-		profile: Schema.optionalKey(
+	readonly captcha?: { readonly verified: boolean; readonly skipped: boolean } & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const GetInteractionResponse = Schema.StructWithRest(
+	Schema.Struct({
+		interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']),
+		userId: Schema.optionalKey(Schema.String),
+		profile: Schema.StructWithRest(
 			Schema.Struct({
-				familyName: Schema.optionalKey(Schema.String),
-				givenName: Schema.optionalKey(Schema.String),
-				middleName: Schema.optionalKey(Schema.String),
-				nickname: Schema.optionalKey(Schema.String),
-				preferredUsername: Schema.optionalKey(Schema.String),
-				profile: Schema.optionalKey(Schema.String),
-				website: Schema.optionalKey(Schema.String),
-				gender: Schema.optionalKey(Schema.String),
-				birthdate: Schema.optionalKey(Schema.String),
-				zoneinfo: Schema.optionalKey(Schema.String),
-				locale: Schema.optionalKey(Schema.String),
-				address: Schema.optionalKey(
-					Schema.Struct({
-						formatted: Schema.optionalKey(Schema.String),
-						streetAddress: Schema.optionalKey(Schema.String),
-						locality: Schema.optionalKey(Schema.String),
-						region: Schema.optionalKey(Schema.String),
-						postalCode: Schema.optionalKey(Schema.String),
-						country: Schema.optionalKey(Schema.String),
-					})
+				avatar: Schema.optionalKey(
+					Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+						Schema.Null,
+					])
 				),
-			})
-		),
-		customData: Schema.optionalKey(
-			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
-		),
-		socialIdentity: Schema.optionalKey(
-			Schema.Struct({
-				target: Schema.String,
-				userInfo: Schema.Struct({
-					id: Schema.String,
-					email: Schema.optionalKey(Schema.String),
-					phone: Schema.optionalKey(Schema.String),
-					name: Schema.optionalKey(Schema.String),
-					avatar: Schema.optionalKey(Schema.String),
-					rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-				}),
-			})
-		),
-		enterpriseSsoIdentity: Schema.optionalKey(
-			Schema.Struct({
-				identityId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
+				name: Schema.optionalKey(
+					Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+						Schema.Null,
+					])
 				),
-				ssoConnectorId: Schema.String.check(
-					Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-				).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-				issuer: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
+				username: Schema.optionalKey(
+					Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+						Schema.Null,
+					])
 				),
-				detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-					description: 'arbitrary',
-				}),
-			})
-		),
-		syncedEnterpriseSsoIdentity: Schema.optionalKey(
-			Schema.Struct({
-				identityId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
+				primaryEmail: Schema.optionalKey(
+					Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+						Schema.Null,
+					])
 				),
-				issuer: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
+				primaryPhone: Schema.optionalKey(
+					Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+						Schema.Null,
+					])
 				),
-				detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-					description: 'arbitrary',
-				}),
-			})
-		),
-		jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-		submitted: Schema.optionalKey(Schema.Boolean),
-	}),
-	verificationRecords: Schema.optionalKey(
-		Schema.Array(
-			Schema.Union(
-				[
-					Schema.Struct({
-						id: Schema.String,
-						type: Schema.String.annotate({ format: '"Password"' }),
-						identifier: Schema.Struct({
-							type: Schema.Union([Schema.Literals(['username', 'email', 'phone']), Schema.Literal('userId')], {
-								mode: 'oneOf',
-							}),
-							value: Schema.String,
+				profile: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							familyName: Schema.optionalKey(Schema.String),
+							givenName: Schema.optionalKey(Schema.String),
+							middleName: Schema.optionalKey(Schema.String),
+							nickname: Schema.optionalKey(Schema.String),
+							preferredUsername: Schema.optionalKey(Schema.String),
+							profile: Schema.optionalKey(Schema.String),
+							website: Schema.optionalKey(Schema.String),
+							gender: Schema.optionalKey(Schema.String),
+							birthdate: Schema.optionalKey(Schema.String),
+							zoneinfo: Schema.optionalKey(Schema.String),
+							locale: Schema.optionalKey(Schema.String),
+							address: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										formatted: Schema.optionalKey(Schema.String),
+										streetAddress: Schema.optionalKey(Schema.String),
+										locality: Schema.optionalKey(Schema.String),
+										region: Schema.optionalKey(Schema.String),
+										postalCode: Schema.optionalKey(Schema.String),
+										country: Schema.optionalKey(Schema.String),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
 						}),
-						verified: Schema.Boolean,
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						templateType: Schema.Literals([
-							'SignIn',
-							'Register',
-							'ForgotPassword',
-							'OrganizationInvitation',
-							'Generic',
-							'UserPermissionValidation',
-							'BindNewIdentifier',
-							'MfaVerification',
-							'BindMfa',
-						]),
-						verified: Schema.Boolean,
-						type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
-						identifier: Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), value: Schema.String }),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						templateType: Schema.Literals([
-							'SignIn',
-							'Register',
-							'ForgotPassword',
-							'OrganizationInvitation',
-							'Generic',
-							'UserPermissionValidation',
-							'BindNewIdentifier',
-							'MfaVerification',
-							'BindMfa',
-						]),
-						verified: Schema.Boolean,
-						type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
-						identifier: Schema.Struct({ type: Schema.String.annotate({ format: '"phone"' }), value: Schema.String }),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						templateType: Schema.Literals([
-							'SignIn',
-							'Register',
-							'ForgotPassword',
-							'OrganizationInvitation',
-							'Generic',
-							'UserPermissionValidation',
-							'BindNewIdentifier',
-							'MfaVerification',
-							'BindMfa',
-						]),
-						verified: Schema.Boolean,
-						type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
-						identifier: Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), value: Schema.String }),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						templateType: Schema.Literals([
-							'SignIn',
-							'Register',
-							'ForgotPassword',
-							'OrganizationInvitation',
-							'Generic',
-							'UserPermissionValidation',
-							'BindNewIdentifier',
-							'MfaVerification',
-							'BindMfa',
-						]),
-						verified: Schema.Boolean,
-						type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
-						identifier: Schema.Struct({ type: Schema.String.annotate({ format: '"phone"' }), value: Schema.String }),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						connectorId: Schema.String,
-						type: Schema.String.annotate({ format: '"Social"' }),
-						socialUserInfo: Schema.optionalKey(
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				customData: Schema.optionalKey(
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
+				),
+				socialIdentity: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							target: Schema.String,
+							userInfo: Schema.StructWithRest(
+								Schema.Struct({
+									id: Schema.String,
+									email: Schema.optionalKey(Schema.String),
+									phone: Schema.optionalKey(Schema.String),
+									name: Schema.optionalKey(Schema.String),
+									avatar: Schema.optionalKey(Schema.String),
+									rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				enterpriseSsoIdentity: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							identityId: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+							ssoConnectorId: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+							issuer: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+							detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+								description: 'arbitrary',
+							}),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				syncedEnterpriseSsoIdentity: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							identityId: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+							issuer: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+							detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+								description: 'arbitrary',
+							}),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+				submitted: Schema.optionalKey(Schema.Boolean),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		verificationRecords: Schema.optionalKey(
+			Schema.Array(
+				Schema.Union(
+					[
+						Schema.StructWithRest(
 							Schema.Struct({
 								id: Schema.String,
-								email: Schema.optionalKey(Schema.String),
-								phone: Schema.optionalKey(Schema.String),
-								name: Schema.optionalKey(Schema.String),
-								avatar: Schema.optionalKey(Schema.String),
-								rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-							})
+								type: Schema.String.annotate({ format: '"Password"' }),
+								identifier: Schema.StructWithRest(
+									Schema.Struct({
+										type: Schema.Union([Schema.Literals(['username', 'email', 'phone']), Schema.Literal('userId')], {
+											mode: 'oneOf',
+										}),
+										value: Schema.String,
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								),
+								verified: Schema.Boolean,
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						connectorId: Schema.String,
-						type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
-						enterpriseSsoUserInfo: Schema.optionalKey(
+						Schema.StructWithRest(
 							Schema.Struct({
 								id: Schema.String,
-								email: Schema.optionalKey(Schema.String),
-								phone: Schema.optionalKey(Schema.String),
-								name: Schema.optionalKey(Schema.String),
-								avatar: Schema.optionalKey(Schema.String),
-								rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-							})
+								templateType: Schema.Literals([
+									'SignIn',
+									'Register',
+									'ForgotPassword',
+									'OrganizationInvitation',
+									'Generic',
+									'UserPermissionValidation',
+									'BindNewIdentifier',
+									'MfaVerification',
+									'BindMfa',
+								]),
+								verified: Schema.Boolean,
+								type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
+								identifier: Schema.StructWithRest(
+									Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), value: Schema.String }),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-						issuer: Schema.optionalKey(Schema.String),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						type: Schema.String.annotate({ format: '"Totp"' }),
-						userId: Schema.String,
-						verified: Schema.Boolean,
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						type: Schema.String.annotate({ format: '"BackupCode"' }),
-						userId: Schema.String,
-						code: Schema.optionalKey(Schema.String),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						verified: Schema.Boolean,
-						type: Schema.String.annotate({ format: '"WebAuthn"' }),
-						userId: Schema.String,
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						verified: Schema.Boolean,
-						type: Schema.String.annotate({ format: '"SignInPasskey"' }),
-						userId: Schema.optionalKey(Schema.String),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
-						identifier: Schema.Struct({ type: Schema.Literals(['username', 'email', 'phone']), value: Schema.String }),
-					}),
-					Schema.Struct({
-						id: Schema.String,
-						type: Schema.String.annotate({ format: '"OneTimeToken"' }),
-						verified: Schema.Boolean,
-						identifier: Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), value: Schema.String }),
-						oneTimeTokenContext: Schema.optionalKey(
+						Schema.StructWithRest(
 							Schema.Struct({
-								jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-								interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
-							})
+								id: Schema.String,
+								templateType: Schema.Literals([
+									'SignIn',
+									'Register',
+									'ForgotPassword',
+									'OrganizationInvitation',
+									'Generic',
+									'UserPermissionValidation',
+									'BindNewIdentifier',
+									'MfaVerification',
+									'BindMfa',
+								]),
+								verified: Schema.Boolean,
+								type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
+								identifier: Schema.StructWithRest(
+									Schema.Struct({ type: Schema.String.annotate({ format: '"phone"' }), value: Schema.String }),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-					}),
-				],
-				{ mode: 'oneOf' }
-			)
-		)
-	),
-	mfa: Schema.optionalKey(
-		Schema.Struct({
-			mfaEnabled: Schema.optionalKey(Schema.Boolean),
-			mfaSkipped: Schema.optionalKey(Schema.Boolean),
-			passkeySkipped: Schema.optionalKey(Schema.Boolean),
-			totp: Schema.optionalKey(Schema.Struct({ type: Schema.String.annotate({ format: '"Totp"' }) })),
-			webAuthn: Schema.optionalKey(
-				Schema.Array(
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"WebAuthn"' }),
-						rpId: Schema.String,
-						credentialId: Schema.String,
-						publicKey: Schema.String,
-						transports: Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card'])),
-						counter: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-						agent: Schema.String,
-						name: Schema.optionalKey(Schema.String),
-					})
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								templateType: Schema.Literals([
+									'SignIn',
+									'Register',
+									'ForgotPassword',
+									'OrganizationInvitation',
+									'Generic',
+									'UserPermissionValidation',
+									'BindNewIdentifier',
+									'MfaVerification',
+									'BindMfa',
+								]),
+								verified: Schema.Boolean,
+								type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
+								identifier: Schema.StructWithRest(
+									Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), value: Schema.String }),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								templateType: Schema.Literals([
+									'SignIn',
+									'Register',
+									'ForgotPassword',
+									'OrganizationInvitation',
+									'Generic',
+									'UserPermissionValidation',
+									'BindNewIdentifier',
+									'MfaVerification',
+									'BindMfa',
+								]),
+								verified: Schema.Boolean,
+								type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
+								identifier: Schema.StructWithRest(
+									Schema.Struct({ type: Schema.String.annotate({ format: '"phone"' }), value: Schema.String }),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								connectorId: Schema.String,
+								type: Schema.String.annotate({ format: '"Social"' }),
+								socialUserInfo: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											id: Schema.String,
+											email: Schema.optionalKey(Schema.String),
+											phone: Schema.optionalKey(Schema.String),
+											name: Schema.optionalKey(Schema.String),
+											avatar: Schema.optionalKey(Schema.String),
+											rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								connectorId: Schema.String,
+								type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
+								enterpriseSsoUserInfo: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											id: Schema.String,
+											email: Schema.optionalKey(Schema.String),
+											phone: Schema.optionalKey(Schema.String),
+											name: Schema.optionalKey(Schema.String),
+											avatar: Schema.optionalKey(Schema.String),
+											rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								issuer: Schema.optionalKey(Schema.String),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								type: Schema.String.annotate({ format: '"Totp"' }),
+								userId: Schema.String,
+								verified: Schema.Boolean,
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								type: Schema.String.annotate({ format: '"BackupCode"' }),
+								userId: Schema.String,
+								code: Schema.optionalKey(Schema.String),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								verified: Schema.Boolean,
+								type: Schema.String.annotate({ format: '"WebAuthn"' }),
+								userId: Schema.String,
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								verified: Schema.Boolean,
+								type: Schema.String.annotate({ format: '"SignInPasskey"' }),
+								userId: Schema.optionalKey(Schema.String),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
+								identifier: Schema.StructWithRest(
+									Schema.Struct({ type: Schema.Literals(['username', 'email', 'phone']), value: Schema.String }),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String,
+								type: Schema.String.annotate({ format: '"OneTimeToken"' }),
+								verified: Schema.Boolean,
+								identifier: Schema.StructWithRest(
+									Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), value: Schema.String }),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								),
+								oneTimeTokenContext: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+											interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+					],
+					{ mode: 'oneOf' }
 				)
-			),
-			backupCode: Schema.optionalKey(Schema.Struct({ type: Schema.String.annotate({ format: '"BackupCode"' }) })),
-		})
-	),
-	signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-	captcha: Schema.optionalKey(Schema.Struct({ verified: Schema.Boolean, skipped: Schema.Boolean })),
-})
+			)
+		),
+		mfa: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					mfaEnabled: Schema.optionalKey(Schema.Boolean),
+					mfaSkipped: Schema.optionalKey(Schema.Boolean),
+					passkeySkipped: Schema.optionalKey(Schema.Boolean),
+					totp: Schema.optionalKey(
+						Schema.StructWithRest(Schema.Struct({ type: Schema.String.annotate({ format: '"Totp"' }) }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					),
+					webAuthn: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									type: Schema.String.annotate({ format: '"WebAuthn"' }),
+									rpId: Schema.String,
+									credentialId: Schema.String,
+									publicKey: Schema.String,
+									transports: Schema.Array(
+										Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card'])
+									),
+									counter: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+									agent: Schema.String,
+									name: Schema.optionalKey(Schema.String),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						)
+					),
+					backupCode: Schema.optionalKey(
+						Schema.StructWithRest(Schema.Struct({ type: Schema.String.annotate({ format: '"BackupCode"' }) }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+		captcha: Schema.optionalKey(
+			Schema.StructWithRest(Schema.Struct({ verified: Schema.Boolean, skipped: Schema.Boolean }), [
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			])
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreatePasswordVerificationPayload = {
-	readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
+	readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & { readonly [x: string]: Schema.Json }
 	readonly password: string
-}
-export const CreatePasswordVerificationPayload = Schema.Struct({
-	identifier: Schema.Struct({ type: Schema.Literals(['username', 'email', 'phone']), value: Schema.String }).annotate({
-		description: 'The unique identifier of the user that will be used to identify the user along with the provided password.',
+} & { readonly [x: string]: Schema.Json }
+export const CreatePasswordVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		identifier: Schema.StructWithRest(Schema.Struct({ type: Schema.Literals(['username', 'email', 'phone']), value: Schema.String }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]).annotate({
+			description: 'The unique identifier of the user that will be used to identify the user along with the provided password.',
+		}),
+		password: Schema.String.annotate({ description: 'The user password.' }).check(
+			Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+		),
 	}),
-	password: Schema.String.annotate({ description: 'The user password.' }).check(
-		Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-	),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreatePasswordVerificationResponse = { readonly verificationId: string }
-export const CreatePasswordVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			"The unique verification ID of the newly created Password verification record. The `verificationId` is required when verifying the user's identity via the `Identification` API.",
+export type CreatePasswordVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const CreatePasswordVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description:
+				"The unique verification ID of the newly created Password verification record. The `verificationId` is required when verifying the user's identity via the `Identification` API.",
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateAndSendVerificationCodePayload = {
-	readonly identifier: { readonly type: string; readonly value: string } | { readonly type: string; readonly value: string }
+	readonly identifier:
+		| ({ readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json })
+		| ({ readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json })
 	readonly interactionEvent: 'SignIn' | 'Register' | 'ForgotPassword'
-}
-export const CreateAndSendVerificationCodePayload = Schema.Struct({
-	identifier: Schema.Union(
-		[
-			Schema.Struct({
-				type: Schema.String.annotate({ format: '"email"' }),
-				value: Schema.String.annotate({ format: 'regex' })
-					.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-					.check(Schema.isPattern(/^\S+@\S+\.\S+$/).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })),
-			}),
-			Schema.Struct({
-				type: Schema.String.annotate({ format: '"phone"' }),
-				value: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^\d+$/).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+} & { readonly [x: string]: Schema.Json }
+export const CreateAndSendVerificationCodePayload = Schema.StructWithRest(
+	Schema.Struct({
+		identifier: Schema.Union(
+			[
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"email"' }),
+						value: Schema.String.annotate({ format: 'regex' })
+							.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+							.check(
+								Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({
+									expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
+								})
+							),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 				),
-			}),
-		],
-		{ mode: 'oneOf' }
-	).annotate({ description: 'The identifier (email address or phone number) to send the verification code to.' }),
-	interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']).annotate({
-		description:
-			'The interaction event for which the verification code will be used. Supported values are `SignIn`, `Register`, and `ForgotPassword`. This determines the template for the verification code.',
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"phone"' }),
+						value: Schema.String.annotate({ format: 'regex' }).check(
+							Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			],
+			{ mode: 'oneOf' }
+		).annotate({ description: 'The identifier (email address or phone number) to send the verification code to.' }),
+		interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']).annotate({
+			description:
+				'The interaction event for which the verification code will be used. Supported values are `SignIn`, `Register`, and `ForgotPassword`. This determines the template for the verification code.',
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreateAndSendVerificationCodeResponse = { readonly verificationId: string }
-export const CreateAndSendVerificationCodeResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({ description: 'The unique ID of the verification record. Required to verify the code.' }),
-})
+export type CreateAndSendVerificationCodeResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const CreateAndSendVerificationCodeResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({ description: 'The unique ID of the verification record. Required to verify the code.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifyVerificationCodeVerificationPayload = {
-	readonly identifier: { readonly type: string; readonly value: string } | { readonly type: string; readonly value: string }
+	readonly identifier:
+		| ({ readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json })
+		| ({ readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json })
 	readonly verificationId: string
 	readonly code: string
-}
-export const VerifyVerificationCodeVerificationPayload = Schema.Struct({
-	identifier: Schema.Union(
-		[
-			Schema.Struct({
-				type: Schema.String.annotate({ format: '"email"' }),
-				value: Schema.String.annotate({ format: 'regex' })
-					.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-					.check(Schema.isPattern(/^\S+@\S+\.\S+$/).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })),
-			}),
-			Schema.Struct({
-				type: Schema.String.annotate({ format: '"phone"' }),
-				value: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^\d+$/).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+} & { readonly [x: string]: Schema.Json }
+export const VerifyVerificationCodeVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		identifier: Schema.Union(
+			[
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"email"' }),
+						value: Schema.String.annotate({ format: 'regex' })
+							.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+							.check(
+								Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({
+									expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
+								})
+							),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 				),
-			}),
-		],
-		{ mode: 'oneOf' }
-	).annotate({
-		description:
-			'The identifier (email address or phone number) to verify the code against. Must match the identifier used to send the verification code.',
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"phone"' }),
+						value: Schema.String.annotate({ format: 'regex' }).check(
+							Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			],
+			{ mode: 'oneOf' }
+		).annotate({
+			description:
+				'The identifier (email address or phone number) to verify the code against. Must match the identifier used to send the verification code.',
+		}),
+		verificationId: Schema.String.annotate({ description: 'The verification ID of the CodeVerification record.' }),
+		code: Schema.String.annotate({ description: 'The verification code to be verified.' }),
 	}),
-	verificationId: Schema.String.annotate({ description: 'The verification ID of the CodeVerification record.' }),
-	code: Schema.String.annotate({ description: 'The verification code to be verified.' }),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type VerifyVerificationCodeVerificationResponse = { readonly verificationId: string }
-export const VerifyVerificationCodeVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			"The unique ID of the verification record. Required for user identification via the `Identification` API or to bind the identifier to the user's account via the `Profile` API.",
+export type VerifyVerificationCodeVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifyVerificationCodeVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description:
+				"The unique ID of the verification record. Required for user identification via the `Identification` API or to bind the identifier to the user's account via the `Profile` API.",
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreateAndSendMfaVerificationCodePayload = { readonly identifierType: 'email' | 'phone' | 'Email' | 'Phone' }
-export const CreateAndSendMfaVerificationCodePayload = Schema.Struct({
-	identifierType: Schema.Literals(['email', 'phone', 'Email', 'Phone']).annotate({
-		description:
-			"The type of identifier to use for MFA verification. Must be either 'Email' or 'Phone'. The endpoint will automatically use the user's bound identifier of this type.",
+export type CreateAndSendMfaVerificationCodePayload = { readonly identifierType: 'email' | 'phone' | 'Email' | 'Phone' } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateAndSendMfaVerificationCodePayload = Schema.StructWithRest(
+	Schema.Struct({
+		identifierType: Schema.Literals(['email', 'phone', 'Email', 'Phone']).annotate({
+			description:
+				"The type of identifier to use for MFA verification. Must be either 'Email' or 'Phone'. The endpoint will automatically use the user's bound identifier of this type.",
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreateAndSendMfaVerificationCodeResponse = { readonly verificationId: string }
-export const CreateAndSendMfaVerificationCodeResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({ description: 'The unique ID of the verification record. Required to verify the code.' }),
-})
+export type CreateAndSendMfaVerificationCodeResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const CreateAndSendMfaVerificationCodeResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({ description: 'The unique ID of the verification record. Required to verify the code.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifyMfaVerificationCodePayload = {
 	readonly verificationId: string
 	readonly code: string
 	readonly identifierType: 'email' | 'phone' | 'Email' | 'Phone'
+} & { readonly [x: string]: Schema.Json }
+export const VerifyMfaVerificationCodePayload = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description: 'The verification ID returned from the MFA verification code send endpoint.',
+		}),
+		code: Schema.String.annotate({ description: 'The verification code received by the user.' }),
+		identifierType: Schema.Literals(['email', 'phone', 'Email', 'Phone']).annotate({
+			description: 'The type of identifier used for MFA verification. Must match the type used when sending the verification code.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type VerifyMfaVerificationCodeResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifyMfaVerificationCodeResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description: 'The unique ID of the verification record. This can be used for subsequent MFA operations.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateSocialVerificationPayload = { readonly state: string; readonly redirectUri: string } & {
+	readonly [x: string]: Schema.Json
 }
-export const VerifyMfaVerificationCodePayload = Schema.Struct({
-	verificationId: Schema.String.annotate({ description: 'The verification ID returned from the MFA verification code send endpoint.' }),
-	code: Schema.String.annotate({ description: 'The verification code received by the user.' }),
-	identifierType: Schema.Literals(['email', 'phone', 'Email', 'Phone']).annotate({
-		description: 'The type of identifier used for MFA verification. Must match the type used when sending the verification code.',
+export const CreateSocialVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		state: Schema.String.annotate({ description: 'The state parameter to pass to the social connector.' }),
+		redirectUri: Schema.String.annotate({ description: 'The URI to redirect the user after the social authorization is completed.' }),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type VerifyMfaVerificationCodeResponse = { readonly verificationId: string }
-export const VerifyMfaVerificationCodeResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description: 'The unique ID of the verification record. This can be used for subsequent MFA operations.',
+export type CreateSocialVerificationResponse = { readonly authorizationUri: string; readonly verificationId: string } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateSocialVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		authorizationUri: Schema.String.annotate({ description: 'The social authorization URI.' }),
+		verificationId: Schema.String.annotate({
+			description:
+				'The unique verification ID of the newly created SocialVerification record. The `verificationId` is required when verifying the social authorization response.',
+		}),
 	}),
-})
-
-export type CreateSocialVerificationPayload = { readonly state: string; readonly redirectUri: string }
-export const CreateSocialVerificationPayload = Schema.Struct({
-	state: Schema.String.annotate({ description: 'The state parameter to pass to the social connector.' }),
-	redirectUri: Schema.String.annotate({ description: 'The URI to redirect the user after the social authorization is completed.' }),
-})
-
-export type CreateSocialVerificationResponse = { readonly authorizationUri: string; readonly verificationId: string }
-export const CreateSocialVerificationResponse = Schema.Struct({
-	authorizationUri: Schema.String.annotate({ description: 'The social authorization URI.' }),
-	verificationId: Schema.String.annotate({
-		description:
-			'The unique verification ID of the newly created SocialVerification record. The `verificationId` is required when verifying the social authorization response.',
-	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifySocialVerificationPayload = {
 	readonly connectorData: { readonly [x: string]: Schema.Json }
 	readonly verificationId?: string
-}
-export const VerifySocialVerificationPayload = Schema.Struct({
-	connectorData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Arbitrary data returned by the social provider to complete the verification process.',
+} & { readonly [x: string]: Schema.Json }
+export const VerifySocialVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		connectorData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Arbitrary data returned by the social provider to complete the verification process.',
+		}),
+		verificationId: Schema.optionalKey(
+			Schema.String.annotate({
+				description:
+					'The ID of the social verification record. Optional for Google one tap login, as it does not have a pre-created social verification record in session.',
+			})
+		),
 	}),
-	verificationId: Schema.optionalKey(
-		Schema.String.annotate({
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type VerifySocialVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifySocialVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
 			description:
-				'The ID of the social verification record. Optional for Google one tap login, as it does not have a pre-created social verification record in session.',
-		})
-	),
-})
-
-export type VerifySocialVerificationResponse = { readonly verificationId: string }
-export const VerifySocialVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			'The unique verification ID of the SocialVerification record. This ID is required when identifying the user in the current interaction.',
+				'The unique verification ID of the SocialVerification record. This ID is required when identifying the user in the current interaction.',
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreateEnterpriseSsoVerificationPayload = { readonly state: string; readonly redirectUri: string }
-export const CreateEnterpriseSsoVerificationPayload = Schema.Struct({
-	state: Schema.String.annotate({ description: 'The state parameter to pass to the SSO connector.' }),
-	redirectUri: Schema.String.annotate({ description: 'The URI to redirect the user after the SSO authorization is completed.' }),
-})
-
-export type CreateEnterpriseSsoVerificationResponse = { readonly authorizationUri: string; readonly verificationId: string }
-export const CreateEnterpriseSsoVerificationResponse = Schema.Struct({
-	authorizationUri: Schema.String.annotate({ description: 'The SSO authorization URI.' }),
-	verificationId: Schema.String.annotate({
-		description:
-			'The unique verification ID of the newly created EnterpriseSSO verification record. The `verificationId` is required when verifying the SSO authorization response.',
+export type CreateEnterpriseSsoVerificationPayload = { readonly state: string; readonly redirectUri: string } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateEnterpriseSsoVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		state: Schema.String.annotate({ description: 'The state parameter to pass to the SSO connector.' }),
+		redirectUri: Schema.String.annotate({ description: 'The URI to redirect the user after the SSO authorization is completed.' }),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateEnterpriseSsoVerificationResponse = { readonly authorizationUri: string; readonly verificationId: string } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateEnterpriseSsoVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		authorizationUri: Schema.String.annotate({ description: 'The SSO authorization URI.' }),
+		verificationId: Schema.String.annotate({
+			description:
+				'The unique verification ID of the newly created EnterpriseSSO verification record. The `verificationId` is required when verifying the SSO authorization response.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifyEnterpriseSsoVerificationPayload = {
 	readonly connectorData: { readonly [x: string]: Schema.Json }
 	readonly verificationId: string
-}
-export const VerifyEnterpriseSsoVerificationPayload = Schema.Struct({
-	connectorData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Arbitrary data returned by the SSO provider to complete the verification process.',
+} & { readonly [x: string]: Schema.Json }
+export const VerifyEnterpriseSsoVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		connectorData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Arbitrary data returned by the SSO provider to complete the verification process.',
+		}),
+		verificationId: Schema.String.annotate({ description: 'The ID of the EnterpriseSSO verification record.' }),
 	}),
-	verificationId: Schema.String.annotate({ description: 'The ID of the EnterpriseSSO verification record.' }),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type VerifyEnterpriseSsoVerificationResponse = { readonly verificationId: string }
-export const VerifyEnterpriseSsoVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			'The current verified EnterpriseSSO verification record ID. This ID is required when identifying the user in the current interaction.',
-	}),
-})
-
-export type CreateTotpSecretResponse = { readonly verificationId: string; readonly secret: string; readonly secretQrCode: string }
-export const CreateTotpSecretResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description: 'The unique verification ID for the TOTP record. This ID is required to verify the TOTP code.',
-	}),
-	secret: Schema.String.annotate({ description: 'The newly generated TOTP secret.' }),
-	secretQrCode: Schema.String.annotate({
-		description: 'A QR code image data URL for the TOTP secret. The user can scan this QR code with their TOTP authenticator app.',
-	}),
-})
-
-export type VerifyTotpVerificationPayload = { readonly code: string; readonly verificationId?: string }
-export const VerifyTotpVerificationPayload = Schema.Struct({
-	code: Schema.String.annotate({ description: 'The TOTP code to be verified.' }).check(
-		Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-	),
-	verificationId: Schema.optionalKey(
-		Schema.String.annotate({
+export type VerifyEnterpriseSsoVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifyEnterpriseSsoVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
 			description:
-				"The verification ID of the newly created TOTP secret. This ID is required to verify a newly created TOTP secret that needs to be bound to the user account. If not provided, the API will create a new TOTP verification record and verify the code against the user's existing TOTP secret.",
-		})
-	),
-})
-
-export type VerifyTotpVerificationResponse = { readonly verificationId: string }
-export const VerifyTotpVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			'The unique verification ID of the TOTP verification record. For newly created TOTP secret verification record, this ID is required to bind the TOTP secret to the user account through `Profile` API.',
+				'The current verified EnterpriseSSO verification record ID. This ID is required when identifying the user in the current interaction.',
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateTotpSecretResponse = { readonly verificationId: string; readonly secret: string; readonly secretQrCode: string } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateTotpSecretResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description: 'The unique verification ID for the TOTP record. This ID is required to verify the TOTP code.',
+		}),
+		secret: Schema.String.annotate({ description: 'The newly generated TOTP secret.' }),
+		secretQrCode: Schema.String.annotate({
+			description: 'A QR code image data URL for the TOTP secret. The user can scan this QR code with their TOTP authenticator app.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type VerifyTotpVerificationPayload = { readonly code: string; readonly verificationId?: string } & {
+	readonly [x: string]: Schema.Json
+}
+export const VerifyTotpVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		code: Schema.String.annotate({ description: 'The TOTP code to be verified.' }).check(
+			Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+		),
+		verificationId: Schema.optionalKey(
+			Schema.String.annotate({
+				description:
+					"The verification ID of the newly created TOTP secret. This ID is required to verify a newly created TOTP secret that needs to be bound to the user account. If not provided, the API will create a new TOTP verification record and verify the code against the user's existing TOTP secret.",
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type VerifyTotpVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifyTotpVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description:
+				'The unique verification ID of the TOTP verification record. For newly created TOTP secret verification record, this ID is required to bind the TOTP secret to the user account through `Profile` API.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateWebAuthnRegistrationVerificationResponse = {
 	readonly verificationId: string
 	readonly registrationOptions: {
-		readonly rp: { readonly name: string; readonly id?: string }
-		readonly user: { readonly id: string; readonly name: string; readonly displayName: string }
+		readonly rp: { readonly name: string; readonly id?: string } & { readonly [x: string]: Schema.Json }
+		readonly user: { readonly id: string; readonly name: string; readonly displayName: string } & { readonly [x: string]: Schema.Json }
 		readonly challenge: string
-		readonly pubKeyCredParams: ReadonlyArray<{ readonly type: string; readonly alg: number }>
+		readonly pubKeyCredParams: ReadonlyArray<{ readonly type: string; readonly alg: number } & { readonly [x: string]: Schema.Json }>
 		readonly timeout?: number
-		readonly excludeCredentials?: ReadonlyArray<{
-			readonly type: string
-			readonly id: string
-			readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
-		}>
+		readonly excludeCredentials?: ReadonlyArray<
+			{
+				readonly type: string
+				readonly id: string
+				readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
+			} & { readonly [x: string]: Schema.Json }
+		>
 		readonly authenticatorSelection?: {
 			readonly authenticatorAttachment?: 'platform' | 'cross-platform'
 			readonly requireResidentKey?: boolean
 			readonly residentKey?: 'discouraged' | 'preferred' | 'required'
 			readonly userVerification?: 'required' | 'preferred' | 'discouraged'
-		}
+		} & { readonly [x: string]: Schema.Json }
 		readonly attestation?: 'none' | 'indirect' | 'direct' | 'enterprise'
-		readonly extensions?: { readonly appid?: string; readonly credProps?: boolean; readonly hmacCreateSecret?: boolean }
-	}
-}
-export const CreateWebAuthnRegistrationVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			'The unique verification ID for the WebAuthn registration record. This ID is required to verify the WebAuthn registration challenge.',
+		readonly extensions?: { readonly appid?: string; readonly credProps?: boolean; readonly hmacCreateSecret?: boolean } & {
+			readonly [x: string]: Schema.Json
+		}
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const CreateWebAuthnRegistrationVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description:
+				'The unique verification ID for the WebAuthn registration record. This ID is required to verify the WebAuthn registration challenge.',
+		}),
+		registrationOptions: Schema.StructWithRest(
+			Schema.Struct({
+				rp: Schema.StructWithRest(Schema.Struct({ name: Schema.String, id: Schema.optionalKey(Schema.String) }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				]),
+				user: Schema.StructWithRest(Schema.Struct({ id: Schema.String, name: Schema.String, displayName: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				]),
+				challenge: Schema.String,
+				pubKeyCredParams: Schema.Array(
+					Schema.StructWithRest(
+						Schema.Struct({
+							type: Schema.String.annotate({ format: '"public-key"' }),
+							alg: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				timeout: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				excludeCredentials: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"public-key"' }),
+								id: Schema.String,
+								transports: Schema.optionalKey(
+									Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					)
+				),
+				authenticatorSelection: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							authenticatorAttachment: Schema.optionalKey(Schema.Literals(['platform', 'cross-platform'])),
+							requireResidentKey: Schema.optionalKey(Schema.Boolean),
+							residentKey: Schema.optionalKey(Schema.Literals(['discouraged', 'preferred', 'required'])),
+							userVerification: Schema.optionalKey(Schema.Literals(['required', 'preferred', 'discouraged'])),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				attestation: Schema.optionalKey(Schema.Literals(['none', 'indirect', 'direct', 'enterprise'])),
+				extensions: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							appid: Schema.optionalKey(Schema.String),
+							credProps: Schema.optionalKey(Schema.Boolean),
+							hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: 'The WebAuthn registration options that the user needs to create a new WebAuthn credential.' }),
 	}),
-	registrationOptions: Schema.Struct({
-		rp: Schema.Struct({ name: Schema.String, id: Schema.optionalKey(Schema.String) }),
-		user: Schema.Struct({ id: Schema.String, name: Schema.String, displayName: Schema.String }),
-		challenge: Schema.String,
-		pubKeyCredParams: Schema.Array(
-			Schema.Struct({
-				type: Schema.String.annotate({ format: '"public-key"' }),
-				alg: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			})
-		),
-		timeout: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		excludeCredentials: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					type: Schema.String.annotate({ format: '"public-key"' }),
-					id: Schema.String,
-					transports: Schema.optionalKey(
-						Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
-					),
-				})
-			)
-		),
-		authenticatorSelection: Schema.optionalKey(
-			Schema.Struct({
-				authenticatorAttachment: Schema.optionalKey(Schema.Literals(['platform', 'cross-platform'])),
-				requireResidentKey: Schema.optionalKey(Schema.Boolean),
-				residentKey: Schema.optionalKey(Schema.Literals(['discouraged', 'preferred', 'required'])),
-				userVerification: Schema.optionalKey(Schema.Literals(['required', 'preferred', 'discouraged'])),
-			})
-		),
-		attestation: Schema.optionalKey(Schema.Literals(['none', 'indirect', 'direct', 'enterprise'])),
-		extensions: Schema.optionalKey(
-			Schema.Struct({
-				appid: Schema.optionalKey(Schema.String),
-				credProps: Schema.optionalKey(Schema.Boolean),
-				hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
-			})
-		),
-	}).annotate({ description: 'The WebAuthn registration options that the user needs to create a new WebAuthn credential.' }),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifyWebAuthnRegistrationVerificationPayload = {
 	readonly verificationId: string
@@ -835,47 +1111,68 @@ export type VerifyWebAuthnRegistrationVerificationPayload = {
 			readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
 			readonly publicKeyAlgorithm?: number
 			readonly publicKey?: string
-		}
+		} & { readonly [x: string]: Schema.Json }
 		readonly authenticatorAttachment?: 'cross-platform' | 'platform'
 		readonly clientExtensionResults: {
 			readonly appid?: boolean
-			readonly crepProps?: { readonly rk?: boolean }
+			readonly crepProps?: { readonly rk?: boolean } & { readonly [x: string]: Schema.Json }
 			readonly hmacCreateSecret?: boolean
-		}
-	}
-}
-export const VerifyWebAuthnRegistrationVerificationPayload = Schema.Struct({
-	verificationId: Schema.String.annotate({ description: 'The verification ID of the WebAuthn registration record.' }),
-	payload: Schema.Struct({
-		type: Schema.String.annotate({ format: '"WebAuthn"' }),
-		id: Schema.String,
-		rawId: Schema.String,
-		response: Schema.Struct({
-			clientDataJSON: Schema.String,
-			attestationObject: Schema.String,
-			authenticatorData: Schema.optionalKey(Schema.String),
-			transports: Schema.optionalKey(
-				Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
-			),
-			publicKeyAlgorithm: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			publicKey: Schema.optionalKey(Schema.String),
-		}),
-		authenticatorAttachment: Schema.optionalKey(Schema.Literals(['cross-platform', 'platform'])),
-		clientExtensionResults: Schema.Struct({
-			appid: Schema.optionalKey(Schema.Boolean),
-			crepProps: Schema.optionalKey(Schema.Struct({ rk: Schema.optionalKey(Schema.Boolean) })),
-			hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
-		}),
-	}).annotate({ description: "The WebAuthn attestation response from the user's WebAuthn credential." }),
-})
-
-export type VerifyWebAuthnRegistrationVerificationResponse = { readonly verificationId: string }
-export const VerifyWebAuthnRegistrationVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			'The unique verification ID of the WebAuthn registration record. This `verificationId` is required to bind the WebAuthn credential to the user account via the `Profile` API.',
+		} & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const VerifyWebAuthnRegistrationVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({ description: 'The verification ID of the WebAuthn registration record.' }),
+		payload: Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"WebAuthn"' }),
+				id: Schema.String,
+				rawId: Schema.String,
+				response: Schema.StructWithRest(
+					Schema.Struct({
+						clientDataJSON: Schema.String,
+						attestationObject: Schema.String,
+						authenticatorData: Schema.optionalKey(Schema.String),
+						transports: Schema.optionalKey(
+							Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
+						),
+						publicKeyAlgorithm: Schema.optionalKey(
+							Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+						),
+						publicKey: Schema.optionalKey(Schema.String),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				authenticatorAttachment: Schema.optionalKey(Schema.Literals(['cross-platform', 'platform'])),
+				clientExtensionResults: Schema.StructWithRest(
+					Schema.Struct({
+						appid: Schema.optionalKey(Schema.Boolean),
+						crepProps: Schema.optionalKey(
+							Schema.StructWithRest(Schema.Struct({ rk: Schema.optionalKey(Schema.Boolean) }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						),
+						hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: "The WebAuthn attestation response from the user's WebAuthn credential." }),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type VerifyWebAuthnRegistrationVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifyWebAuthnRegistrationVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description:
+				'The unique verification ID of the WebAuthn registration record. This `verificationId` is required to bind the WebAuthn credential to the user account via the `Profile` API.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateWebAuthnAuthenticationVerificationResponse = {
 	readonly verificationId: string
@@ -883,44 +1180,60 @@ export type CreateWebAuthnAuthenticationVerificationResponse = {
 		readonly challenge: string
 		readonly timeout?: number
 		readonly rpId?: string
-		readonly allowCredentials?: ReadonlyArray<{
-			readonly type: string
-			readonly id: string
-			readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
-		}>
+		readonly allowCredentials?: ReadonlyArray<
+			{
+				readonly type: string
+				readonly id: string
+				readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
+			} & { readonly [x: string]: Schema.Json }
+		>
 		readonly userVerification?: 'required' | 'preferred' | 'discouraged'
-		readonly extensions?: { readonly appid?: string; readonly credProps?: boolean; readonly hmacCreateSecret?: boolean }
-	}
-}
-export const CreateWebAuthnAuthenticationVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description: 'The unique ID for the WebAuthn authentication record, required to verify the WebAuthn authentication challenge.',
-	}),
-	authenticationOptions: Schema.Struct({
-		challenge: Schema.String,
-		timeout: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		rpId: Schema.optionalKey(Schema.String),
-		allowCredentials: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					type: Schema.String.annotate({ format: '"public-key"' }),
-					id: Schema.String,
-					transports: Schema.optionalKey(
-						Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
-					),
-				})
-			)
-		),
-		userVerification: Schema.optionalKey(Schema.Literals(['required', 'preferred', 'discouraged'])),
-		extensions: Schema.optionalKey(
+		readonly extensions?: { readonly appid?: string; readonly credProps?: boolean; readonly hmacCreateSecret?: boolean } & {
+			readonly [x: string]: Schema.Json
+		}
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const CreateWebAuthnAuthenticationVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description: 'The unique ID for the WebAuthn authentication record, required to verify the WebAuthn authentication challenge.',
+		}),
+		authenticationOptions: Schema.StructWithRest(
 			Schema.Struct({
-				appid: Schema.optionalKey(Schema.String),
-				credProps: Schema.optionalKey(Schema.Boolean),
-				hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
-			})
-		),
-	}).annotate({ description: 'Options for the user to authenticate with their WebAuthn credential.' }),
-})
+				challenge: Schema.String,
+				timeout: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				rpId: Schema.optionalKey(Schema.String),
+				allowCredentials: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"public-key"' }),
+								id: Schema.String,
+								transports: Schema.optionalKey(
+									Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					)
+				),
+				userVerification: Schema.optionalKey(Schema.Literals(['required', 'preferred', 'discouraged'])),
+				extensions: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							appid: Schema.optionalKey(Schema.String),
+							credProps: Schema.optionalKey(Schema.Boolean),
+							hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: 'Options for the user to authenticate with their WebAuthn credential.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifyWebAuthnAuthenticationVerificationPayload = {
 	readonly verificationId: string
@@ -931,53 +1244,75 @@ export type VerifyWebAuthnAuthenticationVerificationPayload = {
 		readonly authenticatorAttachment?: 'cross-platform' | 'platform'
 		readonly clientExtensionResults: {
 			readonly appid?: boolean
-			readonly crepProps?: { readonly rk?: boolean }
+			readonly crepProps?: { readonly rk?: boolean } & { readonly [x: string]: Schema.Json }
 			readonly hmacCreateSecret?: boolean
-		}
+		} & { readonly [x: string]: Schema.Json }
 		readonly response: {
 			readonly clientDataJSON: string
 			readonly authenticatorData: string
 			readonly signature: string
 			readonly userHandle?: string
-		}
-	}
-}
-export const VerifyWebAuthnAuthenticationVerificationPayload = Schema.Struct({
-	verificationId: Schema.String.annotate({ description: 'The verification ID of the WebAuthn authentication verification record.' }),
-	payload: Schema.Struct({
-		type: Schema.String.annotate({ format: '"WebAuthn"' }),
-		id: Schema.String,
-		rawId: Schema.String,
-		authenticatorAttachment: Schema.optionalKey(Schema.Literals(['cross-platform', 'platform'])),
-		clientExtensionResults: Schema.Struct({
-			appid: Schema.optionalKey(Schema.Boolean),
-			crepProps: Schema.optionalKey(Schema.Struct({ rk: Schema.optionalKey(Schema.Boolean) })),
-			hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
-		}),
-		response: Schema.Struct({
-			clientDataJSON: Schema.String,
-			authenticatorData: Schema.String,
-			signature: Schema.String,
-			userHandle: Schema.optionalKey(Schema.String),
-		}),
-	}).annotate({ description: "The WebAuthn assertion response from the user's WebAuthn credential." }),
-})
-
-export type VerifyWebAuthnAuthenticationVerificationResponse = { readonly verificationId: string }
-export const VerifyWebAuthnAuthenticationVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description: 'The unique verification ID of the WebAuthn authentication verification record.',
+		} & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const VerifyWebAuthnAuthenticationVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({ description: 'The verification ID of the WebAuthn authentication verification record.' }),
+		payload: Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"WebAuthn"' }),
+				id: Schema.String,
+				rawId: Schema.String,
+				authenticatorAttachment: Schema.optionalKey(Schema.Literals(['cross-platform', 'platform'])),
+				clientExtensionResults: Schema.StructWithRest(
+					Schema.Struct({
+						appid: Schema.optionalKey(Schema.Boolean),
+						crepProps: Schema.optionalKey(
+							Schema.StructWithRest(Schema.Struct({ rk: Schema.optionalKey(Schema.Boolean) }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						),
+						hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				response: Schema.StructWithRest(
+					Schema.Struct({
+						clientDataJSON: Schema.String,
+						authenticatorData: Schema.String,
+						signature: Schema.String,
+						userHandle: Schema.optionalKey(Schema.String),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: "The WebAuthn assertion response from the user's WebAuthn credential." }),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type VerifyWebAuthnAuthenticationVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifyWebAuthnAuthenticationVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description: 'The unique verification ID of the WebAuthn authentication verification record.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateSignInPasskeyAuthenticationWithIdentifierPayload = {
-	readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
-}
-export const CreateSignInPasskeyAuthenticationWithIdentifierPayload = Schema.Struct({
-	identifier: Schema.Struct({ type: Schema.Literals(['username', 'email', 'phone']), value: Schema.String }).annotate({
-		description: 'The identifier used to look up the user.',
+	readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const CreateSignInPasskeyAuthenticationWithIdentifierPayload = Schema.StructWithRest(
+	Schema.Struct({
+		identifier: Schema.StructWithRest(Schema.Struct({ type: Schema.Literals(['username', 'email', 'phone']), value: Schema.String }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]).annotate({ description: 'The identifier used to look up the user.' }),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateSignInPasskeyAuthenticationWithIdentifierResponse = {
 	readonly verificationId: string
@@ -985,44 +1320,60 @@ export type CreateSignInPasskeyAuthenticationWithIdentifierResponse = {
 		readonly challenge: string
 		readonly timeout?: number
 		readonly rpId?: string
-		readonly allowCredentials?: ReadonlyArray<{
-			readonly type: string
-			readonly id: string
-			readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
-		}>
+		readonly allowCredentials?: ReadonlyArray<
+			{
+				readonly type: string
+				readonly id: string
+				readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
+			} & { readonly [x: string]: Schema.Json }
+		>
 		readonly userVerification?: 'required' | 'preferred' | 'discouraged'
-		readonly extensions?: { readonly appid?: string; readonly credProps?: boolean; readonly hmacCreateSecret?: boolean }
-	}
-}
-export const CreateSignInPasskeyAuthenticationWithIdentifierResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description: 'The unique verification ID of the passkey sign-in WebAuthn authentication record.',
-	}),
-	authenticationOptions: Schema.Struct({
-		challenge: Schema.String,
-		timeout: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		rpId: Schema.optionalKey(Schema.String),
-		allowCredentials: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					type: Schema.String.annotate({ format: '"public-key"' }),
-					id: Schema.String,
-					transports: Schema.optionalKey(
-						Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
-					),
-				})
-			)
-		),
-		userVerification: Schema.optionalKey(Schema.Literals(['required', 'preferred', 'discouraged'])),
-		extensions: Schema.optionalKey(
+		readonly extensions?: { readonly appid?: string; readonly credProps?: boolean; readonly hmacCreateSecret?: boolean } & {
+			readonly [x: string]: Schema.Json
+		}
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const CreateSignInPasskeyAuthenticationWithIdentifierResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description: 'The unique verification ID of the passkey sign-in WebAuthn authentication record.',
+		}),
+		authenticationOptions: Schema.StructWithRest(
 			Schema.Struct({
-				appid: Schema.optionalKey(Schema.String),
-				credProps: Schema.optionalKey(Schema.Boolean),
-				hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
-			})
-		),
-	}).annotate({ description: 'The WebAuthn authentication options for initiating passkey sign-in.' }),
-})
+				challenge: Schema.String,
+				timeout: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				rpId: Schema.optionalKey(Schema.String),
+				allowCredentials: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"public-key"' }),
+								id: Schema.String,
+								transports: Schema.optionalKey(
+									Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					)
+				),
+				userVerification: Schema.optionalKey(Schema.Literals(['required', 'preferred', 'discouraged'])),
+				extensions: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							appid: Schema.optionalKey(Schema.String),
+							credProps: Schema.optionalKey(Schema.Boolean),
+							hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: 'The WebAuthn authentication options for initiating passkey sign-in.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifySignInPasskeyAuthenticationPayload = {
 	readonly verificationId?: string
@@ -1033,145 +1384,207 @@ export type VerifySignInPasskeyAuthenticationPayload = {
 		readonly authenticatorAttachment?: 'cross-platform' | 'platform'
 		readonly clientExtensionResults: {
 			readonly appid?: boolean
-			readonly crepProps?: { readonly rk?: boolean }
+			readonly crepProps?: { readonly rk?: boolean } & { readonly [x: string]: Schema.Json }
 			readonly hmacCreateSecret?: boolean
-		}
+		} & { readonly [x: string]: Schema.Json }
 		readonly response: {
 			readonly clientDataJSON: string
 			readonly authenticatorData: string
 			readonly signature: string
 			readonly userHandle?: string
-		}
-	}
+		} & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const VerifySignInPasskeyAuthenticationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.optionalKey(
+			Schema.String.annotate({
+				description:
+					'The verification ID of the passkey sign-in WebAuthn authentication record. Optional when using discoverable passkey flow with preflight authentication options.',
+			})
+		),
+		payload: Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"WebAuthn"' }),
+				id: Schema.String,
+				rawId: Schema.String,
+				authenticatorAttachment: Schema.optionalKey(Schema.Literals(['cross-platform', 'platform'])),
+				clientExtensionResults: Schema.StructWithRest(
+					Schema.Struct({
+						appid: Schema.optionalKey(Schema.Boolean),
+						crepProps: Schema.optionalKey(
+							Schema.StructWithRest(Schema.Struct({ rk: Schema.optionalKey(Schema.Boolean) }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						),
+						hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				response: Schema.StructWithRest(
+					Schema.Struct({
+						clientDataJSON: Schema.String,
+						authenticatorData: Schema.String,
+						signature: Schema.String,
+						userHandle: Schema.optionalKey(Schema.String),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: "The WebAuthn assertion response from the user's passkey credential." }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type VerifySignInPasskeyAuthenticationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifySignInPasskeyAuthenticationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description: 'The unique verification ID of the passkey sign-in WebAuthn authentication verification record.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type GenerateBackupCodesResponse = { readonly verificationId: string; readonly codes: ReadonlyArray<string> } & {
+	readonly [x: string]: Schema.Json
 }
-export const VerifySignInPasskeyAuthenticationPayload = Schema.Struct({
-	verificationId: Schema.optionalKey(
-		Schema.String.annotate({
+export const GenerateBackupCodesResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
 			description:
-				'The verification ID of the passkey sign-in WebAuthn authentication record. Optional when using discoverable passkey flow with preflight authentication options.',
-		})
-	),
-	payload: Schema.Struct({
-		type: Schema.String.annotate({ format: '"WebAuthn"' }),
-		id: Schema.String,
-		rawId: Schema.String,
-		authenticatorAttachment: Schema.optionalKey(Schema.Literals(['cross-platform', 'platform'])),
-		clientExtensionResults: Schema.Struct({
-			appid: Schema.optionalKey(Schema.Boolean),
-			crepProps: Schema.optionalKey(Schema.Struct({ rk: Schema.optionalKey(Schema.Boolean) })),
-			hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
+				'The unique verification ID of the newly created BackupCode verification record. This ID is required when adding the backup codes to the user profile via the Profile API.',
 		}),
-		response: Schema.Struct({
-			clientDataJSON: Schema.String,
-			authenticatorData: Schema.String,
-			signature: Schema.String,
-			userHandle: Schema.optionalKey(Schema.String),
-		}),
-	}).annotate({ description: "The WebAuthn assertion response from the user's passkey credential." }),
-})
-
-export type VerifySignInPasskeyAuthenticationResponse = { readonly verificationId: string }
-export const VerifySignInPasskeyAuthenticationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description: 'The unique verification ID of the passkey sign-in WebAuthn authentication verification record.',
+		codes: Schema.Array(Schema.String).annotate({ description: 'The generated backup codes.' }),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type GenerateBackupCodesResponse = { readonly verificationId: string; readonly codes: ReadonlyArray<string> }
-export const GenerateBackupCodesResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			'The unique verification ID of the newly created BackupCode verification record. This ID is required when adding the backup codes to the user profile via the Profile API.',
+export type VerifyBackupCodePayload = { readonly code: string } & { readonly [x: string]: Schema.Json }
+export const VerifyBackupCodePayload = Schema.StructWithRest(
+	Schema.Struct({
+		code: Schema.String.annotate({ description: 'The backup code to verify.' }).check(
+			Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+		),
 	}),
-	codes: Schema.Array(Schema.String).annotate({ description: 'The generated backup codes.' }),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type VerifyBackupCodePayload = { readonly code: string }
-export const VerifyBackupCodePayload = Schema.Struct({
-	code: Schema.String.annotate({ description: 'The backup code to verify.' }).check(
-		Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-	),
-})
-
-export type VerifyBackupCodeResponse = { readonly verificationId: string }
-export const VerifyBackupCodeResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({ description: 'The unique verification ID of the BackupCode verification record.' }),
-})
+export type VerifyBackupCodeResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifyBackupCodeResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({ description: 'The unique verification ID of the BackupCode verification record.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateNewPasswordIdentityVerificationPayload = {
-	readonly identifier: { readonly type: string; readonly value: string }
+	readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
 	readonly password: string
-}
-export const CreateNewPasswordIdentityVerificationPayload = Schema.Struct({
-	identifier: Schema.Struct({
-		type: Schema.String.annotate({ format: '"username"' }),
-		value: Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^[A-Z_a-z]\w*$/).annotate({ expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$' })
-		),
-	}).annotate({
-		description:
-			"The unique user identifier.  <br/> Currently, only `username` is accepted. For `email` or `phone` registration, a `CodeVerification` record must be created and used to verify the user's email or phone number identifier.",
+} & { readonly [x: string]: Schema.Json }
+export const CreateNewPasswordIdentityVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		identifier: Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"username"' }),
+				value: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^[A-Z_a-z]\w*$/u).annotate({ expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$' })
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({
+			description:
+				"The unique user identifier.  <br/> Currently, only `username` is accepted. For `email` or `phone` registration, a `CodeVerification` record must be created and used to verify the user's email or phone number identifier.",
+		}),
+		password: Schema.String.annotate({
+			description: 'The new user password. (A password digest will be created and stored securely in the verification record.)',
+		}),
 	}),
-	password: Schema.String.annotate({
-		description: 'The new user password. (A password digest will be created and stored securely in the verification record.)',
-	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreateNewPasswordIdentityVerificationResponse = { readonly verificationId: string }
-export const CreateNewPasswordIdentityVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			'The unique verification ID of the newly created NewPasswordIdentity verification record. The `verificationId` is required when creating a new user account via the `Identification` API.',
+export type CreateNewPasswordIdentityVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const CreateNewPasswordIdentityVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description:
+				'The unique verification ID of the newly created NewPasswordIdentity verification record. The `verificationId` is required when creating a new user account via the `Identification` API.',
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type VerifyOneTimeTokenVerificationPayload = {
-	readonly identifier: { readonly type: string; readonly value: string }
+	readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
 	readonly token: string
-}
-export const VerifyOneTimeTokenVerificationPayload = Schema.Struct({
-	identifier: Schema.Struct({
-		type: Schema.String.annotate({ format: '"email"' }),
-		value: Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^\S+@\S+\.\S+$/).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+} & { readonly [x: string]: Schema.Json }
+export const VerifyOneTimeTokenVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		identifier: Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"email"' }),
+				value: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: 'The unique user identifier.  <br/> Currently, only `email` is accepted.' }),
+		token: Schema.String.annotate({ description: 'The one-time token to be verified.' }).check(
+			Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
 		),
-	}).annotate({ description: 'The unique user identifier.  <br/> Currently, only `email` is accepted.' }),
-	token: Schema.String.annotate({ description: 'The one-time token to be verified.' }).check(
-		Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-	),
-})
-
-export type VerifyOneTimeTokenVerificationResponse = { readonly verificationId: string }
-export const VerifyOneTimeTokenVerificationResponse = Schema.Struct({
-	verificationId: Schema.String.annotate({
-		description:
-			"The unique ID of the verification record. Required for user identification via the `Identification` API or to bind the identifier to the user's account via the `Profile` API.",
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type VerifyOneTimeTokenVerificationResponse = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const VerifyOneTimeTokenVerificationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({
+			description:
+				"The unique ID of the verification record. Required for user identification via the `Identification` API or to bind the identifier to the user's account via the `Profile` API.",
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type AddUserProfilePayload =
-	| { readonly type: string; readonly value: string }
-	| { readonly type: string; readonly value: string }
-	| { readonly type: string; readonly verificationId: string }
-	| { readonly type: string; readonly verificationId: string }
-	| { readonly type: string; readonly verificationId: string }
-	| { readonly type: string; readonly values: { readonly [x: string]: Schema.Json } }
+	| ({ readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json })
+	| ({ readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json })
+	| ({ readonly type: string; readonly verificationId: string } & { readonly [x: string]: Schema.Json })
+	| ({ readonly type: string; readonly verificationId: string } & { readonly [x: string]: Schema.Json })
+	| ({ readonly type: string; readonly verificationId: string } & { readonly [x: string]: Schema.Json })
+	| ({ readonly type: string; readonly values: { readonly [x: string]: Schema.Json } } & { readonly [x: string]: Schema.Json })
 export const AddUserProfilePayload = Schema.Union(
 	[
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"username"' }),
-			value: Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^[A-Z_a-z]\w*$/).annotate({ expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$' })
-			),
-		}),
-		Schema.Struct({ type: Schema.String.annotate({ format: '"password"' }), value: Schema.String }),
-		Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), verificationId: Schema.String }),
-		Schema.Struct({ type: Schema.String.annotate({ format: '"phone"' }), verificationId: Schema.String }),
-		Schema.Struct({ type: Schema.String.annotate({ format: '"social"' }), verificationId: Schema.String }),
-		Schema.Struct({
-			type: Schema.String.annotate({ format: '"extraProfile"' }),
-			values: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-		}),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"username"' }),
+				value: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^[A-Z_a-z]\w*$/u).annotate({ expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$' })
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(Schema.Struct({ type: Schema.String.annotate({ format: '"password"' }), value: Schema.String }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		Schema.StructWithRest(Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), verificationId: Schema.String }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		Schema.StructWithRest(Schema.Struct({ type: Schema.String.annotate({ format: '"phone"' }), verificationId: Schema.String }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		Schema.StructWithRest(Schema.Struct({ type: Schema.String.annotate({ format: '"social"' }), verificationId: Schema.String }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+		Schema.StructWithRest(
+			Schema.Struct({
+				type: Schema.String.annotate({ format: '"extraProfile"' }),
+				values: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
@@ -1203,80 +1616,110 @@ export const UploadAvatarFormData = Schema.Union([
 	Schema.Array(Schema.Json.annotate({ expected: 'JSON value' })),
 ])
 
-export type UploadAvatarResponse = { readonly url: string }
-export const UploadAvatarResponse = Schema.Struct({ url: Schema.String })
+export type UploadAvatarResponse = { readonly url: string } & { readonly [x: string]: Schema.Json }
+export const UploadAvatarResponse = Schema.StructWithRest(Schema.Struct({ url: Schema.String }), [
+	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+])
 
-export type ResetUserPasswordPayload = { readonly password: string }
-export const ResetUserPasswordPayload = Schema.Struct({
-	password: Schema.String.annotate({
-		description:
-			'The new password to update. The password must meet the password policy requirements and can not be the same as the current password.',
+export type ResetUserPasswordPayload = { readonly password: string } & { readonly [x: string]: Schema.Json }
+export const ResetUserPasswordPayload = Schema.StructWithRest(
+	Schema.Struct({
+		password: Schema.String.annotate({
+			description:
+				'The new password to update. The password must meet the password policy requirements and can not be the same as the current password.',
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type BindPasskeyPayload = { readonly verificationId: string }
-export const BindPasskeyPayload = Schema.Struct({
-	verificationId: Schema.String.annotate({ description: 'The ID of the WebAuthn verification record to bind as a passkey.' }),
-})
+export type BindPasskeyPayload = { readonly verificationId: string } & { readonly [x: string]: Schema.Json }
+export const BindPasskeyPayload = Schema.StructWithRest(
+	Schema.Struct({
+		verificationId: Schema.String.annotate({ description: 'The ID of the WebAuthn verification record to bind as a passkey.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type BindMfaVerificationPayload = {
 	readonly type: 'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'
 	readonly verificationId: string
-}
-export const BindMfaVerificationPayload = Schema.Struct({
-	type: Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode']).annotate({
-		description: 'The type of MFA.',
+} & { readonly [x: string]: Schema.Json }
+export const BindMfaVerificationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		type: Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode']).annotate({
+			description: 'The type of MFA.',
+		}),
+		verificationId: Schema.String.annotate({ description: 'The ID of the MFA verification record.' }),
 	}),
-	verificationId: Schema.String.annotate({ description: 'The ID of the MFA verification record.' }),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetEnabledSsoConnectorsParams = { readonly email: string }
 export const GetEnabledSsoConnectorsParams = Schema.Struct({ email: Schema.String.annotate({ format: 'email' }) })
 
-export type GetEnabledSsoConnectorsResponse = { readonly connectorIds: ReadonlyArray<string> }
-export const GetEnabledSsoConnectorsResponse = Schema.Struct({
-	connectorIds: Schema.Array(Schema.String).annotate({
-		description: 'The list of enabled SSO connectorIds. Returns an empty array if no enabled SSO connectors are found.',
+export type GetEnabledSsoConnectorsResponse = { readonly connectorIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+export const GetEnabledSsoConnectorsResponse = Schema.StructWithRest(
+	Schema.Struct({
+		connectorIds: Schema.Array(Schema.String).annotate({
+			description: 'The list of enabled SSO connectorIds. Returns an empty array if no enabled SSO connectors are found.',
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateSignInPasskeyAuthenticationResponse = {
 	readonly authenticationOptions: {
 		readonly challenge: string
 		readonly timeout?: number
 		readonly rpId?: string
-		readonly allowCredentials?: ReadonlyArray<{
-			readonly type: string
-			readonly id: string
-			readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
-		}>
+		readonly allowCredentials?: ReadonlyArray<
+			{
+				readonly type: string
+				readonly id: string
+				readonly transports?: ReadonlyArray<'usb' | 'nfc' | 'ble' | 'internal' | 'cable' | 'hybrid' | 'smart-card'>
+			} & { readonly [x: string]: Schema.Json }
+		>
 		readonly userVerification?: 'required' | 'preferred' | 'discouraged'
-		readonly extensions?: { readonly appid?: string; readonly credProps?: boolean; readonly hmacCreateSecret?: boolean }
-	}
-}
-export const CreateSignInPasskeyAuthenticationResponse = Schema.Struct({
-	authenticationOptions: Schema.Struct({
-		challenge: Schema.String,
-		timeout: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		rpId: Schema.optionalKey(Schema.String),
-		allowCredentials: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					type: Schema.String.annotate({ format: '"public-key"' }),
-					id: Schema.String,
-					transports: Schema.optionalKey(
-						Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
-					),
-				})
-			)
-		),
-		userVerification: Schema.optionalKey(Schema.Literals(['required', 'preferred', 'discouraged'])),
-		extensions: Schema.optionalKey(
+		readonly extensions?: { readonly appid?: string; readonly credProps?: boolean; readonly hmacCreateSecret?: boolean } & {
+			readonly [x: string]: Schema.Json
+		}
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const CreateSignInPasskeyAuthenticationResponse = Schema.StructWithRest(
+	Schema.Struct({
+		authenticationOptions: Schema.StructWithRest(
 			Schema.Struct({
-				appid: Schema.optionalKey(Schema.String),
-				credProps: Schema.optionalKey(Schema.Boolean),
-				hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
-			})
-		),
-	}).annotate({ description: 'The WebAuthn authentication options for initiating passkey sign-in.' }),
-})
+				challenge: Schema.String,
+				timeout: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				rpId: Schema.optionalKey(Schema.String),
+				allowCredentials: Schema.optionalKey(
+					Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"public-key"' }),
+								id: Schema.String,
+								transports: Schema.optionalKey(
+									Schema.Array(Schema.Literals(['usb', 'nfc', 'ble', 'internal', 'cable', 'hybrid', 'smart-card']))
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					)
+				),
+				userVerification: Schema.optionalKey(Schema.Literals(['required', 'preferred', 'discouraged'])),
+				extensions: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							appid: Schema.optionalKey(Schema.String),
+							credProps: Schema.optionalKey(Schema.Boolean),
+							hmacCreateSecret: Schema.optionalKey(Schema.Boolean),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: 'The WebAuthn authentication options for initiating passkey sign-in.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

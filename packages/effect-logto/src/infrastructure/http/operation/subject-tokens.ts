@@ -8,9 +8,16 @@ import type { SubjectTokensOperations } from '../../../application/operation/sub
 import { CreateResponse } from '../../../domain/schema/subject-tokens.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeSubjectTokens = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): SubjectTokensOperations => ({
+export const makeSubjectTokens = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): SubjectTokensOperations => ({
 	create: options =>
-		HttpClientRequest.post(`/api/subject-tokens`).pipe(
+		HttpClientRequest.post('/api/subject-tokens').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),

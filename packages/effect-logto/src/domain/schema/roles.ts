@@ -29,65 +29,84 @@ export const ListParams = Schema.Struct({
 	search_params: Schema.optionalKey(SearchParams),
 })
 
-export type ListResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly description: string
-	readonly type: 'User' | 'MachineToMachine'
-	readonly isDefault: boolean
-	readonly usersCount: number
-	readonly featuredUsers: ReadonlyArray<{ readonly id: string; readonly avatar: string | null; readonly name: string | null }>
-	readonly applicationsCount: number
-	readonly featuredApplications: ReadonlyArray<{
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
 		readonly id: string
 		readonly name: string
-		readonly type: 'Native' | 'SPA' | 'Traditional' | 'MachineToMachine' | 'Protected' | 'SAML'
-	}>
-}>
+		readonly description: string
+		readonly type: 'User' | 'MachineToMachine'
+		readonly isDefault: boolean
+		readonly usersCount: number
+		readonly featuredUsers: ReadonlyArray<
+			{ readonly id: string; readonly avatar: string | null; readonly name: string | null } & { readonly [x: string]: Schema.Json }
+		>
+		readonly applicationsCount: number
+		readonly featuredApplications: ReadonlyArray<
+			{
+				readonly id: string
+				readonly name: string
+				readonly type: 'Native' | 'SPA' | 'Traditional' | 'MachineToMachine' | 'Protected' | 'SAML'
+			} & { readonly [x: string]: Schema.Json }
+		>
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		type: Schema.Literals(['User', 'MachineToMachine']),
-		isDefault: Schema.Boolean,
-		usersCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		featuredUsers: Schema.Array(
-			Schema.Struct({
-				id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' })
-				),
-				avatar: Schema.Union([
-					Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-					Schema.Null,
-				]),
-				name: Schema.Union([
-					Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-					Schema.Null,
-				]),
-			})
-		),
-		applicationsCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		featuredApplications: Schema.Array(
-			Schema.Struct({
-				id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-				),
-				name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-				),
-				type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
-			})
-		),
-	})
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			type: Schema.Literals(['User', 'MachineToMachine']),
+			isDefault: Schema.Boolean,
+			usersCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			featuredUsers: Schema.Array(
+				Schema.StructWithRest(
+					Schema.Struct({
+						id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+							Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })
+						),
+						avatar: Schema.Union([
+							Schema.String.check(
+								Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })
+							),
+							Schema.Null,
+						]),
+						name: Schema.Union([
+							Schema.String.check(
+								Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+							),
+							Schema.Null,
+						]),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				)
+			),
+			applicationsCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			featuredApplications: Schema.Array(
+				Schema.StructWithRest(
+					Schema.Struct({
+						id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+							Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+						),
+						name: Schema.String.check(
+							Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+						).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+						type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				)
+			),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type CreatePayload = {
@@ -97,27 +116,32 @@ export type CreatePayload = {
 	readonly type?: 'User' | 'MachineToMachine'
 	readonly isDefault?: boolean
 	readonly scopeIds?: ReadonlyArray<string>
-}
-export const CreatePayload = Schema.Struct({
-	tenantId: Schema.optionalKey(Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))),
-	name: Schema.String.annotate({ description: 'The name of the role. It should be unique within the tenant.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-	description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	type: Schema.optionalKey(
-		Schema.Literals(['User', 'MachineToMachine']).annotate({
-			description: 'The type of the role. It cannot be changed after creation.',
-		})
-	),
-	isDefault: Schema.optionalKey(Schema.Boolean),
-	scopeIds: Schema.optionalKey(
-		Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))).annotate({
-			description: 'The initial API resource scopes assigned to the role.',
-		})
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const CreatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.optionalKey(
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' }))
+		),
+		name: Schema.String.annotate({ description: 'The name of the role. It should be unique within the tenant.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+		description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		type: Schema.optionalKey(
+			Schema.Literals(['User', 'MachineToMachine']).annotate({
+				description: 'The type of the role. It cannot be changed after creation.',
+			})
+		),
+		isDefault: Schema.optionalKey(Schema.Boolean),
+		scopeIds: Schema.optionalKey(
+			Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))).annotate(
+				{ description: 'The initial API resource scopes assigned to the role.' }
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateResponse = {
 	readonly tenantId: string
@@ -126,21 +150,24 @@ export type CreateResponse = {
 	readonly description: string
 	readonly type: 'User' | 'MachineToMachine'
 	readonly isDefault: boolean
-}
-export const CreateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	type: Schema.Literals(['User', 'MachineToMachine']),
-	isDefault: Schema.Boolean,
-})
+} & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		type: Schema.Literals(['User', 'MachineToMachine']),
+		isDefault: Schema.Boolean,
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetResponse = {
 	readonly tenantId: string
@@ -149,36 +176,44 @@ export type GetResponse = {
 	readonly description: string
 	readonly type: 'User' | 'MachineToMachine'
 	readonly isDefault: boolean
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	type: Schema.Literals(['User', 'MachineToMachine']),
-	isDefault: Schema.Boolean,
-})
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		type: Schema.Literals(['User', 'MachineToMachine']),
+		isDefault: Schema.Boolean,
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type UpdatePayload = { readonly name?: string; readonly description?: string; readonly isDefault?: boolean }
-export const UpdatePayload = Schema.Struct({
-	name: Schema.optionalKey(
-		Schema.String.annotate({ description: 'The name of the role. It should be unique within the tenant.' })
-			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-	),
-	description: Schema.optionalKey(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		)
-	),
-	isDefault: Schema.optionalKey(Schema.Boolean),
-})
+export type UpdatePayload = { readonly name?: string; readonly description?: string; readonly isDefault?: boolean } & {
+	readonly [x: string]: Schema.Json
+}
+export const UpdatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		name: Schema.optionalKey(
+			Schema.String.annotate({ description: 'The name of the role. It should be unique within the tenant.' })
+				.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+		),
+		description: Schema.optionalKey(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			)
+		),
+		isDefault: Schema.optionalKey(Schema.Boolean),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateResponse = {
 	readonly tenantId: string
@@ -187,21 +222,24 @@ export type UpdateResponse = {
 	readonly description: string
 	readonly type: 'User' | 'MachineToMachine'
 	readonly isDefault: boolean
-}
-export const UpdateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	type: Schema.Literals(['User', 'MachineToMachine']),
-	isDefault: Schema.Boolean,
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpdateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		type: Schema.Literals(['User', 'MachineToMachine']),
+		isDefault: Schema.Boolean,
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListUsersParams = { readonly page?: number; readonly page_size?: number; readonly search_params?: SearchParams }
 export const ListUsersParams = Schema.Struct({
@@ -218,167 +256,199 @@ export const ListUsersParams = Schema.Struct({
 	search_params: Schema.optionalKey(SearchParams),
 })
 
-export type ListUsersResponse = ReadonlyArray<{
-	readonly id: string
-	readonly username: string | null
-	readonly primaryEmail: string | null
-	readonly primaryPhone: string | null
-	readonly name: string | null
-	readonly avatar: string | null
-	readonly customData: { readonly [x: string]: Schema.Json }
-	readonly identities: { readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } } }
-	readonly lastSignInAt: number | null
-	readonly createdAt: number
-	readonly updatedAt: number
-	readonly profile: {
-		readonly familyName?: string
-		readonly givenName?: string
-		readonly middleName?: string
-		readonly nickname?: string
-		readonly preferredUsername?: string
-		readonly profile?: string
-		readonly website?: string
-		readonly gender?: string
-		readonly birthdate?: string
-		readonly zoneinfo?: string
-		readonly locale?: string
-		readonly address?: {
-			readonly formatted?: string
-			readonly streetAddress?: string
-			readonly locality?: string
-			readonly region?: string
-			readonly postalCode?: string
-			readonly country?: string
-		}
-	}
-	readonly applicationId: string | null
-	readonly cimdClientId: string | null
-	readonly isSuspended: boolean
-	readonly hasPassword?: boolean
-	readonly hasSecurityVerificationMethod?: boolean
-	readonly ssoIdentities?: ReadonlyArray<{
-		readonly tenantId: string
+export type ListUsersResponse = ReadonlyArray<
+	{
 		readonly id: string
-		readonly userId: string
-		readonly issuer: string
-		readonly identityId: string
-		readonly detail: { readonly [x: string]: Schema.Json }
+		readonly username: string | null
+		readonly primaryEmail: string | null
+		readonly primaryPhone: string | null
+		readonly name: string | null
+		readonly avatar: string | null
+		readonly customData: { readonly [x: string]: Schema.Json }
+		readonly identities: {
+			readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } } & {
+				readonly [x: string]: Schema.Json
+			}
+		}
+		readonly lastSignInAt: number | null
 		readonly createdAt: number
 		readonly updatedAt: number
-		readonly ssoConnectorId: string
-	}>
-}>
+		readonly profile: {
+			readonly familyName?: string
+			readonly givenName?: string
+			readonly middleName?: string
+			readonly nickname?: string
+			readonly preferredUsername?: string
+			readonly profile?: string
+			readonly website?: string
+			readonly gender?: string
+			readonly birthdate?: string
+			readonly zoneinfo?: string
+			readonly locale?: string
+			readonly address?: {
+				readonly formatted?: string
+				readonly streetAddress?: string
+				readonly locality?: string
+				readonly region?: string
+				readonly postalCode?: string
+				readonly country?: string
+			} & { readonly [x: string]: Schema.Json }
+		} & { readonly [x: string]: Schema.Json }
+		readonly applicationId: string | null
+		readonly cimdClientId: string | null
+		readonly isSuspended: boolean
+		readonly hasPassword?: boolean
+		readonly hasSecurityVerificationMethod?: boolean
+		readonly ssoIdentities?: ReadonlyArray<
+			{
+				readonly tenantId: string
+				readonly id: string
+				readonly userId: string
+				readonly issuer: string
+				readonly identityId: string
+				readonly detail: { readonly [x: string]: Schema.Json }
+				readonly createdAt: number
+				readonly updatedAt: number
+				readonly ssoConnectorId: string
+			} & { readonly [x: string]: Schema.Json }
+		>
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListUsersResponse = Schema.Array(
-	Schema.Struct({
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' })
-		),
-		username: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-			Schema.Null,
-		]),
-		primaryEmail: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-			Schema.Null,
-		]),
-		primaryPhone: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-			Schema.Null,
-		]),
-		name: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-			Schema.Null,
-		]),
-		avatar: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-			Schema.Null,
-		]),
-		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-		identities: Schema.Record(
-			Schema.String,
-			Schema.Struct({
-				userId: Schema.String,
-				details: Schema.optionalKey(
-					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
-				),
-			})
-		),
-		lastSignInAt: Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		profile: Schema.Struct({
-			familyName: Schema.optionalKey(Schema.String),
-			givenName: Schema.optionalKey(Schema.String),
-			middleName: Schema.optionalKey(Schema.String),
-			nickname: Schema.optionalKey(Schema.String),
-			preferredUsername: Schema.optionalKey(Schema.String),
-			profile: Schema.optionalKey(Schema.String),
-			website: Schema.optionalKey(Schema.String),
-			gender: Schema.optionalKey(Schema.String),
-			birthdate: Schema.optionalKey(Schema.String),
-			zoneinfo: Schema.optionalKey(Schema.String),
-			locale: Schema.optionalKey(Schema.String),
-			address: Schema.optionalKey(
+	Schema.StructWithRest(
+		Schema.Struct({
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })
+			),
+			username: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+				Schema.Null,
+			]),
+			primaryEmail: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+				Schema.Null,
+			]),
+			primaryPhone: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+				Schema.Null,
+			]),
+			name: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+				Schema.Null,
+			]),
+			avatar: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+				Schema.Null,
+			]),
+			customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'arbitrary',
+			}),
+			identities: Schema.Record(
+				Schema.String,
+				Schema.StructWithRest(
+					Schema.Struct({
+						userId: Schema.String,
+						details: Schema.optionalKey(
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+								description: 'arbitrary',
+							})
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				)
+			),
+			lastSignInAt: Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			profile: Schema.StructWithRest(
 				Schema.Struct({
-					formatted: Schema.optionalKey(Schema.String),
-					streetAddress: Schema.optionalKey(Schema.String),
-					locality: Schema.optionalKey(Schema.String),
-					region: Schema.optionalKey(Schema.String),
-					postalCode: Schema.optionalKey(Schema.String),
-					country: Schema.optionalKey(Schema.String),
-				})
+					familyName: Schema.optionalKey(Schema.String),
+					givenName: Schema.optionalKey(Schema.String),
+					middleName: Schema.optionalKey(Schema.String),
+					nickname: Schema.optionalKey(Schema.String),
+					preferredUsername: Schema.optionalKey(Schema.String),
+					profile: Schema.optionalKey(Schema.String),
+					website: Schema.optionalKey(Schema.String),
+					gender: Schema.optionalKey(Schema.String),
+					birthdate: Schema.optionalKey(Schema.String),
+					zoneinfo: Schema.optionalKey(Schema.String),
+					locale: Schema.optionalKey(Schema.String),
+					address: Schema.optionalKey(
+						Schema.StructWithRest(
+							Schema.Struct({
+								formatted: Schema.optionalKey(Schema.String),
+								streetAddress: Schema.optionalKey(Schema.String),
+								locality: Schema.optionalKey(Schema.String),
+								region: Schema.optionalKey(Schema.String),
+								postalCode: Schema.optionalKey(Schema.String),
+								country: Schema.optionalKey(Schema.String),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			applicationId: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.Null,
+			]),
+			cimdClientId: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+				Schema.Null,
+			]).annotate({
+				description:
+					"The identifier of the CIMD (client ID metadata document) client from the user's first consent. `null` unless the user's first consent was granted to a CIMD client. Mutually exclusive with `applicationId`.",
+			}),
+			isSuspended: Schema.Boolean,
+			hasPassword: Schema.optionalKey(Schema.Boolean),
+			hasSecurityVerificationMethod: Schema.optionalKey(Schema.Boolean),
+			ssoIdentities: Schema.optionalKey(
+				Schema.Array(
+					Schema.StructWithRest(
+						Schema.Struct({
+							tenantId: Schema.String.check(
+								Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+							),
+							id: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+							userId: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })),
+							issuer: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+							identityId: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+							detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+								description: 'arbitrary',
+							}),
+							createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+							updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+							ssoConnectorId: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				)
 			),
 		}),
-		applicationId: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-			Schema.Null,
-		]),
-		cimdClientId: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-			Schema.Null,
-		]).annotate({
-			description:
-				"The identifier of the CIMD (client ID metadata document) client from the user's first consent. `null` unless the user's first consent was granted to a CIMD client. Mutually exclusive with `applicationId`.",
-		}),
-		isSuspended: Schema.Boolean,
-		hasPassword: Schema.optionalKey(Schema.Boolean),
-		hasSecurityVerificationMethod: Schema.optionalKey(Schema.Boolean),
-		ssoIdentities: Schema.optionalKey(
-			Schema.Array(
-				Schema.Struct({
-					tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-					),
-					userId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' })
-					),
-					issuer: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-					),
-					identityId: Schema.String.check(
-						Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-					).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-					detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-						description: 'arbitrary',
-					}),
-					createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-					updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-					ssoConnectorId: Schema.String.check(
-						Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-					).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-				})
-			)
-		),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
-export type CreateUserPayload = { readonly userIds: ReadonlyArray<string> }
-export const CreateUserPayload = Schema.Struct({
-	userIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({ description: 'An array of user IDs to be assigned.' }),
-})
+export type CreateUserPayload = { readonly userIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+export const CreateUserPayload = Schema.StructWithRest(
+	Schema.Struct({
+		userIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({ description: 'An array of user IDs to be assigned.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListApplicationsParams = { readonly page?: number; readonly page_size?: number; readonly search_params?: SearchParams }
 export const ListApplicationsParams = Schema.Struct({
@@ -395,165 +465,215 @@ export const ListApplicationsParams = Schema.Struct({
 	search_params: Schema.optionalKey(SearchParams),
 })
 
-export type ListApplicationsResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly secret?: string
-	readonly description: string | null
-	readonly type: 'Native' | 'SPA' | 'Traditional' | 'MachineToMachine' | 'Protected' | 'SAML'
-	readonly oidcClientMetadata: {
-		readonly redirectUris: ReadonlyArray<string>
-		readonly postLogoutRedirectUris: ReadonlyArray<string>
-		readonly backchannelLogoutUri?: string
-		readonly backchannelLogoutSessionRequired?: boolean
-		readonly logoUri?: string
-	}
-	readonly customClientMetadata: {
-		readonly corsAllowedOrigins?: ReadonlyArray<string>
-		readonly idTokenTtl?: number
-		readonly refreshTokenTtl?: number
-		readonly refreshTokenTtlInDays?: number
-		readonly tenantId?: string
-		readonly alwaysIssueRefreshToken?: boolean
-		readonly rotateRefreshToken?: boolean
-		readonly allowTokenExchange?: boolean
-		readonly isDeviceFlow?: boolean
-		readonly maxAllowedGrants?: number
-	}
-	readonly protectedAppMetadata:
-		| ({
-				readonly host: string
-				readonly origin: string
-				readonly sessionDuration: number
-				readonly pageRules: ReadonlyArray<{ readonly path: string }>
-				readonly additionalScopes?: ReadonlyArray<
-					'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
-				>
-				readonly customDomains?: ReadonlyArray<{
-					readonly domain: string
-					readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-					readonly errorMessage: string | null
-					readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
-					readonly cloudflareData:
-						| ({
-								readonly id: string
-								readonly status: string
-								readonly ssl: {
-									readonly status: string
-									readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
+export type ListApplicationsResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly name: string
+		readonly secret?: string
+		readonly description: string | null
+		readonly type: 'Native' | 'SPA' | 'Traditional' | 'MachineToMachine' | 'Protected' | 'SAML'
+		readonly oidcClientMetadata: {
+			readonly redirectUris: ReadonlyArray<string>
+			readonly postLogoutRedirectUris: ReadonlyArray<string>
+			readonly backchannelLogoutUri?: string
+			readonly backchannelLogoutSessionRequired?: boolean
+			readonly logoUri?: string
+		} & { readonly [x: string]: Schema.Json }
+		readonly customClientMetadata: {
+			readonly corsAllowedOrigins?: ReadonlyArray<string>
+			readonly idTokenTtl?: number
+			readonly refreshTokenTtl?: number
+			readonly refreshTokenTtlInDays?: number
+			readonly tenantId?: string
+			readonly alwaysIssueRefreshToken?: boolean
+			readonly rotateRefreshToken?: boolean
+			readonly allowTokenExchange?: boolean
+			readonly isDeviceFlow?: boolean
+			readonly maxAllowedGrants?: number
+		} & { readonly [x: string]: Schema.Json }
+		readonly protectedAppMetadata:
+			| ({
+					readonly host: string
+					readonly origin: string
+					readonly sessionDuration: number
+					readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
+					readonly additionalScopes?: ReadonlyArray<
+						'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
+					>
+					readonly customDomains?: ReadonlyArray<
+						{
+							readonly domain: string
+							readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+							readonly errorMessage: string | null
+							readonly dnsRecords: ReadonlyArray<
+								{ readonly name: string; readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
 								}
-								readonly verification_errors?: ReadonlyArray<string>
-						  } & { readonly [x: string]: Schema.Json })
-						| null
-				}>
-		  } & { readonly [x: string]: Schema.Json })
-		| null
-	readonly customData: { readonly [x: string]: Schema.Json }
-	readonly isThirdParty: boolean
-	readonly appLevelAccessControlEnabled: boolean
-	readonly createdAt: number
-}>
+							>
+							readonly cloudflareData:
+								| ({
+										readonly id: string
+										readonly status: string
+										readonly ssl: {
+											readonly status: string
+											readonly validation_errors?: ReadonlyArray<
+												{ readonly message: string } & { readonly [x: string]: Schema.Json }
+											>
+										} & { readonly [x: string]: Schema.Json }
+										readonly verification_errors?: ReadonlyArray<string>
+								  } & { readonly [x: string]: Schema.Json })
+								| null
+						} & { readonly [x: string]: Schema.Json }
+					>
+			  } & { readonly [x: string]: Schema.Json })
+			| null
+		readonly customData: { readonly [x: string]: Schema.Json }
+		readonly isThirdParty: boolean
+		readonly appLevelAccessControlEnabled: boolean
+		readonly createdAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListApplicationsResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		),
-		secret: Schema.optionalKey(
-			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })
-			)
-		),
-		description: Schema.Union([Schema.String, Schema.Null]),
-		type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
-		oidcClientMetadata: Schema.Struct({
-			redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-			postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-			backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-			logoUri: Schema.optionalKey(Schema.String),
-		}),
-		customClientMetadata: Schema.Struct({
-			corsAllowedOrigins: Schema.optionalKey(
-				Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			tenantId: Schema.optionalKey(Schema.String),
-			alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-			rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-			allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-			isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-			maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		}),
-		protectedAppMetadata: Schema.Union([
-			Schema.StructWithRest(
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			),
+			secret: Schema.optionalKey(
+				Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+					Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })
+				)
+			),
+			description: Schema.Union([Schema.String, Schema.Null]),
+			type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
+			oidcClientMetadata: Schema.StructWithRest(
 				Schema.Struct({
-					host: Schema.String,
-					origin: Schema.String,
-					sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-					pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-					additionalScopes: Schema.optionalKey(
-						Schema.Array(
-							Schema.Literals([
-								'custom_data',
-								'identities',
-								'roles',
-								'urn:logto:scope:organizations',
-								'urn:logto:scope:organization_roles',
-							])
-						)
-					),
-					customDomains: Schema.optionalKey(
-						Schema.Array(
-							Schema.Struct({
-								domain: Schema.String,
-								status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-								errorMessage: Schema.Union([Schema.String, Schema.Null]),
-								dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-								cloudflareData: Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											id: Schema.String,
-											status: Schema.String,
-											ssl: Schema.Struct({
-												status: Schema.String,
-												validation_errors: Schema.optionalKey(
-													Schema.Array(Schema.Struct({ message: Schema.String }))
-												),
-											}),
-											verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								]),
-							})
-						)
-					),
+					redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+					postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+					backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+					logoUri: Schema.optionalKey(Schema.String),
 				}),
 				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
-			Schema.Null,
-		]),
-		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-		isThirdParty: Schema.Boolean,
-		appLevelAccessControlEnabled: Schema.Boolean,
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+			customClientMetadata: Schema.StructWithRest(
+				Schema.Struct({
+					corsAllowedOrigins: Schema.optionalKey(
+						Schema.Array(
+							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+						)
+					),
+					idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					refreshTokenTtlInDays: Schema.optionalKey(
+						Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+					),
+					tenantId: Schema.optionalKey(Schema.String),
+					alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+					rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+					allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+					isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+					maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			protectedAppMetadata: Schema.Union([
+				Schema.StructWithRest(
+					Schema.Struct({
+						host: Schema.String,
+						origin: Schema.String,
+						sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						pageRules: Schema.Array(
+							Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						),
+						additionalScopes: Schema.optionalKey(
+							Schema.Array(
+								Schema.Literals([
+									'custom_data',
+									'identities',
+									'roles',
+									'urn:logto:scope:organizations',
+									'urn:logto:scope:organization_roles',
+								])
+							)
+						),
+						customDomains: Schema.optionalKey(
+							Schema.Array(
+								Schema.StructWithRest(
+									Schema.Struct({
+										domain: Schema.String,
+										status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+										errorMessage: Schema.Union([Schema.String, Schema.Null]),
+										dnsRecords: Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										cloudflareData: Schema.Union([
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String,
+													status: Schema.String,
+													ssl: Schema.StructWithRest(
+														Schema.Struct({
+															status: Schema.String,
+															validation_errors: Schema.optionalKey(
+																Schema.Array(
+																	Schema.StructWithRest(Schema.Struct({ message: Schema.String }), [
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	])
+																)
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											),
+											Schema.Null,
+										]),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.Null,
+			]),
+			customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'arbitrary',
+			}),
+			isThirdParty: Schema.Boolean,
+			appLevelAccessControlEnabled: Schema.Boolean,
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
-export type CreateApplicationPayload = { readonly applicationIds: ReadonlyArray<string> }
-export const CreateApplicationPayload = Schema.Struct({
-	applicationIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({ description: 'An array of application IDs to be assigned.' }),
-})
+export type CreateApplicationPayload = { readonly applicationIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+export const CreateApplicationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		applicationIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({ description: 'An array of application IDs to be assigned.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListScopesParams = { readonly page?: number; readonly page_size?: number; readonly search_params?: SearchParams }
 export const ListScopesParams = Schema.Struct({
@@ -570,77 +690,95 @@ export const ListScopesParams = Schema.Struct({
 	search_params: Schema.optionalKey(SearchParams),
 })
 
-export type ListScopesResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly resourceId: string
-	readonly name: string
-	readonly description: string | null
-	readonly createdAt: number
-	readonly resource: {
+export type ListScopesResponse = ReadonlyArray<
+	{
 		readonly tenantId: string
 		readonly id: string
+		readonly resourceId: string
 		readonly name: string
-		readonly indicator: string
-		readonly isDefault: boolean
-		readonly accessTokenTtl: number
-	}
-}>
+		readonly description: string | null
+		readonly createdAt: number
+		readonly resource: {
+			readonly tenantId: string
+			readonly id: string
+			readonly name: string
+			readonly indicator: string
+			readonly isDefault: boolean
+			readonly accessTokenTtl: number
+		} & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListScopesResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		resourceId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		),
-		description: Schema.Union([Schema.String, Schema.Null]),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		resource: Schema.Struct({
-			tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
 			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-			indicator: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-			isDefault: Schema.Boolean,
-			accessTokenTtl: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			resourceId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			),
+			description: Schema.Union([Schema.String, Schema.Null]),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			resource: Schema.StructWithRest(
+				Schema.Struct({
+					tenantId: Schema.String.check(
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+					),
+					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+					),
+					name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+					indicator: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+					isDefault: Schema.Boolean,
+					accessTokenTtl: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
 		}),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
-export type CreateScopePayload = { readonly scopeIds: ReadonlyArray<string> }
-export const CreateScopePayload = Schema.Struct({
-	scopeIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({ description: 'An array of API resource scope IDs to be linked.' }),
-})
-
-export type CreateScopeResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly resourceId: string
-	readonly name: string
-	readonly description: string | null
-	readonly createdAt: number
-}>
-export const CreateScopeResponse = Schema.Array(
+export type CreateScopePayload = { readonly scopeIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+export const CreateScopePayload = Schema.StructWithRest(
 	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		resourceId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		),
-		description: Schema.Union([Schema.String, Schema.Null]),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+		scopeIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({ description: 'An array of API resource scope IDs to be linked.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateScopeResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly resourceId: string
+		readonly name: string
+		readonly description: string | null
+		readonly createdAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
+export const CreateScopeResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			resourceId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			),
+			description: Schema.Union([Schema.String, Schema.Null]),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )

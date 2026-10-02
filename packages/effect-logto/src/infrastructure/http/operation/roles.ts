@@ -18,9 +18,16 @@ import {
 } from '../../../domain/schema/roles.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeRoles = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): RolesOperations => ({
+export const makeRoles = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): RolesOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/roles`).pipe(
+		HttpClientRequest.get('/api/roles').pipe(
 			HttpClientRequest.setUrlParams({
 				excludeUserId: options?.params?.['excludeUserId'] as any,
 				excludeApplicationId: options?.params?.['excludeApplicationId'] as any,
@@ -32,82 +39,155 @@ export const makeRoles = ({ withResponse, decodeSuccess, unexpectedStatus, searc
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/roles`).pipe(
+		HttpClientRequest.post('/api/roles').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/roles/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/roles/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/roles/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/roles/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (id, options) =>
-		HttpClientRequest.patch(`/api/roles/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/roles/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	listUsers: (id, options) =>
-		HttpClientRequest.get(`/api/roles/${encodeURIComponent(id)}/users`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUsersResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/roles/' + __encodePathParam(id) + '/users').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUsersResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createUser: (id, options) =>
-		HttpClientRequest.post(`/api/roles/${encodeURIComponent(id)}/users`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/roles/' + __encodePathParam(id) + '/users').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteUser: (id, userId, options) =>
-		HttpClientRequest.delete(`/api/roles/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, userId],
+			() => '/api/roles/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listApplications: (id, options) =>
-		HttpClientRequest.get(`/api/roles/${encodeURIComponent(id)}/applications`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({
-					'200': decodeSuccess(ListApplicationsResponse),
-					'204': () => Effect.void,
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/roles/' + __encodePathParam(id) + '/applications').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({
+							'200': decodeSuccess(ListApplicationsResponse),
+							'204': () => Effect.void,
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	createApplication: (id, options) =>
-		HttpClientRequest.post(`/api/roles/${encodeURIComponent(id)}/applications`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/roles/' + __encodePathParam(id) + '/applications').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteApplication: (id, applicationId, options) =>
-		HttpClientRequest.delete(`/api/roles/${encodeURIComponent(id)}/applications/${encodeURIComponent(applicationId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, applicationId],
+			() => '/api/roles/' + __encodePathParam(id) + '/applications/' + __encodePathParam(applicationId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listScopes: (id, options) =>
-		HttpClientRequest.get(`/api/roles/${encodeURIComponent(id)}/scopes`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListScopesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/roles/' + __encodePathParam(id) + '/scopes').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListScopesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createScope: (id, options) =>
-		HttpClientRequest.post(`/api/roles/${encodeURIComponent(id)}/scopes`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({
-					'201': decodeSuccess(CreateScopeResponse),
-					'200': () => Effect.void,
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/roles/' + __encodePathParam(id) + '/scopes').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'201': decodeSuccess(CreateScopeResponse),
+							'200': () => Effect.void,
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	deleteScope: (id, scopeId, options) =>
-		HttpClientRequest.delete(`/api/roles/${encodeURIComponent(id)}/scopes/${encodeURIComponent(scopeId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, scopeId],
+			() => '/api/roles/' + __encodePathParam(id) + '/scopes/' + __encodePathParam(scopeId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 })

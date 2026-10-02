@@ -8,16 +8,23 @@ import type { UserAssetsOperations } from '../../../application/operation/user-a
 import { CreateResponse, GetServiceStatusResponse } from '../../../domain/schema/user-assets.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeUserAssets = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): UserAssetsOperations => ({
+export const makeUserAssets = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): UserAssetsOperations => ({
 	getServiceStatus: options =>
-		HttpClientRequest.get(`/api/user-assets/service-status`).pipe(
+		HttpClientRequest.get('/api/user-assets/service-status').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetServiceStatusResponse), orElse: unexpectedStatus })
 			)
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/user-assets`).pipe(
-			HttpClientRequest.bodyFormData(options.payload as any),
+		HttpClientRequest.post('/api/user-assets').pipe(
+			HttpClientRequest.bodyFormDataRecord(options.payload as any),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 })

@@ -30,9 +30,16 @@ import {
 } from '../../../domain/schema/applications.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeApplications = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): ApplicationsOperations => ({
+export const makeApplications = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): ApplicationsOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/applications`).pipe(
+		HttpClientRequest.get('/api/applications').pipe(
 			HttpClientRequest.setUrlParams({
 				types: options?.params?.['types'] as any,
 				excludeRoleId: options?.params?.['excludeRoleId'] as any,
@@ -45,179 +52,403 @@ export const makeApplications = ({ withResponse, decodeSuccess, unexpectedStatus
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/applications`).pipe(
+		HttpClientRequest.post('/api/applications').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/applications/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/applications/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/applications/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (id, options) =>
-		HttpClientRequest.patch(`/api/applications/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/applications/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	updateCustomData: (applicationId, options) =>
-		HttpClientRequest.patch(`/api/applications/${encodeURIComponent(applicationId)}/custom-data`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateCustomDataResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/custom-data'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateCustomDataResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	getAccessControl: (applicationId, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(applicationId)}/access-control`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetAccessControlResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/access-control'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetAccessControlResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceAccessControl: (applicationId, options) =>
-		HttpClientRequest.put(`/api/applications/${encodeURIComponent(applicationId)}/access-control`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceAccessControlResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.put,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/access-control'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceAccessControlResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listRoles: (applicationId, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(applicationId)}/roles`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListRolesResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListRolesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceRoles: (applicationId, options) =>
-		HttpClientRequest.put(`/api/applications/${encodeURIComponent(applicationId)}/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.put,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	assignRoles: (applicationId, options) =>
-		HttpClientRequest.post(`/api/applications/${encodeURIComponent(applicationId)}/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AssignRolesResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.post,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/roles'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AssignRolesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteRole: (applicationId, roleId, options) =>
-		HttpClientRequest.delete(`/api/applications/${encodeURIComponent(applicationId)}/roles/${encodeURIComponent(roleId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[applicationId, roleId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/roles/' + __encodePathParam(roleId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listProtectedAppMetadataCustomDomains: (id, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(id)}/protected-app-metadata/custom-domains`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({
-					'2xx': decodeSuccess(ListProtectedAppMetadataCustomDomainsResponse),
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(
+			HttpClientRequest.get,
+			[id],
+			() => '/api/applications/' + __encodePathParam(id) + '/protected-app-metadata/custom-domains'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(ListProtectedAppMetadataCustomDomainsResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	createProtectedAppMetadataCustomDomain: (id, options) =>
-		HttpClientRequest.post(`/api/applications/${encodeURIComponent(id)}/protected-app-metadata/custom-domains`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.post,
+			[id],
+			() => '/api/applications/' + __encodePathParam(id) + '/protected-app-metadata/custom-domains'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteProtectedAppMetadataCustomDomain: (id, domain, options) =>
-		HttpClientRequest.delete(
-			`/api/applications/${encodeURIComponent(id)}/protected-app-metadata/custom-domains/${encodeURIComponent(domain)}`
-		).pipe(withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))),
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, domain],
+			() => '/api/applications/' + __encodePathParam(id) + '/protected-app-metadata/custom-domains/' + __encodePathParam(domain) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
+		),
 	listOrganizations: (id, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(id)}/organizations`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListOrganizationsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/applications/' + __encodePathParam(id) + '/organizations').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListOrganizationsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteLegacySecret: (id, options) =>
-		HttpClientRequest.delete(`/api/applications/${encodeURIComponent(id)}/legacy-secret`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(DeleteLegacySecretResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/applications/' + __encodePathParam(id) + '/legacy-secret').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(DeleteLegacySecretResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listSecrets: (id, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(id)}/secrets`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListSecretsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/applications/' + __encodePathParam(id) + '/secrets').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListSecretsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createSecret: (id, options) =>
-		HttpClientRequest.post(`/api/applications/${encodeURIComponent(id)}/secrets`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateSecretResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/applications/' + __encodePathParam(id) + '/secrets').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateSecretResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteSecret: (id, name, options) =>
-		HttpClientRequest.delete(`/api/applications/${encodeURIComponent(id)}/secrets/${encodeURIComponent(name)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, name],
+			() => '/api/applications/' + __encodePathParam(id) + '/secrets/' + __encodePathParam(name) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updateSecret: (id, name, options) =>
-		HttpClientRequest.patch(`/api/applications/${encodeURIComponent(id)}/secrets/${encodeURIComponent(name)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({
-					'200': decodeSuccess(UpdateSecretResponse),
-					'204': () => Effect.void,
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[id, name],
+			() => '/api/applications/' + __encodePathParam(id) + '/secrets/' + __encodePathParam(name) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'200': decodeSuccess(UpdateSecretResponse),
+							'204': () => Effect.void,
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	listUserConsentScopes: (applicationId, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(applicationId)}/user-consent-scopes`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUserConsentScopesResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/user-consent-scopes'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUserConsentScopesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createUserConsentScope: (applicationId, options) =>
-		HttpClientRequest.post(`/api/applications/${encodeURIComponent(applicationId)}/user-consent-scopes`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.post,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/user-consent-scopes'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteUserConsentScope: (applicationId, scopeType, scopeId, options) =>
-		HttpClientRequest.delete(
-			`/api/applications/${encodeURIComponent(applicationId)}/user-consent-scopes/${encodeURIComponent(scopeType)}/${encodeURIComponent(scopeId)}`
-		).pipe(withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))),
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[applicationId, scopeType, scopeId],
+			() =>
+				'/api/applications/' +
+				__encodePathParam(applicationId) +
+				'/user-consent-scopes/' +
+				__encodePathParam(scopeType) +
+				'/' +
+				__encodePathParam(scopeId) +
+				''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
+		),
 	getSignInExperience: (applicationId, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(applicationId)}/sign-in-experience`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSignInExperienceResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/sign-in-experience'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSignInExperienceResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceSignInExperience: (applicationId, options) =>
-		HttpClientRequest.put(`/api/applications/${encodeURIComponent(applicationId)}/sign-in-experience`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({
-					'200': decodeSuccess(ReplaceSignInExperienceResponse200),
-					'201': decodeSuccess(ReplaceSignInExperienceResponse201),
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(
+			HttpClientRequest.put,
+			[applicationId],
+			() => '/api/applications/' + __encodePathParam(applicationId) + '/sign-in-experience'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'200': decodeSuccess(ReplaceSignInExperienceResponse200),
+							'201': decodeSuccess(ReplaceSignInExperienceResponse201),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	listUserConsentOrganizations: (id, userId, options) =>
-		HttpClientRequest.get(`/api/applications/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/consent-organizations`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUserConsentOrganizationsResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[id, userId],
+			() => '/api/applications/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + '/consent-organizations'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(ListUserConsentOrganizationsResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	replaceUserConsentOrganizations: (id, userId, options) =>
-		HttpClientRequest.put(`/api/applications/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/consent-organizations`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.put,
+			[id, userId],
+			() => '/api/applications/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + '/consent-organizations'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	createUserConsentOrganization: (id, userId, options) =>
-		HttpClientRequest.post(
-			`/api/applications/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/consent-organizations`
+		__makePathRequest(
+			HttpClientRequest.post,
+			[id, userId],
+			() => '/api/applications/' + __encodePathParam(id) + '/users/' + __encodePathParam(userId) + '/consent-organizations'
 		).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteUserConsentOrganization: (id, userId, organizationId, options) =>
-		HttpClientRequest.delete(
-			`/api/applications/${encodeURIComponent(id)}/users/${encodeURIComponent(userId)}/consent-organizations/${encodeURIComponent(organizationId)}`
-		).pipe(withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))),
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, userId, organizationId],
+			() =>
+				'/api/applications/' +
+				__encodePathParam(id) +
+				'/users/' +
+				__encodePathParam(userId) +
+				'/consent-organizations/' +
+				__encodePathParam(organizationId) +
+				''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
+		),
 })

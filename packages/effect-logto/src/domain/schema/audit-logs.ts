@@ -32,87 +32,129 @@ export const ListParams = Schema.Struct({
 	),
 })
 
-export type ListResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly key: string
-	readonly payload: {
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
 		readonly key: string
-		readonly result: 'Success' | 'Error'
-		readonly error?: { readonly [x: string]: Schema.Json } | string
-		readonly ip?: string
-		readonly userAgent?: string
-		readonly userAgentParsed?: {
-			readonly ua?: string
-			readonly browser?: { readonly name?: string; readonly version?: string; readonly major?: string; readonly type?: string }
-			readonly device?: { readonly model?: string; readonly type?: string; readonly vendor?: string }
-			readonly engine?: { readonly name?: string; readonly version?: string }
-			readonly os?: { readonly name?: string; readonly version?: string }
-			readonly cpu?: { readonly architecture?: string }
-		}
-		readonly userId?: string
-		readonly applicationId?: string
-		readonly cimdClientId?: string
-		readonly sessionId?: string
-		readonly params?: { readonly [x: string]: Schema.Json }
-	}
-	readonly createdAt: number
-}>
+		readonly payload: {
+			readonly key: string
+			readonly result: 'Success' | 'Error'
+			readonly error?: { readonly [x: string]: Schema.Json } | string
+			readonly ip?: string
+			readonly userAgent?: string
+			readonly userAgentParsed?: {
+				readonly ua?: string
+				readonly browser?: {
+					readonly name?: string
+					readonly version?: string
+					readonly major?: string
+					readonly type?: string
+				} & { readonly [x: string]: Schema.Json }
+				readonly device?: { readonly model?: string; readonly type?: string; readonly vendor?: string } & {
+					readonly [x: string]: Schema.Json
+				}
+				readonly engine?: { readonly name?: string; readonly version?: string } & { readonly [x: string]: Schema.Json }
+				readonly os?: { readonly name?: string; readonly version?: string } & { readonly [x: string]: Schema.Json }
+				readonly cpu?: { readonly architecture?: string } & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+			readonly userId?: string
+			readonly applicationId?: string
+			readonly cimdClientId?: string
+			readonly sessionId?: string
+			readonly params?: { readonly [x: string]: Schema.Json }
+		} & { readonly [x: string]: Schema.Json }
+		readonly createdAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		key: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		payload: Schema.Struct({
-			key: Schema.String,
-			result: Schema.Literals(['Success', 'Error']),
-			error: Schema.optionalKey(
-				Schema.Union(
-					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })), Schema.String],
-					{ mode: 'oneOf' }
-				)
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			ip: Schema.optionalKey(Schema.String),
-			userAgent: Schema.optionalKey(Schema.String),
-			userAgentParsed: Schema.optionalKey(
+			key: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			payload: Schema.StructWithRest(
 				Schema.Struct({
-					ua: Schema.optionalKey(Schema.String),
-					browser: Schema.optionalKey(
-						Schema.Struct({
-							name: Schema.optionalKey(Schema.String),
-							version: Schema.optionalKey(Schema.String),
-							major: Schema.optionalKey(Schema.String),
-							type: Schema.optionalKey(Schema.String),
-						})
+					key: Schema.String,
+					result: Schema.Literals(['Success', 'Error']),
+					error: Schema.optionalKey(
+						Schema.Union(
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })), Schema.String],
+							{ mode: 'oneOf' }
+						)
 					),
-					device: Schema.optionalKey(
-						Schema.Struct({
-							model: Schema.optionalKey(Schema.String),
-							type: Schema.optionalKey(Schema.String),
-							vendor: Schema.optionalKey(Schema.String),
-						})
+					ip: Schema.optionalKey(Schema.String),
+					userAgent: Schema.optionalKey(Schema.String),
+					userAgentParsed: Schema.optionalKey(
+						Schema.StructWithRest(
+							Schema.Struct({
+								ua: Schema.optionalKey(Schema.String),
+								browser: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											name: Schema.optionalKey(Schema.String),
+											version: Schema.optionalKey(Schema.String),
+											major: Schema.optionalKey(Schema.String),
+											type: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								device: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											model: Schema.optionalKey(Schema.String),
+											type: Schema.optionalKey(Schema.String),
+											vendor: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								engine: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											name: Schema.optionalKey(Schema.String),
+											version: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								os: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											name: Schema.optionalKey(Schema.String),
+											version: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								cpu: Schema.optionalKey(
+									Schema.StructWithRest(Schema.Struct({ architecture: Schema.optionalKey(Schema.String) }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
 					),
-					engine: Schema.optionalKey(
-						Schema.Struct({ name: Schema.optionalKey(Schema.String), version: Schema.optionalKey(Schema.String) })
+					userId: Schema.optionalKey(Schema.String),
+					applicationId: Schema.optionalKey(Schema.String),
+					cimdClientId: Schema.optionalKey(Schema.String),
+					sessionId: Schema.optionalKey(Schema.String),
+					params: Schema.optionalKey(
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))
 					),
-					os: Schema.optionalKey(
-						Schema.Struct({ name: Schema.optionalKey(Schema.String), version: Schema.optionalKey(Schema.String) })
-					),
-					cpu: Schema.optionalKey(Schema.Struct({ architecture: Schema.optionalKey(Schema.String) })),
-				})
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
-			userId: Schema.optionalKey(Schema.String),
-			applicationId: Schema.optionalKey(Schema.String),
-			cimdClientId: Schema.optionalKey(Schema.String),
-			sessionId: Schema.optionalKey(Schema.String),
-			params: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 		}),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type GetResponse = {
@@ -127,70 +169,100 @@ export type GetResponse = {
 		readonly userAgent?: string
 		readonly userAgentParsed?: {
 			readonly ua?: string
-			readonly browser?: { readonly name?: string; readonly version?: string; readonly major?: string; readonly type?: string }
-			readonly device?: { readonly model?: string; readonly type?: string; readonly vendor?: string }
-			readonly engine?: { readonly name?: string; readonly version?: string }
-			readonly os?: { readonly name?: string; readonly version?: string }
-			readonly cpu?: { readonly architecture?: string }
-		}
+			readonly browser?: { readonly name?: string; readonly version?: string; readonly major?: string; readonly type?: string } & {
+				readonly [x: string]: Schema.Json
+			}
+			readonly device?: { readonly model?: string; readonly type?: string; readonly vendor?: string } & {
+				readonly [x: string]: Schema.Json
+			}
+			readonly engine?: { readonly name?: string; readonly version?: string } & { readonly [x: string]: Schema.Json }
+			readonly os?: { readonly name?: string; readonly version?: string } & { readonly [x: string]: Schema.Json }
+			readonly cpu?: { readonly architecture?: string } & { readonly [x: string]: Schema.Json }
+		} & { readonly [x: string]: Schema.Json }
 		readonly userId?: string
 		readonly applicationId?: string
 		readonly cimdClientId?: string
 		readonly sessionId?: string
 		readonly params?: { readonly [x: string]: Schema.Json }
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly createdAt: number
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	key: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	payload: Schema.Struct({
-		key: Schema.String,
-		result: Schema.Literals(['Success', 'Error']),
-		error: Schema.optionalKey(
-			Schema.Union([Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })), Schema.String], {
-				mode: 'oneOf',
-			})
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		ip: Schema.optionalKey(Schema.String),
-		userAgent: Schema.optionalKey(Schema.String),
-		userAgentParsed: Schema.optionalKey(
+		key: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		payload: Schema.StructWithRest(
 			Schema.Struct({
-				ua: Schema.optionalKey(Schema.String),
-				browser: Schema.optionalKey(
-					Schema.Struct({
-						name: Schema.optionalKey(Schema.String),
-						version: Schema.optionalKey(Schema.String),
-						major: Schema.optionalKey(Schema.String),
-						type: Schema.optionalKey(Schema.String),
-					})
+				key: Schema.String,
+				result: Schema.Literals(['Success', 'Error']),
+				error: Schema.optionalKey(
+					Schema.Union(
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })), Schema.String],
+						{ mode: 'oneOf' }
+					)
 				),
-				device: Schema.optionalKey(
-					Schema.Struct({
-						model: Schema.optionalKey(Schema.String),
-						type: Schema.optionalKey(Schema.String),
-						vendor: Schema.optionalKey(Schema.String),
-					})
+				ip: Schema.optionalKey(Schema.String),
+				userAgent: Schema.optionalKey(Schema.String),
+				userAgentParsed: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							ua: Schema.optionalKey(Schema.String),
+							browser: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										name: Schema.optionalKey(Schema.String),
+										version: Schema.optionalKey(Schema.String),
+										major: Schema.optionalKey(Schema.String),
+										type: Schema.optionalKey(Schema.String),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							device: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										model: Schema.optionalKey(Schema.String),
+										type: Schema.optionalKey(Schema.String),
+										vendor: Schema.optionalKey(Schema.String),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							engine: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({ name: Schema.optionalKey(Schema.String), version: Schema.optionalKey(Schema.String) }),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							os: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({ name: Schema.optionalKey(Schema.String), version: Schema.optionalKey(Schema.String) }),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							cpu: Schema.optionalKey(
+								Schema.StructWithRest(Schema.Struct({ architecture: Schema.optionalKey(Schema.String) }), [
+									Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+								])
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
 				),
-				engine: Schema.optionalKey(
-					Schema.Struct({ name: Schema.optionalKey(Schema.String), version: Schema.optionalKey(Schema.String) })
-				),
-				os: Schema.optionalKey(
-					Schema.Struct({ name: Schema.optionalKey(Schema.String), version: Schema.optionalKey(Schema.String) })
-				),
-				cpu: Schema.optionalKey(Schema.Struct({ architecture: Schema.optionalKey(Schema.String) })),
-			})
+				userId: Schema.optionalKey(Schema.String),
+				applicationId: Schema.optionalKey(Schema.String),
+				cimdClientId: Schema.optionalKey(Schema.String),
+				sessionId: Schema.optionalKey(Schema.String),
+				params: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		userId: Schema.optionalKey(Schema.String),
-		applicationId: Schema.optionalKey(Schema.String),
-		cimdClientId: Schema.optionalKey(Schema.String),
-		sessionId: Schema.optionalKey(Schema.String),
-		params: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

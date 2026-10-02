@@ -3,121 +3,164 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type ListResponse = ReadonlyArray<{
-	readonly id: string
-	readonly domain: string
-	readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-	readonly errorMessage: string | null
-	readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
-	readonly createdAt: number
-}>
+export type ListResponse = ReadonlyArray<
+	{
+		readonly id: string
+		readonly domain: string
+		readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+		readonly errorMessage: string | null
+		readonly dnsRecords: ReadonlyArray<
+			{ readonly name: string; readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+		>
+		readonly createdAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		domain: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		),
-		status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-		errorMessage: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(1024).annotate({ expected: 'a value with a length of at most 1024' })),
-			Schema.Null,
-		]),
-		dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+	Schema.StructWithRest(
+		Schema.Struct({
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			domain: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			),
+			status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+			errorMessage: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(1024).annotate({ expected: 'a string with at most 1024 code points' })),
+				Schema.Null,
+			]),
+			dnsRecords: Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
+			),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
-export type CreatePayload = { readonly domain: string }
-export const CreatePayload = Schema.Struct({
-	domain: Schema.String.annotate({ description: 'The domain name, e.g. `example.com`.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-})
+export type CreatePayload = { readonly domain: string } & { readonly [x: string]: Schema.Json }
+export const CreatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		domain: Schema.String.annotate({ description: 'The domain name, e.g. `example.com`.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateResponse = {
 	readonly id: string
 	readonly domain: string
 	readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
 	readonly errorMessage: string | null
-	readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
+	readonly dnsRecords: ReadonlyArray<
+		{ readonly name: string; readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+	>
 	readonly createdAt: number
-}
-export const CreateResponse = Schema.Struct({
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	domain: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-	errorMessage: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(1024).annotate({ expected: 'a value with a length of at most 1024' })),
-		Schema.Null,
-	]),
-	dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+} & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		domain: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+		errorMessage: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(1024).annotate({ expected: 'a string with at most 1024 code points' })),
+			Schema.Null,
+		]),
+		dnsRecords: Schema.Array(
+			Schema.StructWithRest(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }), [
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			])
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetResponse = {
 	readonly id: string
 	readonly domain: string
 	readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
 	readonly errorMessage: string | null
-	readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
+	readonly dnsRecords: ReadonlyArray<
+		{ readonly name: string; readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+	>
 	readonly createdAt: number
-}
-export const GetResponse = Schema.Struct({
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	domain: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-	errorMessage: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(1024).annotate({ expected: 'a value with a length of at most 1024' })),
-		Schema.Null,
-	]),
-	dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		domain: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+		errorMessage: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(1024).annotate({ expected: 'a string with at most 1024 code points' })),
+			Schema.Null,
+		]),
+		dnsRecords: Schema.Array(
+			Schema.StructWithRest(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }), [
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			])
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListVerificationFilesResponse = { readonly [x: string]: Schema.Json }
 export const ListVerificationFilesResponse = Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 	description: 'Validator function',
 })
 
-export type ReplaceVerificationFilesPayload = { readonly verificationFiles: { readonly [x: string]: Schema.Json } }
-export const ReplaceVerificationFilesPayload = Schema.Struct({
-	verificationFiles: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description:
-			'Up to 10 text or JSON verification files served as filenames with extensions at the domain root, or at paths under `/.well-known/`.',
+export type ReplaceVerificationFilesPayload = { readonly verificationFiles: { readonly [x: string]: Schema.Json } } & {
+	readonly [x: string]: Schema.Json
+}
+export const ReplaceVerificationFilesPayload = Schema.StructWithRest(
+	Schema.Struct({
+		verificationFiles: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description:
+				'Up to 10 text or JSON verification files served as filenames with extensions at the domain root, or at paths under `/.well-known/`.',
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ReplaceVerificationFilesResponse = { readonly [x: string]: Schema.Json }
 export const ReplaceVerificationFilesResponse = Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 	description: 'Validator function',
 })
 
-export type CleanupPayload = { readonly staleDays: number }
-export const CleanupPayload = Schema.Struct({
-	staleDays: Schema.Number.annotate({
-		description: 'The number of days a domain must be inactive before it is considered stale and eligible for cleanup.',
-	}).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+export type CleanupPayload = { readonly staleDays: number } & { readonly [x: string]: Schema.Json }
+export const CleanupPayload = Schema.StructWithRest(
+	Schema.Struct({
+		staleDays: Schema.Number.annotate({
+			description: 'The number of days a domain must be inactive before it is considered stale and eligible for cleanup.',
+		}).check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CleanupResponse = {
 	readonly scannedCount: number
 	readonly deletedCount: number
 	readonly skippedActiveCount: number
 	readonly failedCount: number
-}
-export const CleanupResponse = Schema.Struct({
-	scannedCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	deletedCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	skippedActiveCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	failedCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+} & { readonly [x: string]: Schema.Json }
+export const CleanupResponse = Schema.StructWithRest(
+	Schema.Struct({
+		scannedCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		deletedCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		skippedActiveCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		failedCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

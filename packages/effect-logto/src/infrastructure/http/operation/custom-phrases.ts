@@ -9,24 +9,45 @@ import type { CustomPhrasesOperations } from '../../../application/operation/cus
 import { GetResponse, ListResponse, ReplaceResponse } from '../../../domain/schema/custom-phrases.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeCustomPhrases = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): CustomPhrasesOperations => ({
+export const makeCustomPhrases = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): CustomPhrasesOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/custom-phrases`).pipe(
+		HttpClientRequest.get('/api/custom-phrases').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	get: (languageTag, options) =>
-		HttpClientRequest.get(`/api/custom-phrases/${encodeURIComponent(languageTag)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [languageTag], () => '/api/custom-phrases/' + __encodePathParam(languageTag) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	replace: (languageTag, options) =>
-		HttpClientRequest.put(`/api/custom-phrases/${encodeURIComponent(languageTag)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.put, [languageTag], () => '/api/custom-phrases/' + __encodePathParam(languageTag) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	delete: (languageTag, options) =>
-		HttpClientRequest.delete(`/api/custom-phrases/${encodeURIComponent(languageTag)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [languageTag], () => '/api/custom-phrases/' + __encodePathParam(languageTag) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 })

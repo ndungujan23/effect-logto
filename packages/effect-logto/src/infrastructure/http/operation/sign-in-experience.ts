@@ -19,19 +19,21 @@ export const makeSignInExperience = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): SignInExperienceOperations => ({
 	get: options =>
-		HttpClientRequest.get(`/api/sign-in-exp`).pipe(
+		HttpClientRequest.get('/api/sign-in-exp').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
 		),
 	update: options =>
-		HttpClientRequest.patch(`/api/sign-in-exp`).pipe(
+		HttpClientRequest.patch('/api/sign-in-exp').pipe(
 			HttpClientRequest.setUrlParams({ removeUnusedDemoSocialConnector: options.params?.['removeUnusedDemoSocialConnector'] as any }),
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
 		),
 	checkPasswordWithDefaultSignInExperience: options =>
-		HttpClientRequest.post(`/api/sign-in-exp/default/check-password`).pipe(
+		HttpClientRequest.post('/api/sign-in-exp/default/check-password').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({
@@ -41,14 +43,14 @@ export const makeSignInExperience = ({
 			)
 		),
 	uploadCustomUiAssets: options =>
-		HttpClientRequest.post(`/api/sign-in-exp/default/custom-ui-assets`).pipe(
-			HttpClientRequest.bodyFormData(options.payload as any),
+		HttpClientRequest.post('/api/sign-in-exp/default/custom-ui-assets').pipe(
+			HttpClientRequest.bodyFormDataRecord(options.payload as any),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UploadCustomUiAssetsResponse), orElse: unexpectedStatus })
 			)
 		),
 	getUsernameCaseSensitivityConflicts: options =>
-		HttpClientRequest.get(`/api/sign-in-exp/username-policy/case-sensitivity-conflicts`).pipe(
+		HttpClientRequest.get('/api/sign-in-exp/username-policy/case-sensitivity-conflicts').pipe(
 			HttpClientRequest.setUrlParams({ limit: options.params['limit'] as any }),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({

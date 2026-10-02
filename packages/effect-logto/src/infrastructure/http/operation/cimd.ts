@@ -9,20 +9,35 @@ import type { CimdOperations } from '../../../application/operation/cimd.ts'
 import { ListUserConsentScopesResponse } from '../../../domain/schema/cimd.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeCimd = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): CimdOperations => ({
+export const makeCimd = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): CimdOperations => ({
 	listUserConsentScopes: options =>
-		HttpClientRequest.get(`/api/cimd/user-consent-scopes`).pipe(
+		HttpClientRequest.get('/api/cimd/user-consent-scopes').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListUserConsentScopesResponse), orElse: unexpectedStatus })
 			)
 		),
 	assignUserConsentScopes: options =>
-		HttpClientRequest.post(`/api/cimd/user-consent-scopes`).pipe(
+		HttpClientRequest.post('/api/cimd/user-consent-scopes').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
 		),
 	deleteUserConsentScope: (scopeType, scopeId, options) =>
-		HttpClientRequest.delete(`/api/cimd/user-consent-scopes/${encodeURIComponent(scopeType)}/${encodeURIComponent(scopeId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[scopeType, scopeId],
+			() => '/api/cimd/user-consent-scopes/' + __encodePathParam(scopeType) + '/' + __encodePathParam(scopeId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 })

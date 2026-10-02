@@ -13,14 +13,16 @@ export const makeVerificationCodes = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): VerificationCodesOperations => ({
 	create: options =>
-		HttpClientRequest.post(`/api/verification-codes`).pipe(
+		HttpClientRequest.post('/api/verification-codes').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	verify: options =>
-		HttpClientRequest.post(`/api/verification-codes/verify`).pipe(
+		HttpClientRequest.post('/api/verification-codes/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),

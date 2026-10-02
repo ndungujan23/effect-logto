@@ -9,24 +9,31 @@ export const GetHasuraAuthParams = Schema.Struct({
 	unauthorizedRole: Schema.optionalKey(Schema.String),
 })
 
-export type GetHasuraAuthResponse = { readonly 'X-Hasura-User-Id'?: string; readonly 'X-Hasura-Role'?: string }
-export const GetHasuraAuthResponse = Schema.Struct({
-	'X-Hasura-User-Id': Schema.optionalKey(Schema.String),
-	'X-Hasura-Role': Schema.optionalKey(Schema.String),
-})
+export type GetHasuraAuthResponse = { readonly 'X-Hasura-User-Id'?: string; readonly 'X-Hasura-Role'?: string } & {
+	readonly [x: string]: Schema.Json
+}
+export const GetHasuraAuthResponse = Schema.StructWithRest(
+	Schema.Struct({ 'X-Hasura-User-Id': Schema.optionalKey(Schema.String), 'X-Hasura-Role': Schema.optionalKey(Schema.String) }),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type AssertSamlPayload = { readonly [x: string]: Schema.Json }
 export const AssertSamlPayload = Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 	description: 'arbitrary',
 })
 
-export type AssertSingleSignOnSamlPayload = { readonly RelayState?: string; readonly SAMLResponse: string }
-export const AssertSingleSignOnSamlPayload = Schema.Struct({
-	RelayState: Schema.optionalKey(
-		Schema.String.annotate({
-			description:
-				"SAML standard parameter that will be transmitted between the identity provider and the service provider. It will be used as the session ID (jti) of the user's Logto authentication session. This API will use this session ID to retrieve the SSO connector authentication session from the database.",
-		})
-	),
-	SAMLResponse: Schema.String.annotate({ description: 'The SAML assertion response from the identity provider (IdP).' }),
-})
+export type AssertSingleSignOnSamlPayload = { readonly RelayState?: string; readonly SAMLResponse: string } & {
+	readonly [x: string]: Schema.Json
+}
+export const AssertSingleSignOnSamlPayload = Schema.StructWithRest(
+	Schema.Struct({
+		RelayState: Schema.optionalKey(
+			Schema.String.annotate({
+				description:
+					"SAML standard parameter that will be transmitted between the identity provider and the service provider. It will be used as the session ID (jti) of the user's Logto authentication session. This API will use this session ID to retrieve the SSO connector authentication session from the database.",
+			})
+		),
+		SAMLResponse: Schema.String.annotate({ description: 'The SAML assertion response from the identity provider (IdP).' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

@@ -20,40 +20,53 @@ export type GetSettingsResponse = {
 		readonly mfa?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly passkey?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly session?: 'Off' | 'ReadOnly' | 'Edit'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly webauthnRelatedOrigins: ReadonlyArray<string>
 	readonly deleteAccountUrl: string | null
 	readonly customCss: string | null
-	readonly profileFields: ReadonlyArray<{ readonly name: string }> | null
-}
-export const GetSettingsResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	enabled: Schema.Boolean,
-	fields: Schema.Struct({
-		name: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		avatar: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		profile: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		email: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		phone: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		password: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		username: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		social: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		customData: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+	readonly profileFields: ReadonlyArray<{ readonly name: string } & { readonly [x: string]: Schema.Json }> | null
+} & { readonly [x: string]: Schema.Json }
+export const GetSettingsResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		enabled: Schema.Boolean,
+		fields: Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				avatar: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				profile: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				email: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				phone: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				password: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				username: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				social: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				customData: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		webauthnRelatedOrigins: Schema.Array(Schema.String),
+		deleteAccountUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		customCss: Schema.Union([Schema.String, Schema.Null]),
+		profileFields: Schema.Union([
+			Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ name: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
+			),
+			Schema.Null,
+		]),
 	}),
-	webauthnRelatedOrigins: Schema.Array(Schema.String),
-	deleteAccountUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	customCss: Schema.Union([Schema.String, Schema.Null]),
-	profileFields: Schema.Union([Schema.Array(Schema.Struct({ name: Schema.String })), Schema.Null]),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateSettingsPayload = {
 	readonly enabled?: boolean
@@ -70,44 +83,59 @@ export type UpdateSettingsPayload = {
 		readonly mfa?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly passkey?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly session?: 'Off' | 'ReadOnly' | 'Edit'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly webauthnRelatedOrigins?: ReadonlyArray<string>
 	readonly deleteAccountUrl?: { readonly [x: string]: Schema.Json } | null
 	readonly customCss?: string | null
-	readonly profileFields?: ReadonlyArray<{ readonly name: string }> | null
-}
-export const UpdateSettingsPayload = Schema.Struct({
-	enabled: Schema.optionalKey(Schema.Boolean.annotate({ description: 'Enable or disable the account API.' })),
-	fields: Schema.optionalKey(
-		Schema.Struct({
-			name: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			avatar: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			profile: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			email: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			phone: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			password: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			username: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			social: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			customData: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-			session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		}).annotate({ description: 'The fields settings for the account API.' })
-	),
-	webauthnRelatedOrigins: Schema.optionalKey(Schema.Array(Schema.String).annotate({ description: 'The allowed domains for webauthn.' })),
-	deleteAccountUrl: Schema.optionalKey(
-		Schema.Union([Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })), Schema.Null]).annotate({
-			description: 'The custom endpoint URL for account deletion.',
-		})
-	),
-	customCss: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-	profileFields: Schema.optionalKey(
-		Schema.Union([Schema.Array(Schema.Struct({ name: Schema.String })), Schema.Null]).annotate({
-			description:
-				'Ordered list of custom profile fields to show in the prebuilt account center. Each entry references an existing field by name in the custom profile fields catalog.',
-		})
-	),
-})
+	readonly profileFields?: ReadonlyArray<{ readonly name: string } & { readonly [x: string]: Schema.Json }> | null
+} & { readonly [x: string]: Schema.Json }
+export const UpdateSettingsPayload = Schema.StructWithRest(
+	Schema.Struct({
+		enabled: Schema.optionalKey(Schema.Boolean.annotate({ description: 'Enable or disable the account API.' })),
+		fields: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					name: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					avatar: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					profile: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					email: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					phone: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					password: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					username: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					social: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					customData: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			).annotate({ description: 'The fields settings for the account API.' })
+		),
+		webauthnRelatedOrigins: Schema.optionalKey(
+			Schema.Array(Schema.String).annotate({ description: 'The allowed domains for webauthn.' })
+		),
+		deleteAccountUrl: Schema.optionalKey(
+			Schema.Union([Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })), Schema.Null]).annotate({
+				description: 'The custom endpoint URL for account deletion.',
+			})
+		),
+		customCss: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+		profileFields: Schema.optionalKey(
+			Schema.Union([
+				Schema.Array(
+					Schema.StructWithRest(Schema.Struct({ name: Schema.String }), [
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+					])
+				),
+				Schema.Null,
+			]).annotate({
+				description:
+					'Ordered list of custom profile fields to show in the prebuilt account center. Each entry references an existing field by name in the custom profile fields catalog.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateSettingsResponse = {
 	readonly tenantId: string
@@ -126,37 +154,50 @@ export type UpdateSettingsResponse = {
 		readonly mfa?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly passkey?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly session?: 'Off' | 'ReadOnly' | 'Edit'
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly webauthnRelatedOrigins: ReadonlyArray<string>
 	readonly deleteAccountUrl: string | null
 	readonly customCss: string | null
-	readonly profileFields: ReadonlyArray<{ readonly name: string }> | null
-}
-export const UpdateSettingsResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	enabled: Schema.Boolean,
-	fields: Schema.Struct({
-		name: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		avatar: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		profile: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		email: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		phone: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		password: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		username: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		social: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		customData: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
-		session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+	readonly profileFields: ReadonlyArray<{ readonly name: string } & { readonly [x: string]: Schema.Json }> | null
+} & { readonly [x: string]: Schema.Json }
+export const UpdateSettingsResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		enabled: Schema.Boolean,
+		fields: Schema.StructWithRest(
+			Schema.Struct({
+				name: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				avatar: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				profile: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				email: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				phone: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				password: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				username: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				social: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				customData: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		webauthnRelatedOrigins: Schema.Array(Schema.String),
+		deleteAccountUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		customCss: Schema.Union([Schema.String, Schema.Null]),
+		profileFields: Schema.Union([
+			Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ name: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
+			),
+			Schema.Null,
+		]),
 	}),
-	webauthnRelatedOrigins: Schema.Array(Schema.String),
-	deleteAccountUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	customCss: Schema.Union([Schema.String, Schema.Null]),
-	profileFields: Schema.Union([Schema.Array(Schema.Struct({ name: Schema.String })), Schema.Null]),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

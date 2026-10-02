@@ -3,40 +3,54 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type CreatePayload = { readonly email: string } | { readonly phone: string }
+export type CreatePayload =
+	| ({ readonly email: string } & { readonly [x: string]: Schema.Json })
+	| ({ readonly phone: string } & { readonly [x: string]: Schema.Json })
 export const CreatePayload = Schema.Union(
 	[
-		Schema.Struct({
-			email: Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^\S+@\S+\.\S+$/).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
-			),
-		}),
-		Schema.Struct({
-			phone: Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^\d+$/).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
-			),
-		}),
+		Schema.StructWithRest(
+			Schema.Struct({
+				email: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				phone: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
 
 export type VerifyPayload =
-	| { readonly email: string; readonly verificationCode: string }
-	| { readonly phone: string; readonly verificationCode: string }
+	| ({ readonly email: string; readonly verificationCode: string } & { readonly [x: string]: Schema.Json })
+	| ({ readonly phone: string; readonly verificationCode: string } & { readonly [x: string]: Schema.Json })
 export const VerifyPayload = Schema.Union(
 	[
-		Schema.Struct({
-			email: Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^\S+@\S+\.\S+$/).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
-			),
-			verificationCode: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-		}),
-		Schema.Struct({
-			phone: Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^\d+$/).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
-			),
-			verificationCode: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-		}),
+		Schema.StructWithRest(
+			Schema.Struct({
+				email: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+				),
+				verificationCode: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				phone: Schema.String.annotate({ format: 'regex' }).check(
+					Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+				),
+				verificationCode: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )

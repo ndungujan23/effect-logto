@@ -43,256 +43,491 @@ import {
 } from '../../../domain/schema/users.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeUsers = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): UsersOperations => ({
+export const makeUsers = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): UsersOperations => ({
 	get: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}`).pipe(
-			HttpClientRequest.setUrlParams({
-				includeSsoIdentities: options?.params?.['includeSsoIdentities'] as any,
-				includePasswordHash: options?.params?.['includePasswordHash'] as any,
-			}),
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						includeSsoIdentities: options?.params?.['includeSsoIdentities'] as any,
+						includePasswordHash: options?.params?.['includePasswordHash'] as any,
+					}),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (userId, options) =>
-		HttpClientRequest.delete(`/api/users/${encodeURIComponent(userId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [userId], () => '/api/users/' + __encodePathParam(userId) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (userId, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [userId], () => '/api/users/' + __encodePathParam(userId) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	listCustomData: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/custom-data`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListCustomDataResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/custom-data').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListCustomDataResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	updateCustomData: (userId, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}/custom-data`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateCustomDataResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [userId], () => '/api/users/' + __encodePathParam(userId) + '/custom-data').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateCustomDataResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listLogtoConfigs: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/logto-configs`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListLogtoConfigsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/logto-configs').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListLogtoConfigsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	updateLogtoConfigs: (userId, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}/logto-configs`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateLogtoConfigsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [userId], () => '/api/users/' + __encodePathParam(userId) + '/logto-configs').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateLogtoConfigsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	updateProfile: (userId, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}/profile`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateProfileResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [userId], () => '/api/users/' + __encodePathParam(userId) + '/profile').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateProfileResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	list: options =>
-		HttpClientRequest.get(`/api/users`).pipe(
+		HttpClientRequest.get('/api/users').pipe(
 			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
 			HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/users`).pipe(
+		HttpClientRequest.post('/api/users').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	updatePassword: (userId, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}/password`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdatePasswordResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [userId], () => '/api/users/' + __encodePathParam(userId) + '/password').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdatePasswordResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	updatePasswordExpiration: (userId, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}/password/expiration`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdatePasswordExpirationResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [userId], () => '/api/users/' + __encodePathParam(userId) + '/password/expiration').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdatePasswordExpirationResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	verifyPassword: (userId, options) =>
-		HttpClientRequest.post(`/api/users/${encodeURIComponent(userId)}/password/verify`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [userId], () => '/api/users/' + __encodePathParam(userId) + '/password/verify').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	getHasPassword: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/has-password`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetHasPasswordResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/has-password').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetHasPasswordResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	updateIsSuspended: (userId, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}/is-suspended`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateIsSuspendedResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [userId], () => '/api/users/' + __encodePathParam(userId) + '/is-suspended').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateIsSuspendedResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listRoles: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/roles`).pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
-			HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListRolesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/roles').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						page: options?.params?.['page'] as any,
+						page_size: options?.params?.['page_size'] as any,
+					}),
+					HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListRolesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceRoles: (userId, options) =>
-		HttpClientRequest.put(`/api/users/${encodeURIComponent(userId)}/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceRolesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.put, [userId], () => '/api/users/' + __encodePathParam(userId) + '/roles').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceRolesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	assignRoles: (userId, options) =>
-		HttpClientRequest.post(`/api/users/${encodeURIComponent(userId)}/roles`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AssignRolesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [userId], () => '/api/users/' + __encodePathParam(userId) + '/roles').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AssignRolesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteRole: (userId, roleId, options) =>
-		HttpClientRequest.delete(`/api/users/${encodeURIComponent(userId)}/roles/${encodeURIComponent(roleId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[userId, roleId],
+			() => '/api/users/' + __encodePathParam(userId) + '/roles/' + __encodePathParam(roleId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	getIdentity: (userId, target, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/identities/${encodeURIComponent(target)}`).pipe(
-			HttpClientRequest.setUrlParams({ includeTokenSecret: options?.params?.['includeTokenSecret'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetIdentityResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[userId, target],
+			() => '/api/users/' + __encodePathParam(userId) + '/identities/' + __encodePathParam(target) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({ includeTokenSecret: options?.params?.['includeTokenSecret'] as any }),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetIdentityResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceIdentity: (userId, target, options) =>
-		HttpClientRequest.put(`/api/users/${encodeURIComponent(userId)}/identities/${encodeURIComponent(target)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({
-					'200': decodeSuccess(ReplaceIdentityResponse200),
-					'201': decodeSuccess(ReplaceIdentityResponse201),
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(
+			HttpClientRequest.put,
+			[userId, target],
+			() => '/api/users/' + __encodePathParam(userId) + '/identities/' + __encodePathParam(target) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'200': decodeSuccess(ReplaceIdentityResponse200),
+							'201': decodeSuccess(ReplaceIdentityResponse201),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	deleteIdentity: (userId, target, options) =>
-		HttpClientRequest.delete(`/api/users/${encodeURIComponent(userId)}/identities/${encodeURIComponent(target)}`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(DeleteIdentityResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[userId, target],
+			() => '/api/users/' + __encodePathParam(userId) + '/identities/' + __encodePathParam(target) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(DeleteIdentityResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createIdentity: (userId, options) =>
-		HttpClientRequest.post(`/api/users/${encodeURIComponent(userId)}/identities`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateIdentityResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [userId], () => '/api/users/' + __encodePathParam(userId) + '/identities').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateIdentityResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listOrganizations: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/organizations`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListOrganizationsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/organizations').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListOrganizationsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listGrants: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/grants`).pipe(
-			HttpClientRequest.setUrlParams({ appType: options?.params?.['appType'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListGrantsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/grants').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({ appType: options?.params?.['appType'] as any }),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListGrantsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteGrant: (userId, grantId, options) =>
-		HttpClientRequest.delete(`/api/users/${encodeURIComponent(userId)}/grants/${encodeURIComponent(grantId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[userId, grantId],
+			() => '/api/users/' + __encodePathParam(userId) + '/grants/' + __encodePathParam(grantId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listMfaVerifications: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/mfa-verifications`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListMfaVerificationsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/mfa-verifications').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListMfaVerificationsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createMfaVerification: (userId, options) =>
-		HttpClientRequest.post(`/api/users/${encodeURIComponent(userId)}/mfa-verifications`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateMfaVerificationResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [userId], () => '/api/users/' + __encodePathParam(userId) + '/mfa-verifications').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateMfaVerificationResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteMfaVerification: (userId, verificationId, options) =>
-		HttpClientRequest.delete(`/api/users/${encodeURIComponent(userId)}/mfa-verifications/${encodeURIComponent(verificationId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[userId, verificationId],
+			() => '/api/users/' + __encodePathParam(userId) + '/mfa-verifications/' + __encodePathParam(verificationId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listPersonalAccessTokens: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/personal-access-tokens`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListPersonalAccessTokensResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[userId],
+			() => '/api/users/' + __encodePathParam(userId) + '/personal-access-tokens'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListPersonalAccessTokensResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createPersonalAccessToken: (userId, options) =>
-		HttpClientRequest.post(`/api/users/${encodeURIComponent(userId)}/personal-access-tokens`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreatePersonalAccessTokenResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.post,
+			[userId],
+			() => '/api/users/' + __encodePathParam(userId) + '/personal-access-tokens'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(CreatePersonalAccessTokenResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	updatePersonalAccessTokenName: (userId, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}/personal-access-tokens`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdatePersonalAccessTokenNameResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[userId],
+			() => '/api/users/' + __encodePathParam(userId) + '/personal-access-tokens'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(UpdatePersonalAccessTokenNameResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	deletePersonalAccessToken: (userId, name, options) =>
-		HttpClientRequest.delete(`/api/users/${encodeURIComponent(userId)}/personal-access-tokens/${encodeURIComponent(name)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[userId, name],
+			() => '/api/users/' + __encodePathParam(userId) + '/personal-access-tokens/' + __encodePathParam(name) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updatePersonalAccessToken: (userId, name, options) =>
-		HttpClientRequest.patch(`/api/users/${encodeURIComponent(userId)}/personal-access-tokens/${encodeURIComponent(name)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdatePersonalAccessTokenResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[userId, name],
+			() => '/api/users/' + __encodePathParam(userId) + '/personal-access-tokens/' + __encodePathParam(name) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(UpdatePersonalAccessTokenResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	deletePersonalAccessTokenPost: (userId, options) =>
-		HttpClientRequest.post(`/api/users/${encodeURIComponent(userId)}/personal-access-tokens/delete`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.post,
+			[userId],
+			() => '/api/users/' + __encodePathParam(userId) + '/personal-access-tokens/delete'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	getSsoIdentity: (userId, ssoConnectorId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/sso-identities/${encodeURIComponent(ssoConnectorId)}`).pipe(
-			HttpClientRequest.setUrlParams({ includeTokenSecret: options?.params?.['includeTokenSecret'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSsoIdentityResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[userId, ssoConnectorId],
+			() => '/api/users/' + __encodePathParam(userId) + '/sso-identities/' + __encodePathParam(ssoConnectorId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({ includeTokenSecret: options?.params?.['includeTokenSecret'] as any }),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSsoIdentityResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listAllIdentities: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/all-identities`).pipe(
-			HttpClientRequest.setUrlParams({ includeTokenSecret: options?.params?.['includeTokenSecret'] as any }),
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListAllIdentitiesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/all-identities').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({ includeTokenSecret: options?.params?.['includeTokenSecret'] as any }),
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListAllIdentitiesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listSessions: (userId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/sessions`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListSessionsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/sessions').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListSessionsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	getSession: (userId, sessionId, options) =>
-		HttpClientRequest.get(`/api/users/${encodeURIComponent(userId)}/sessions/${encodeURIComponent(sessionId)}`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSessionResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[userId, sessionId],
+			() => '/api/users/' + __encodePathParam(userId) + '/sessions/' + __encodePathParam(sessionId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSessionResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteSession: (userId, sessionId, options) =>
-		HttpClientRequest.delete(`/api/users/${encodeURIComponent(userId)}/sessions/${encodeURIComponent(sessionId)}`).pipe(
-			HttpClientRequest.setUrlParams({ revokeGrantsTarget: options?.params?.['revokeGrantsTarget'] as any }),
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[userId, sessionId],
+			() => '/api/users/' + __encodePathParam(userId) + '/sessions/' + __encodePathParam(sessionId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({ revokeGrantsTarget: options?.params?.['revokeGrantsTarget'] as any }),
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 })

@@ -14,33 +14,40 @@ export type GetResponse = {
 	readonly createdAt: number
 	readonly updatedAt: number
 	readonly expiresAt: number
-	readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string }>
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	inviterId: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		Schema.Null,
-	]),
-	invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	acceptedUserId: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		Schema.Null,
-	]),
-	organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	status: Schema.Literals(['Pending', 'Accepted', 'Expired', 'Revoked']),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	organizationRoles: Schema.Array(Schema.Struct({ id: Schema.String, name: Schema.String })),
-})
+	readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string } & { readonly [x: string]: Schema.Json }>
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		inviterId: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.Null,
+		]),
+		invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		acceptedUserId: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.Null,
+		]),
+		organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		status: Schema.Literals(['Pending', 'Accepted', 'Expired', 'Revoked']),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		organizationRoles: Schema.Array(
+			Schema.StructWithRest(Schema.Struct({ id: Schema.String, name: Schema.String }), [
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			])
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListParams = { readonly organizationId?: string; readonly inviterId?: string; readonly invitee?: string }
 export const ListParams = Schema.Struct({
@@ -49,45 +56,54 @@ export const ListParams = Schema.Struct({
 	invitee: Schema.optionalKey(Schema.String),
 })
 
-export type ListResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly inviterId: string | null
-	readonly invitee: string
-	readonly acceptedUserId: string | null
-	readonly organizationId: string
-	readonly status: 'Pending' | 'Accepted' | 'Expired' | 'Revoked'
-	readonly createdAt: number
-	readonly updatedAt: number
-	readonly expiresAt: number
-	readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string }>
-}>
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly inviterId: string | null
+		readonly invitee: string
+		readonly acceptedUserId: string | null
+		readonly organizationId: string
+		readonly status: 'Pending' | 'Accepted' | 'Expired' | 'Revoked'
+		readonly createdAt: number
+		readonly updatedAt: number
+		readonly expiresAt: number
+		readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string } & { readonly [x: string]: Schema.Json }>
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		inviterId: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-			Schema.Null,
-		]),
-		invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		),
-		acceptedUserId: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-			Schema.Null,
-		]),
-		organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		status: Schema.Literals(['Pending', 'Accepted', 'Expired', 'Revoked']),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		organizationRoles: Schema.Array(Schema.Struct({ id: Schema.String, name: Schema.String })),
-	})
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			inviterId: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.Null,
+			]),
+			invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			),
+			acceptedUserId: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.Null,
+			]),
+			organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			status: Schema.Literals(['Pending', 'Accepted', 'Expired', 'Revoked']),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			organizationRoles: Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ id: Schema.String, name: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
+			),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type CreatePayload = {
@@ -97,45 +113,56 @@ export type CreatePayload = {
 	readonly expiresAt: number
 	readonly organizationRoleIds?: ReadonlyArray<string>
 	readonly messagePayload:
-		| { readonly code?: string; readonly link?: string; readonly locale?: string; readonly uiLocales?: string }
+		| ({ readonly code?: string; readonly link?: string; readonly locale?: string; readonly uiLocales?: string } & {
+				readonly [x: string]: Schema.Json
+		  })
 		| boolean
-}
-export const CreatePayload = Schema.Struct({
-	inviterId: Schema.optionalKey(
-		Schema.Union([
-			Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-			Schema.Null,
-		]).annotate({ description: 'The ID of the user who is inviting the user to join the organization.' })
-	),
-	invitee: Schema.String.annotate({ description: 'The email address of the user to invite to join the organization.', format: 'email' }),
-	organizationId: Schema.String.annotate({ description: 'The ID of the organization to invite the user to join.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	expiresAt: Schema.Number.annotate({ description: 'The epoch time in milliseconds when the invitation expires.' }).check(
-		Schema.isFinite().annotate({ expected: 'a finite number' })
-	),
-	organizationRoleIds: Schema.optionalKey(
-		Schema.Array(Schema.String).annotate({
-			description: 'The IDs of the organization roles to assign to the user when they accept the invitation.',
-		})
-	),
-	messagePayload: Schema.Union(
-		[
-			Schema.Struct({
-				code: Schema.optionalKey(Schema.String),
-				link: Schema.optionalKey(Schema.String),
-				locale: Schema.optionalKey(Schema.String),
-				uiLocales: Schema.optionalKey(Schema.String),
-			}),
-			Schema.Boolean.annotate({ format: 'false' }),
-		],
-		{ mode: 'oneOf' }
-	).annotate({
-		description:
-			'The message payload for the "OrganizationInvitation" template to use when sending the invitation via email. If it is `false`, the invitation will not be sent via email.',
-		default: false,
+} & { readonly [x: string]: Schema.Json }
+export const CreatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		inviterId: Schema.optionalKey(
+			Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.Null,
+			]).annotate({ description: 'The ID of the user who is inviting the user to join the organization.' })
+		),
+		invitee: Schema.String.annotate({
+			description: 'The email address of the user to invite to join the organization.',
+			format: 'email',
+		}),
+		organizationId: Schema.String.annotate({ description: 'The ID of the organization to invite the user to join.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		expiresAt: Schema.Number.annotate({ description: 'The epoch time in milliseconds when the invitation expires.' }).check(
+			Schema.isFinite().annotate({ expected: 'a finite number' })
+		),
+		organizationRoleIds: Schema.optionalKey(
+			Schema.Array(Schema.String).annotate({
+				description: 'The IDs of the organization roles to assign to the user when they accept the invitation.',
+			})
+		),
+		messagePayload: Schema.Union(
+			[
+				Schema.StructWithRest(
+					Schema.Struct({
+						code: Schema.optionalKey(Schema.String),
+						link: Schema.optionalKey(Schema.String),
+						locale: Schema.optionalKey(Schema.String),
+						uiLocales: Schema.optionalKey(Schema.String),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.Boolean.annotate({ format: 'false' }),
+			],
+			{ mode: 'oneOf' }
+		).annotate({
+			description:
+				'The message payload for the "OrganizationInvitation" template to use when sending the invitation via email. If it is `false`, the invitation will not be sent via email.',
+			default: false,
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateResponse = {
 	readonly tenantId: string
@@ -148,52 +175,74 @@ export type CreateResponse = {
 	readonly createdAt: number
 	readonly updatedAt: number
 	readonly expiresAt: number
-	readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string }>
-}
-export const CreateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	inviterId: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		Schema.Null,
-	]),
-	invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	acceptedUserId: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		Schema.Null,
-	]),
-	organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	status: Schema.Literals(['Pending', 'Accepted', 'Expired', 'Revoked']),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	organizationRoles: Schema.Array(Schema.Struct({ id: Schema.String, name: Schema.String })),
-})
-
-export type CreateMessagePayload = { readonly code?: string; readonly link?: string; readonly locale?: string; readonly uiLocales?: string }
-export const CreateMessagePayload = Schema.Struct({
-	code: Schema.optionalKey(Schema.String),
-	link: Schema.optionalKey(Schema.String),
-	locale: Schema.optionalKey(Schema.String),
-	uiLocales: Schema.optionalKey(Schema.String),
-})
-
-export type ReplaceStatusPayload = { readonly acceptedUserId?: string | null; readonly status: 'Accepted' | 'Revoked' }
-export const ReplaceStatusPayload = Schema.Struct({
-	acceptedUserId: Schema.optionalKey(
-		Schema.Union([
-			Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
+	readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string } & { readonly [x: string]: Schema.Json }>
+} & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		inviterId: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
 			Schema.Null,
-		]).annotate({ description: 'The ID of the user who accepted the organization invitation. Required if the status is "Accepted".' })
-	),
-	status: Schema.Literals(['Accepted', 'Revoked']).annotate({ description: 'The status of the organization invitation.' }),
-})
+		]),
+		invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		acceptedUserId: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.Null,
+		]),
+		organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		status: Schema.Literals(['Pending', 'Accepted', 'Expired', 'Revoked']),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		organizationRoles: Schema.Array(
+			Schema.StructWithRest(Schema.Struct({ id: Schema.String, name: Schema.String }), [
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			])
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateMessagePayload = {
+	readonly code?: string
+	readonly link?: string
+	readonly locale?: string
+	readonly uiLocales?: string
+} & { readonly [x: string]: Schema.Json }
+export const CreateMessagePayload = Schema.StructWithRest(
+	Schema.Struct({
+		code: Schema.optionalKey(Schema.String),
+		link: Schema.optionalKey(Schema.String),
+		locale: Schema.optionalKey(Schema.String),
+		uiLocales: Schema.optionalKey(Schema.String),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type ReplaceStatusPayload = { readonly acceptedUserId?: string | null; readonly status: 'Accepted' | 'Revoked' } & {
+	readonly [x: string]: Schema.Json
+}
+export const ReplaceStatusPayload = Schema.StructWithRest(
+	Schema.Struct({
+		acceptedUserId: Schema.optionalKey(
+			Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.Null,
+			]).annotate({
+				description: 'The ID of the user who accepted the organization invitation. Required if the status is "Accepted".',
+			})
+		),
+		status: Schema.Literals(['Accepted', 'Revoked']).annotate({ description: 'The status of the organization invitation.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ReplaceStatusResponse = {
 	readonly tenantId: string
@@ -206,30 +255,37 @@ export type ReplaceStatusResponse = {
 	readonly createdAt: number
 	readonly updatedAt: number
 	readonly expiresAt: number
-	readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string }>
-}
-export const ReplaceStatusResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	inviterId: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		Schema.Null,
-	]),
-	invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	acceptedUserId: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		Schema.Null,
-	]),
-	organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	status: Schema.Literals(['Pending', 'Accepted', 'Expired', 'Revoked']),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	organizationRoles: Schema.Array(Schema.Struct({ id: Schema.String, name: Schema.String })),
-})
+	readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string } & { readonly [x: string]: Schema.Json }>
+} & { readonly [x: string]: Schema.Json }
+export const ReplaceStatusResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		inviterId: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.Null,
+		]),
+		invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		acceptedUserId: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.Null,
+		]),
+		organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		status: Schema.Literals(['Pending', 'Accepted', 'Expired', 'Revoked']),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		updatedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		organizationRoles: Schema.Array(
+			Schema.StructWithRest(Schema.Struct({ id: Schema.String, name: Schema.String }), [
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			])
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

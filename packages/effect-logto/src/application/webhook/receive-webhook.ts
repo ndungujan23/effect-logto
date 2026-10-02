@@ -18,11 +18,11 @@ const decodeBody = Schema.decodeUnknownEffect(Schema.fromJsonString(WebhookPaylo
  */
 export const receiveWebhook: {
 	(input: WebhookSignatureInput): Effect.Effect<WebhookPayload, LogtoWebhookSignatureError | Schema.SchemaError, WebhookSignatureVerifier>
-	<S extends Schema.Codec<any, any>>(
+	<S extends Schema.Schema<any>>(
 		input: WebhookSignatureInput,
 		schema: S
-	): Effect.Effect<S['Type'], LogtoWebhookSignatureError | Schema.SchemaError, WebhookSignatureVerifier>
-} = Effect.fnUntraced(function* (input: WebhookSignatureInput, schema?: Schema.Codec<any, any>) {
+	): Effect.Effect<Schema.Schema.Type<S>, LogtoWebhookSignatureError | Schema.SchemaError, WebhookSignatureVerifier>
+} = Effect.fnUntraced(function* (input: WebhookSignatureInput, schema?: Schema.Schema<any>) {
 	const verifier = yield* WebhookSignatureVerifier
 	yield* verifier.verify(input)
 	const text = typeof input.body === 'string' ? input.body : new TextDecoder().decode(input.body)

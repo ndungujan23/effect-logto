@@ -9,9 +9,16 @@ import type { AuthnOperations } from '../../../application/operation/authn.ts'
 import { GetHasuraAuthResponse } from '../../../domain/schema/authn.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeAuthn = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): AuthnOperations => ({
+export const makeAuthn = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): AuthnOperations => ({
 	getHasuraAuth: options =>
-		HttpClientRequest.get(`/api/authn/hasura`).pipe(
+		HttpClientRequest.get('/api/authn/hasura').pipe(
 			HttpClientRequest.setUrlParams({
 				resource: options.params['resource'] as any,
 				unauthorizedRole: options.params['unauthorizedRole'] as any,
@@ -21,13 +28,25 @@ export const makeAuthn = ({ withResponse, decodeSuccess, unexpectedStatus, searc
 			)
 		),
 	assertSaml: (connectorId, options) =>
-		HttpClientRequest.post(`/api/authn/saml/${encodeURIComponent(connectorId)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '302': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [connectorId], () => '/api/authn/saml/' + __encodePathParam(connectorId) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '302': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	assertSingleSignOnSaml: (connectorId, options) =>
-		HttpClientRequest.post(`/api/authn/single-sign-on/saml/${encodeURIComponent(connectorId)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '302': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.post,
+			[connectorId],
+			() => '/api/authn/single-sign-on/saml/' + __encodePathParam(connectorId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '302': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 })

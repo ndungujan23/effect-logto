@@ -21,42 +21,56 @@ export const makeCustomProfileFields = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): CustomProfileFieldsOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/custom-profile-fields`).pipe(
+		HttpClientRequest.get('/api/custom-profile-fields').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/custom-profile-fields`).pipe(
+		HttpClientRequest.post('/api/custom-profile-fields').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	getByName: (name, options) =>
-		HttpClientRequest.get(`/api/custom-profile-fields/${encodeURIComponent(name)}`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetByNameResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [name], () => '/api/custom-profile-fields/' + __encodePathParam(name) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetByNameResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	updateByName: (name, options) =>
-		HttpClientRequest.put(`/api/custom-profile-fields/${encodeURIComponent(name)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateByNameResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.put, [name], () => '/api/custom-profile-fields/' + __encodePathParam(name) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateByNameResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteByName: (name, options) =>
-		HttpClientRequest.delete(`/api/custom-profile-fields/${encodeURIComponent(name)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [name], () => '/api/custom-profile-fields/' + __encodePathParam(name) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	createBatch: options =>
-		HttpClientRequest.post(`/api/custom-profile-fields/batch`).pipe(
+		HttpClientRequest.post('/api/custom-profile-fields/batch').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateBatchResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateSieOrder: options =>
-		HttpClientRequest.post(`/api/custom-profile-fields/properties/sie-order`).pipe(
+		HttpClientRequest.post('/api/custom-profile-fields/properties/sie-order').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateSieOrderResponse), orElse: unexpectedStatus })

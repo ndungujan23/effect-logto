@@ -16,7 +16,7 @@ import * as Resources from '../schema/resources.ts'
 import * as Roles from '../schema/roles.ts'
 import * as Users from '../schema/users.ts'
 
-const user = Users.GetResponse.fields
+const user = Users.GetResponse.schema.fields
 
 /** `pick(user, ...userInfoSelectFields)`; fields added in newer Logto releases are optional. */
 export const UserEntity = Schema.Struct({
@@ -38,7 +38,7 @@ export const UserEntity = Schema.Struct({
 })
 export type UserEntity = typeof UserEntity.Type
 
-const application = Applications.GetResponse.fields
+const application = Applications.GetResponse.schema.fields
 
 /** `pick(application, 'id', 'type', 'name', 'description')`. */
 export const ApplicationEntity = Schema.Struct({

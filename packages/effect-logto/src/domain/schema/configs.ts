@@ -6,158 +6,209 @@ import * as Schema from 'effect/Schema'
 export type GetAdminConsoleConfigResponse = {
 	readonly signInExperienceCustomized: boolean
 	readonly organizationCreated: boolean
-	readonly developmentTenantMigrationNotification?: { readonly isPaidTenant: boolean; readonly tag: string; readonly readAt?: number }
+	readonly developmentTenantMigrationNotification?: { readonly isPaidTenant: boolean; readonly tag: string; readonly readAt?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly checkedChargeNotification?: {
 		readonly token?: boolean
 		readonly apiResource?: boolean
 		readonly machineToMachineApp?: boolean
 		readonly tenantMember?: boolean
-	}
-}
-export const GetAdminConsoleConfigResponse = Schema.Struct({
-	signInExperienceCustomized: Schema.Boolean,
-	organizationCreated: Schema.Boolean,
-	developmentTenantMigrationNotification: Schema.optionalKey(
-		Schema.Struct({
-			isPaidTenant: Schema.Boolean,
-			tag: Schema.String,
-			readAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		})
-	),
-	checkedChargeNotification: Schema.optionalKey(
-		Schema.Struct({
-			token: Schema.optionalKey(Schema.Boolean),
-			apiResource: Schema.optionalKey(Schema.Boolean),
-			machineToMachineApp: Schema.optionalKey(Schema.Boolean),
-			tenantMember: Schema.optionalKey(Schema.Boolean),
-		})
-	),
-})
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const GetAdminConsoleConfigResponse = Schema.StructWithRest(
+	Schema.Struct({
+		signInExperienceCustomized: Schema.Boolean,
+		organizationCreated: Schema.Boolean,
+		developmentTenantMigrationNotification: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					isPaidTenant: Schema.Boolean,
+					tag: Schema.String,
+					readAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		checkedChargeNotification: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					token: Schema.optionalKey(Schema.Boolean),
+					apiResource: Schema.optionalKey(Schema.Boolean),
+					machineToMachineApp: Schema.optionalKey(Schema.Boolean),
+					tenantMember: Schema.optionalKey(Schema.Boolean),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateAdminConsoleConfigPayload = {
 	readonly signInExperienceCustomized?: boolean
 	readonly organizationCreated?: boolean
-	readonly developmentTenantMigrationNotification?: { readonly isPaidTenant: boolean; readonly tag: string; readonly readAt?: number }
+	readonly developmentTenantMigrationNotification?: { readonly isPaidTenant: boolean; readonly tag: string; readonly readAt?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly checkedChargeNotification?: {
 		readonly token?: boolean
 		readonly apiResource?: boolean
 		readonly machineToMachineApp?: boolean
 		readonly tenantMember?: boolean
-	}
-}
-export const UpdateAdminConsoleConfigPayload = Schema.Struct({
-	signInExperienceCustomized: Schema.optionalKey(Schema.Boolean),
-	organizationCreated: Schema.optionalKey(Schema.Boolean),
-	developmentTenantMigrationNotification: Schema.optionalKey(
-		Schema.Struct({
-			isPaidTenant: Schema.Boolean,
-			tag: Schema.String,
-			readAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		})
-	),
-	checkedChargeNotification: Schema.optionalKey(
-		Schema.Struct({
-			token: Schema.optionalKey(Schema.Boolean),
-			apiResource: Schema.optionalKey(Schema.Boolean),
-			machineToMachineApp: Schema.optionalKey(Schema.Boolean),
-			tenantMember: Schema.optionalKey(Schema.Boolean),
-		})
-	),
-})
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const UpdateAdminConsoleConfigPayload = Schema.StructWithRest(
+	Schema.Struct({
+		signInExperienceCustomized: Schema.optionalKey(Schema.Boolean),
+		organizationCreated: Schema.optionalKey(Schema.Boolean),
+		developmentTenantMigrationNotification: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					isPaidTenant: Schema.Boolean,
+					tag: Schema.String,
+					readAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		checkedChargeNotification: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					token: Schema.optionalKey(Schema.Boolean),
+					apiResource: Schema.optionalKey(Schema.Boolean),
+					machineToMachineApp: Schema.optionalKey(Schema.Boolean),
+					tenantMember: Schema.optionalKey(Schema.Boolean),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateAdminConsoleConfigResponse = {
 	readonly signInExperienceCustomized: boolean
 	readonly organizationCreated: boolean
-	readonly developmentTenantMigrationNotification?: { readonly isPaidTenant: boolean; readonly tag: string; readonly readAt?: number }
+	readonly developmentTenantMigrationNotification?: { readonly isPaidTenant: boolean; readonly tag: string; readonly readAt?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly checkedChargeNotification?: {
 		readonly token?: boolean
 		readonly apiResource?: boolean
 		readonly machineToMachineApp?: boolean
 		readonly tenantMember?: boolean
-	}
-}
-export const UpdateAdminConsoleConfigResponse = Schema.Struct({
-	signInExperienceCustomized: Schema.Boolean,
-	organizationCreated: Schema.Boolean,
-	developmentTenantMigrationNotification: Schema.optionalKey(
-		Schema.Struct({
-			isPaidTenant: Schema.Boolean,
-			tag: Schema.String,
-			readAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		})
-	),
-	checkedChargeNotification: Schema.optionalKey(
-		Schema.Struct({
-			token: Schema.optionalKey(Schema.Boolean),
-			apiResource: Schema.optionalKey(Schema.Boolean),
-			machineToMachineApp: Schema.optionalKey(Schema.Boolean),
-			tenantMember: Schema.optionalKey(Schema.Boolean),
-		})
-	),
-})
-
-export type GetOidcSessionConfigResponse = { readonly ttl: number }
-export const GetOidcSessionConfigResponse = Schema.Struct({
-	ttl: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
-
-export type UpdateOidcSessionConfigPayload = { readonly ttl?: number }
-export const UpdateOidcSessionConfigPayload = Schema.Struct({
-	ttl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-})
-
-export type UpdateOidcSessionConfigResponse = { readonly ttl: number }
-export const UpdateOidcSessionConfigResponse = Schema.Struct({
-	ttl: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
-
-export type GetOidcKeysResponse = ReadonlyArray<{
-	readonly id: string
-	readonly createdAt: number
-	readonly signingKeyAlgorithm?: 'RSA' | 'EC'
-	readonly status?: 'Next' | 'Current' | 'Previous'
-	readonly effectiveAt?: number
-}>
-export const GetOidcKeysResponse = Schema.Array(
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const UpdateAdminConsoleConfigResponse = Schema.StructWithRest(
 	Schema.Struct({
-		id: Schema.String,
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		signingKeyAlgorithm: Schema.optionalKey(Schema.Literals(['RSA', 'EC'])),
-		status: Schema.optionalKey(Schema.Literals(['Next', 'Current', 'Previous'])),
-		effectiveAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	})
+		signInExperienceCustomized: Schema.Boolean,
+		organizationCreated: Schema.Boolean,
+		developmentTenantMigrationNotification: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					isPaidTenant: Schema.Boolean,
+					tag: Schema.String,
+					readAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		checkedChargeNotification: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					token: Schema.optionalKey(Schema.Boolean),
+					apiResource: Schema.optionalKey(Schema.Boolean),
+					machineToMachineApp: Schema.optionalKey(Schema.Boolean),
+					tenantMember: Schema.optionalKey(Schema.Boolean),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 )
 
-export type RotateOidcKeysPayload = { readonly signingKeyAlgorithm?: 'RSA' | 'EC'; readonly rotationGracePeriod?: number }
-export const RotateOidcKeysPayload = Schema.Struct({
-	signingKeyAlgorithm: Schema.optionalKey(
-		Schema.Literals(['RSA', 'EC']).annotate({
-			description:
-				'The signing key algorithm the new generated private key is using.\n\nOnly applicable when `keyType` is `private-keys`.',
-		})
-	),
-	rotationGracePeriod: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-})
+export type GetOidcSessionConfigResponse = { readonly ttl: number } & { readonly [x: string]: Schema.Json }
+export const GetOidcSessionConfigResponse = Schema.StructWithRest(
+	Schema.Struct({ ttl: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })) }),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type RotateOidcKeysResponse = ReadonlyArray<{
-	readonly id: string
-	readonly createdAt: number
-	readonly signingKeyAlgorithm?: 'RSA' | 'EC'
-	readonly status?: 'Next' | 'Current' | 'Previous'
-	readonly effectiveAt?: number
-}>
-export const RotateOidcKeysResponse = Schema.Array(
+export type UpdateOidcSessionConfigPayload = { readonly ttl?: number } & { readonly [x: string]: Schema.Json }
+export const UpdateOidcSessionConfigPayload = Schema.StructWithRest(
+	Schema.Struct({ ttl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))) }),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type UpdateOidcSessionConfigResponse = { readonly ttl: number } & { readonly [x: string]: Schema.Json }
+export const UpdateOidcSessionConfigResponse = Schema.StructWithRest(
+	Schema.Struct({ ttl: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })) }),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type GetOidcKeysResponse = ReadonlyArray<
+	{
+		readonly id: string
+		readonly createdAt: number
+		readonly signingKeyAlgorithm?: 'RSA' | 'EC'
+		readonly status?: 'Next' | 'Current' | 'Previous'
+		readonly effectiveAt?: number
+	} & { readonly [x: string]: Schema.Json }
+>
+export const GetOidcKeysResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			id: Schema.String,
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			signingKeyAlgorithm: Schema.optionalKey(Schema.Literals(['RSA', 'EC'])),
+			status: Schema.optionalKey(Schema.Literals(['Next', 'Current', 'Previous'])),
+			effectiveAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
+
+export type RotateOidcKeysPayload = { readonly signingKeyAlgorithm?: 'RSA' | 'EC'; readonly rotationGracePeriod?: number } & {
+	readonly [x: string]: Schema.Json
+}
+export const RotateOidcKeysPayload = Schema.StructWithRest(
 	Schema.Struct({
-		id: Schema.String,
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		signingKeyAlgorithm: Schema.optionalKey(Schema.Literals(['RSA', 'EC'])),
-		status: Schema.optionalKey(Schema.Literals(['Next', 'Current', 'Previous'])),
-		effectiveAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	})
+		signingKeyAlgorithm: Schema.optionalKey(
+			Schema.Literals(['RSA', 'EC']).annotate({
+				description:
+					'The signing key algorithm the new generated private key is using.\n\nOnly applicable when `keyType` is `private-keys`.',
+			})
+		),
+		rotationGracePeriod: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type RotateOidcKeysResponse = ReadonlyArray<
+	{
+		readonly id: string
+		readonly createdAt: number
+		readonly signingKeyAlgorithm?: 'RSA' | 'EC'
+		readonly status?: 'Next' | 'Current' | 'Previous'
+		readonly effectiveAt?: number
+	} & { readonly [x: string]: Schema.Json }
+>
+export const RotateOidcKeysResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			id: Schema.String,
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			signingKeyAlgorithm: Schema.optionalKey(Schema.Literals(['RSA', 'EC'])),
+			status: Schema.optionalKey(Schema.Literals(['Next', 'Current', 'Previous'])),
+			effectiveAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type GetJwtCustomizerResponse =
-	| {
+	| ({
 			readonly script: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly contextSample?: {
@@ -170,7 +221,9 @@ export type GetJwtCustomizerResponse =
 					readonly avatar?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly identities?: {
-						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } }
+						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
 					}
 					readonly lastSignInAt?: number | null
 					readonly createdAt?: number
@@ -194,78 +247,71 @@ export type GetJwtCustomizerResponse =
 							readonly region?: string
 							readonly postalCode?: string
 							readonly country?: string
-						}
-					}
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
 					readonly applicationId?: string | null
 					readonly cimdClientId?: string | null
 					readonly isSuspended?: boolean
 					readonly hasPassword?: boolean
-					readonly ssoIdentities?: ReadonlyArray<{
-						readonly issuer: string
-						readonly identityId: string
-						readonly detail: { readonly [x: string]: Schema.Json }
-					}>
+					readonly ssoIdentities?: ReadonlyArray<
+						{ readonly issuer: string; readonly identityId: string; readonly detail: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
 					readonly mfaVerificationFactors?: ReadonlyArray<
 						'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'
 					>
-					readonly roles?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string
-						readonly scopes: ReadonlyArray<{
+					readonly roles?: ReadonlyArray<
+						{
 							readonly id: string
 							readonly name: string
-							readonly description: string | null
-							readonly resourceId: string
-							readonly resource: {
-								readonly tenantId: string
-								readonly id: string
-								readonly name: string
-								readonly indicator: string
-								readonly isDefault: boolean
-								readonly accessTokenTtl: number
-							}
-						}>
-					}>
-					readonly organizations?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string | null
-					}>
-					readonly organizationRoles?: ReadonlyArray<{
-						readonly organizationId: string
-						readonly roleId: string
-						readonly roleName: string
-					}>
+							readonly description: string
+							readonly scopes: ReadonlyArray<
+								{
+									readonly id: string
+									readonly name: string
+									readonly description: string | null
+									readonly resourceId: string
+									readonly resource: {
+										readonly tenantId: string
+										readonly id: string
+										readonly name: string
+										readonly indicator: string
+										readonly isDefault: boolean
+										readonly accessTokenTtl: number
+									} & { readonly [x: string]: Schema.Json }
+								} & { readonly [x: string]: Schema.Json }
+							>
+						} & { readonly [x: string]: Schema.Json }
+					>
+					readonly organizations?: ReadonlyArray<
+						{ readonly id: string; readonly name: string; readonly description: string | null } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+					readonly organizationRoles?: ReadonlyArray<
+						{ readonly organizationId: string; readonly roleId: string; readonly roleName: string } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+				} & { readonly [x: string]: Schema.Json }
+				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } } & {
+					readonly [x: string]: Schema.Json
 				}
-				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } }
 				readonly interaction?: {
 					readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
 					readonly userId?: string
 					readonly verificationRecords?: ReadonlyArray<
-						| {
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone' | 'userId'; readonly value: string }
+								readonly identifier: {
+									readonly type: 'username' | 'email' | 'phone' | 'userId'
+									readonly value: string
+								} & { readonly [x: string]: Schema.Json }
 								readonly verified: boolean
-						  }
-						| {
-								readonly id: string
-								readonly templateType:
-									| 'SignIn'
-									| 'Register'
-									| 'ForgotPassword'
-									| 'OrganizationInvitation'
-									| 'Generic'
-									| 'UserPermissionValidation'
-									| 'BindNewIdentifier'
-									| 'MfaVerification'
-									| 'BindMfa'
-								readonly verified: boolean
-								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -279,9 +325,11 @@ export type GetJwtCustomizerResponse =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -295,9 +343,11 @@ export type GetJwtCustomizerResponse =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -311,9 +361,29 @@ export type GetJwtCustomizerResponse =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
+								readonly id: string
+								readonly templateType:
+									| 'SignIn'
+									| 'Register'
+									| 'ForgotPassword'
+									| 'OrganizationInvitation'
+									| 'Generic'
+									| 'UserPermissionValidation'
+									| 'BindNewIdentifier'
+									| 'MfaVerification'
+									| 'BindMfa'
+								readonly verified: boolean
+								readonly type: string
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -324,9 +394,9 @@ export type GetJwtCustomizerResponse =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -337,43 +407,51 @@ export type GetJwtCustomizerResponse =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
+								} & { readonly [x: string]: Schema.Json }
 								readonly issuer?: string
-						  }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly code?: string }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly code?: string } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId?: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
 								readonly verified: boolean
-								readonly identifier: { readonly type: string; readonly value: string }
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
 								readonly oneTimeTokenContext?: {
 									readonly jitOrganizationIds?: ReadonlyArray<string>
 									readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
-						  }
+								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
 					>
 					readonly signInContext?: { readonly [x: string]: string }
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly application?: {
 					readonly tenantId?: string
 					readonly id?: string
@@ -386,7 +464,7 @@ export type GetJwtCustomizerResponse =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -398,13 +476,13 @@ export type GetJwtCustomizerResponse =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -412,41 +490,45 @@ export type GetJwtCustomizerResponse =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly organization?: {
 					readonly id?: string
 					readonly name?: string
 					readonly description?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
-				}
-			}
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
 			readonly blockIssuanceOnError?: boolean
 			readonly tokenSample?: {
 				readonly jti?: string
@@ -460,9 +542,9 @@ export type GetJwtCustomizerResponse =
 				readonly sessionUid?: string
 				readonly sid?: string
 				readonly kind?: string
-			}
-	  }
-	| {
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly script: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly contextSample?: {
@@ -478,7 +560,7 @@ export type GetJwtCustomizerResponse =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -490,13 +572,13 @@ export type GetJwtCustomizerResponse =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -504,35 +586,39 @@ export type GetJwtCustomizerResponse =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
-			}
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
 			readonly blockIssuanceOnError?: boolean
 			readonly tokenSample?: {
 				readonly jti?: string
@@ -540,736 +626,1171 @@ export type GetJwtCustomizerResponse =
 				readonly scope?: string
 				readonly clientId?: string
 				readonly kind?: string
-			}
-	  }
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
 export const GetJwtCustomizerResponse = Schema.Union(
 	[
-		Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(
-				Schema.Struct({
-					user: Schema.Struct({
-						id: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' })
-							)
-						),
-						username: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						primaryEmail: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						primaryPhone: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						name: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						avatar: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(
-									Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-								),
-								Schema.Null,
-							])
-						),
-						customData: Schema.optionalKey(
-							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-								description: 'arbitrary',
-							})
-						),
-						identities: Schema.optionalKey(
-							Schema.Record(
-								Schema.String,
+		Schema.StructWithRest(
+			Schema.Struct({
+				script: Schema.String,
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				contextSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							user: Schema.StructWithRest(
 								Schema.Struct({
-									userId: Schema.String,
-									details: Schema.optionalKey(
+									id: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+									),
+									username: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									primaryEmail: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									primaryPhone: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									name: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									avatar: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(2048).annotate({
+													expected: 'a string with at most 2048 code points',
+												})
+											),
+											Schema.Null,
+										])
+									),
+									customData: Schema.optionalKey(
 										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 											description: 'arbitrary',
 										})
 									),
-								})
-							)
-						),
-						lastSignInAt: Schema.optionalKey(
-							Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null])
-						),
-						createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						updatedAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						profile: Schema.optionalKey(
-							Schema.Struct({
-								familyName: Schema.optionalKey(Schema.String),
-								givenName: Schema.optionalKey(Schema.String),
-								middleName: Schema.optionalKey(Schema.String),
-								nickname: Schema.optionalKey(Schema.String),
-								preferredUsername: Schema.optionalKey(Schema.String),
-								profile: Schema.optionalKey(Schema.String),
-								website: Schema.optionalKey(Schema.String),
-								gender: Schema.optionalKey(Schema.String),
-								birthdate: Schema.optionalKey(Schema.String),
-								zoneinfo: Schema.optionalKey(Schema.String),
-								locale: Schema.optionalKey(Schema.String),
-								address: Schema.optionalKey(
-									Schema.Struct({
-										formatted: Schema.optionalKey(Schema.String),
-										streetAddress: Schema.optionalKey(Schema.String),
-										locality: Schema.optionalKey(Schema.String),
-										region: Schema.optionalKey(Schema.String),
-										postalCode: Schema.optionalKey(Schema.String),
-										country: Schema.optionalKey(Schema.String),
-									})
-								),
-							})
-						),
-						applicationId: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-								Schema.Null,
-							])
-						),
-						cimdClientId: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(
-									Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-								),
-								Schema.Null,
-							])
-						),
-						isSuspended: Schema.optionalKey(Schema.Boolean),
-						hasPassword: Schema.optionalKey(Schema.Boolean),
-						ssoIdentities: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									issuer: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-									identityId: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-										description: 'arbitrary',
-									}),
-								})
-							)
-						),
-						mfaVerificationFactors: Schema.optionalKey(
-							Schema.Array(
-								Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])
-							)
-						),
-						roles: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									id: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-									name: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									description: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									scopes: Schema.Array(
-										Schema.Struct({
-											id: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											name: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-											description: Schema.Union([Schema.String, Schema.Null]),
-											resourceId: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											resource: Schema.Struct({
-												tenantId: Schema.String.check(
-													Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-												),
-												id: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												).check(
-													Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-												),
-												name: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												),
-												indicator: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												),
-												isDefault: Schema.Boolean,
-												accessTokenTtl: Schema.Number.check(
-													Schema.isFinite().annotate({ expected: 'a finite number' })
-												),
-											}),
-										})
-									),
-								})
-							)
-						),
-						organizations: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									id: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-									name: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									description: Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-										),
-										Schema.Null,
-									]),
-								})
-							)
-						),
-						organizationRoles: Schema.optionalKey(
-							Schema.Array(Schema.Struct({ organizationId: Schema.String, roleId: Schema.String, roleName: Schema.String }))
-						),
-					}),
-					grant: Schema.optionalKey(
-						Schema.Struct({
-							type: Schema.optionalKey(
-								Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
-							),
-							subjectTokenContext: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-						})
-					),
-					interaction: Schema.optionalKey(
-						Schema.Struct({
-							interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
-							userId: Schema.optionalKey(Schema.String),
-							verificationRecords: Schema.optionalKey(
-								Schema.Array(
-									Schema.Union(
-										[
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"Password"' }),
-												identifier: Schema.Struct({
-													type: Schema.Union(
-														[Schema.Literals(['username', 'email', 'phone']), Schema.Literal('userId')],
-														{ mode: 'oneOf' }
+									identities: Schema.optionalKey(
+										Schema.Record(
+											Schema.String,
+											Schema.StructWithRest(
+												Schema.Struct({
+													userId: Schema.String,
+													details: Schema.optionalKey(
+														Schema.Record(
+															Schema.String,
+															Schema.Json.annotate({ expected: 'JSON value' })
+														).annotate({ description: 'arbitrary' })
 													),
-													value: Schema.String,
 												}),
-												verified: Schema.Boolean,
-											}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									lastSignInAt: Schema.optionalKey(
+										Schema.Union([
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+											Schema.Null,
+										])
+									),
+									createdAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+									updatedAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+									profile: Schema.optionalKey(
+										Schema.StructWithRest(
 											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"phone"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"phone"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												connectorId: Schema.String,
-												type: Schema.String.annotate({ format: '"Social"' }),
-												socialUserInfo: Schema.optionalKey(
-													Schema.Struct({
-														id: Schema.String,
-														email: Schema.optionalKey(Schema.String),
-														phone: Schema.optionalKey(Schema.String),
-														name: Schema.optionalKey(Schema.String),
-														avatar: Schema.optionalKey(Schema.String),
-														rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-													})
+												familyName: Schema.optionalKey(Schema.String),
+												givenName: Schema.optionalKey(Schema.String),
+												middleName: Schema.optionalKey(Schema.String),
+												nickname: Schema.optionalKey(Schema.String),
+												preferredUsername: Schema.optionalKey(Schema.String),
+												profile: Schema.optionalKey(Schema.String),
+												website: Schema.optionalKey(Schema.String),
+												gender: Schema.optionalKey(Schema.String),
+												birthdate: Schema.optionalKey(Schema.String),
+												zoneinfo: Schema.optionalKey(Schema.String),
+												locale: Schema.optionalKey(Schema.String),
+												address: Schema.optionalKey(
+													Schema.StructWithRest(
+														Schema.Struct({
+															formatted: Schema.optionalKey(Schema.String),
+															streetAddress: Schema.optionalKey(Schema.String),
+															locality: Schema.optionalKey(Schema.String),
+															region: Schema.optionalKey(Schema.String),
+															postalCode: Schema.optionalKey(Schema.String),
+															country: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
 												),
 											}),
-											Schema.Struct({
-												id: Schema.String,
-												connectorId: Schema.String,
-												type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
-												enterpriseSsoUserInfo: Schema.optionalKey(
-													Schema.Struct({
-														id: Schema.String,
-														email: Schema.optionalKey(Schema.String),
-														phone: Schema.optionalKey(Schema.String),
-														name: Schema.optionalKey(Schema.String),
-														avatar: Schema.optionalKey(Schema.String),
-														rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-													})
-												),
-												issuer: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"Totp"' }),
-												userId: Schema.String,
-												verified: Schema.Boolean,
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"BackupCode"' }),
-												userId: Schema.String,
-												code: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												verified: Schema.Boolean,
-												registrationRpId: Schema.optionalKey(Schema.String),
-												type: Schema.String.annotate({ format: '"WebAuthn"' }),
-												userId: Schema.String,
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												verified: Schema.Boolean,
-												registrationRpId: Schema.optionalKey(Schema.String),
-												type: Schema.String.annotate({ format: '"SignInPasskey"' }),
-												userId: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"OneTimeToken"' }),
-												verified: Schema.Boolean,
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									applicationId: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									cimdClientId: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(2048).annotate({
+													expected: 'a string with at most 2048 code points',
+												})
+											),
+											Schema.Null,
+										])
+									),
+									isSuspended: Schema.optionalKey(Schema.Boolean),
+									hasPassword: Schema.optionalKey(Schema.Boolean),
+									ssoIdentities: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													issuer: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													),
+													identityId: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													detail: Schema.Record(
+														Schema.String,
+														Schema.Json.annotate({ expected: 'JSON value' })
+													).annotate({ description: 'arbitrary' }),
 												}),
-												oneTimeTokenContext: Schema.optionalKey(
-													Schema.Struct({
-														jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-														interactionEvent: Schema.optionalKey(
-															Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									mfaVerificationFactors: Schema.optionalKey(
+										Schema.Array(
+											Schema.Literals([
+												'Totp',
+												'WebAuthn',
+												'BackupCode',
+												'EmailVerificationCode',
+												'PhoneVerificationCode',
+											])
+										)
+									),
+									roles: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(21).annotate({
+															expected: 'a string with at most 21 code points',
+														})
+													),
+													name: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													description: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													scopes: Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																name: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(256).annotate({
+																		expected: 'a string with at most 256 code points',
+																	})
+																),
+																description: Schema.Union([Schema.String, Schema.Null]),
+																resourceId: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																resource: Schema.StructWithRest(
+																	Schema.Struct({
+																		tenantId: Schema.String.check(
+																			Schema.isMaxCodePoints(21).annotate({
+																				expected: 'a string with at most 21 code points',
+																			})
+																		),
+																		id: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		).check(
+																			Schema.isMaxCodePoints(21).annotate({
+																				expected: 'a string with at most 21 code points',
+																			})
+																		),
+																		name: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		),
+																		indicator: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		),
+																		isDefault: Schema.Boolean,
+																		accessTokenTtl: Schema.Number.check(
+																			Schema.isFinite().annotate({ expected: 'a finite number' })
+																		),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									organizations: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(21).annotate({
+															expected: 'a string with at most 21 code points',
+														})
+													),
+													name: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													description: Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(256).annotate({
+																expected: 'a string with at most 256 code points',
+															})
 														),
-													})
-												),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
-												identifier: Schema.Struct({
-													type: Schema.Literals(['username', 'email', 'phone']),
-													value: Schema.String,
+														Schema.Null,
+													]),
 												}),
-											}),
-										],
-										{ mode: 'oneOf' }
-									)
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									organizationRoles: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													organizationId: Schema.String,
+													roleId: Schema.String,
+													roleName: Schema.String,
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+							grant: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										type: Schema.optionalKey(
+											Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
+										),
+										subjectTokenContext: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 								)
 							),
-							signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-						})
-					),
-					application: Schema.optionalKey(
-						Schema.Struct({
-							tenantId: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
+							interaction: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+										userId: Schema.optionalKey(Schema.String),
+										verificationRecords: Schema.optionalKey(
+											Schema.Array(
+												Schema.Union(
+													[
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"Password"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.Union(
+																			[
+																				Schema.Literals(['username', 'email', 'phone']),
+																				Schema.Literal('userId'),
+																			],
+																			{ mode: 'oneOf' }
+																		),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+																verified: Schema.Boolean,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"phone"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"phone"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																connectorId: Schema.String,
+																type: Schema.String.annotate({ format: '"Social"' }),
+																socialUserInfo: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			email: Schema.optionalKey(Schema.String),
+																			phone: Schema.optionalKey(Schema.String),
+																			name: Schema.optionalKey(Schema.String),
+																			avatar: Schema.optionalKey(Schema.String),
+																			rawData: Schema.optionalKey(
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																connectorId: Schema.String,
+																type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
+																enterpriseSsoUserInfo: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			email: Schema.optionalKey(Schema.String),
+																			phone: Schema.optionalKey(Schema.String),
+																			name: Schema.optionalKey(Schema.String),
+																			avatar: Schema.optionalKey(Schema.String),
+																			rawData: Schema.optionalKey(
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+																issuer: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"Totp"' }),
+																userId: Schema.String,
+																verified: Schema.Boolean,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"BackupCode"' }),
+																userId: Schema.String,
+																code: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																verified: Schema.Boolean,
+																registrationRpId: Schema.optionalKey(Schema.String),
+																type: Schema.String.annotate({ format: '"WebAuthn"' }),
+																userId: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																verified: Schema.Boolean,
+																registrationRpId: Schema.optionalKey(Schema.String),
+																type: Schema.String.annotate({ format: '"SignInPasskey"' }),
+																userId: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"OneTimeToken"' }),
+																verified: Schema.Boolean,
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+																oneTimeTokenContext: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			jitOrganizationIds: Schema.optionalKey(
+																				Schema.Array(Schema.String)
+																			),
+																			interactionEvent: Schema.optionalKey(
+																				Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.Literals(['username', 'email', 'phone']),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+													],
+													{ mode: 'oneOf' }
+												)
+											)
+										),
+										signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-							type: Schema.optionalKey(
-								Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-							),
-							oidcClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-									backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-									logoUri: Schema.optionalKey(Schema.String),
-								})
-							),
-							customClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									corsAllowedOrigins: Schema.optionalKey(
-										Schema.Array(
+							application: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										tenantId: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										id: Schema.optionalKey(
 											Schema.String.check(
 												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 											)
-										)
-									),
-									idTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtlInDays: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									tenantId: Schema.optionalKey(Schema.String),
-									alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-									rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-									allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-									isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-									maxAllowedGrants: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-							protectedAppMetadata: Schema.optionalKey(
-								Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											host: Schema.String,
-											origin: Schema.String,
-											sessionDuration: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-											pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-											additionalScopes: Schema.optionalKey(
-												Schema.Array(
-													Schema.Literals([
-														'custom_data',
-														'identities',
-														'roles',
-														'urn:logto:scope:organizations',
-														'urn:logto:scope:organization_roles',
-													])
-												)
-											),
-											customDomains: Schema.optionalKey(
-												Schema.Array(
-													Schema.Struct({
-														domain: Schema.String,
-														status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-														errorMessage: Schema.Union([Schema.String, Schema.Null]),
-														dnsRecords: Schema.Array(
-															Schema.Struct({
-																name: Schema.String,
-																type: Schema.String,
-																value: Schema.String,
-															})
-														),
-														cloudflareData: Schema.Union([
-															Schema.StructWithRest(
-																Schema.Struct({
-																	id: Schema.String,
-																	status: Schema.String,
-																	ssl: Schema.Struct({
-																		status: Schema.String,
-																		validation_errors: Schema.optionalKey(
-																			Schema.Array(Schema.Struct({ message: Schema.String }))
-																		),
-																	}),
-																	verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-																}),
-																[
-																	Schema.Record(
-																		Schema.String,
-																		Schema.Json.annotate({ expected: 'JSON value' })
-																	),
-																]
-															),
-															Schema.Null,
-														]),
-													})
-												)
-											),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								])
-							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-							isThirdParty: Schema.optionalKey(Schema.Boolean),
-							appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-							createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						})
-					),
-					organization: Schema.optionalKey(
-						Schema.Struct({
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							description: Schema.optionalKey(
-								Schema.Union([
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									),
-									Schema.Null,
-								])
-							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-						})
-					),
-				})
-			),
-			blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-			tokenSample: Schema.optionalKey(
-				Schema.Struct({
-					jti: Schema.optionalKey(Schema.String),
-					aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-					scope: Schema.optionalKey(Schema.String),
-					clientId: Schema.optionalKey(Schema.String),
-					accountId: Schema.optionalKey(Schema.String),
-					expiresWithSession: Schema.optionalKey(Schema.Boolean),
-					grantId: Schema.optionalKey(Schema.String),
-					gty: Schema.optionalKey(Schema.String),
-					sessionUid: Schema.optionalKey(Schema.String),
-					sid: Schema.optionalKey(Schema.String),
-					kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
-				})
-			),
-		}),
-		Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(
-				Schema.Struct({
-					application: Schema.optionalKey(
-						Schema.Struct({
-							tenantId: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-							type: Schema.optionalKey(
-								Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-							),
-							oidcClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-									backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-									logoUri: Schema.optionalKey(Schema.String),
-								})
-							),
-							customClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									corsAllowedOrigins: Schema.optionalKey(
-										Schema.Array(
+										),
+										name: Schema.optionalKey(
 											Schema.String.check(
 												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
 											)
-										)
-									),
-									idTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtlInDays: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									tenantId: Schema.optionalKey(Schema.String),
-									alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-									rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-									allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-									isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-									maxAllowedGrants: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-							protectedAppMetadata: Schema.optionalKey(
-								Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											host: Schema.String,
-											origin: Schema.String,
-											sessionDuration: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-											pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-											additionalScopes: Schema.optionalKey(
-												Schema.Array(
-													Schema.Literals([
-														'custom_data',
-														'identities',
-														'roles',
-														'urn:logto:scope:organizations',
-														'urn:logto:scope:organization_roles',
-													])
-												)
-											),
-											customDomains: Schema.optionalKey(
-												Schema.Array(
+										),
+										description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+										type: Schema.optionalKey(
+											Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+										),
+										oidcClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+													backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+													logoUri: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										customClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													corsAllowedOrigins: Schema.optionalKey(
+														Schema.Array(
+															Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															)
+														)
+													),
+													idTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtlInDays: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													tenantId: Schema.optionalKey(Schema.String),
+													alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+													rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+													allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+													isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+													maxAllowedGrants: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										protectedAppMetadata: Schema.optionalKey(
+											Schema.Union([
+												Schema.StructWithRest(
 													Schema.Struct({
-														domain: Schema.String,
-														status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-														errorMessage: Schema.Union([Schema.String, Schema.Null]),
-														dnsRecords: Schema.Array(
-															Schema.Struct({
-																name: Schema.String,
-																type: Schema.String,
-																value: Schema.String,
-															})
+														host: Schema.String,
+														origin: Schema.String,
+														sessionDuration: Schema.Number.check(
+															Schema.isFinite().annotate({ expected: 'a finite number' })
 														),
-														cloudflareData: Schema.Union([
-															Schema.StructWithRest(
-																Schema.Struct({
-																	id: Schema.String,
-																	status: Schema.String,
-																	ssl: Schema.Struct({
-																		status: Schema.String,
-																		validation_errors: Schema.optionalKey(
-																			Schema.Array(Schema.Struct({ message: Schema.String }))
+														pageRules: Schema.Array(
+															Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																),
+															])
+														),
+														additionalScopes: Schema.optionalKey(
+															Schema.Array(
+																Schema.Literals([
+																	'custom_data',
+																	'identities',
+																	'roles',
+																	'urn:logto:scope:organizations',
+																	'urn:logto:scope:organization_roles',
+																])
+															)
+														),
+														customDomains: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		domain: Schema.String,
+																		status: Schema.Literals([
+																			'PendingVerification',
+																			'PendingSsl',
+																			'Active',
+																			'Error',
+																		]),
+																		errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																		dnsRecords: Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					name: Schema.String,
+																					type: Schema.String,
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
 																		),
+																		cloudflareData: Schema.Union([
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					id: Schema.String,
+																					status: Schema.String,
+																					ssl: Schema.StructWithRest(
+																						Schema.Struct({
+																							status: Schema.String,
+																							validation_errors: Schema.optionalKey(
+																								Schema.Array(
+																									Schema.StructWithRest(
+																										Schema.Struct({
+																											message: Schema.String,
+																										}),
+																										[
+																											Schema.Record(
+																												Schema.String,
+																												Schema.Json.annotate({
+																													expected: 'JSON value',
+																												})
+																											),
+																										]
+																									)
+																								)
+																							),
+																						}),
+																						[
+																							Schema.Record(
+																								Schema.String,
+																								Schema.Json.annotate({
+																									expected: 'JSON value',
+																								})
+																							),
+																						]
+																					),
+																					verification_errors: Schema.optionalKey(
+																						Schema.Array(Schema.String)
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			Schema.Null,
+																		]),
 																	}),
-																	verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-																}),
-																[
-																	Schema.Record(
-																		Schema.String,
-																		Schema.Json.annotate({ expected: 'JSON value' })
-																	),
-																]
-															),
-															Schema.Null,
-														]),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+										isThirdParty: Schema.optionalKey(Schema.Boolean),
+										appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+										createdAt: Schema.optionalKey(
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							organization: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										id: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										name: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											)
+										),
+										description: Schema.optionalKey(
+											Schema.Union([
+												Schema.String.check(
+													Schema.isMaxCodePoints(256).annotate({
+														expected: 'a string with at most 256 code points',
 													})
-												)
-											),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								])
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+				tokenSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							jti: Schema.optionalKey(Schema.String),
+							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+							scope: Schema.optionalKey(Schema.String),
+							clientId: Schema.optionalKey(Schema.String),
+							accountId: Schema.optionalKey(Schema.String),
+							expiresWithSession: Schema.optionalKey(Schema.Boolean),
+							grantId: Schema.optionalKey(Schema.String),
+							gty: Schema.optionalKey(Schema.String),
+							sessionUid: Schema.optionalKey(Schema.String),
+							sid: Schema.optionalKey(Schema.String),
+							kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				script: Schema.String,
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				contextSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							application: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										tenantId: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										id: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										name: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+											)
+										),
+										description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+										type: Schema.optionalKey(
+											Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+										),
+										oidcClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+													backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+													logoUri: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										customClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													corsAllowedOrigins: Schema.optionalKey(
+														Schema.Array(
+															Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															)
+														)
+													),
+													idTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtlInDays: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													tenantId: Schema.optionalKey(Schema.String),
+													alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+													rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+													allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+													isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+													maxAllowedGrants: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										protectedAppMetadata: Schema.optionalKey(
+											Schema.Union([
+												Schema.StructWithRest(
+													Schema.Struct({
+														host: Schema.String,
+														origin: Schema.String,
+														sessionDuration: Schema.Number.check(
+															Schema.isFinite().annotate({ expected: 'a finite number' })
+														),
+														pageRules: Schema.Array(
+															Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																),
+															])
+														),
+														additionalScopes: Schema.optionalKey(
+															Schema.Array(
+																Schema.Literals([
+																	'custom_data',
+																	'identities',
+																	'roles',
+																	'urn:logto:scope:organizations',
+																	'urn:logto:scope:organization_roles',
+																])
+															)
+														),
+														customDomains: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		domain: Schema.String,
+																		status: Schema.Literals([
+																			'PendingVerification',
+																			'PendingSsl',
+																			'Active',
+																			'Error',
+																		]),
+																		errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																		dnsRecords: Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					name: Schema.String,
+																					type: Schema.String,
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
+																		),
+																		cloudflareData: Schema.Union([
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					id: Schema.String,
+																					status: Schema.String,
+																					ssl: Schema.StructWithRest(
+																						Schema.Struct({
+																							status: Schema.String,
+																							validation_errors: Schema.optionalKey(
+																								Schema.Array(
+																									Schema.StructWithRest(
+																										Schema.Struct({
+																											message: Schema.String,
+																										}),
+																										[
+																											Schema.Record(
+																												Schema.String,
+																												Schema.Json.annotate({
+																													expected: 'JSON value',
+																												})
+																											),
+																										]
+																									)
+																								)
+																							),
+																						}),
+																						[
+																							Schema.Record(
+																								Schema.String,
+																								Schema.Json.annotate({
+																									expected: 'JSON value',
+																								})
+																							),
+																						]
+																					),
+																					verification_errors: Schema.optionalKey(
+																						Schema.Array(Schema.String)
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			Schema.Null,
+																		]),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+										isThirdParty: Schema.optionalKey(Schema.Boolean),
+										appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+										createdAt: Schema.optionalKey(
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							isThirdParty: Schema.optionalKey(Schema.Boolean),
-							appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-							createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						})
-					),
-				})
-			),
-			blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-			tokenSample: Schema.optionalKey(
-				Schema.Struct({
-					jti: Schema.optionalKey(Schema.String),
-					aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-					scope: Schema.optionalKey(Schema.String),
-					clientId: Schema.optionalKey(Schema.String),
-					kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
-				})
-			),
-		}),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+				tokenSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							jti: Schema.optionalKey(Schema.String),
+							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+							scope: Schema.optionalKey(Schema.String),
+							clientId: Schema.optionalKey(Schema.String),
+							kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
@@ -1323,7 +1844,7 @@ export const UpsertJwtCustomizerPayload = Schema.Union([
 ]).annotate({ examples: [{}] })
 
 export type UpsertJwtCustomizerResponse200 =
-	| {
+	| ({
 			readonly script: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly contextSample?: {
@@ -1336,7 +1857,9 @@ export type UpsertJwtCustomizerResponse200 =
 					readonly avatar?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly identities?: {
-						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } }
+						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
 					}
 					readonly lastSignInAt?: number | null
 					readonly createdAt?: number
@@ -1360,78 +1883,71 @@ export type UpsertJwtCustomizerResponse200 =
 							readonly region?: string
 							readonly postalCode?: string
 							readonly country?: string
-						}
-					}
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
 					readonly applicationId?: string | null
 					readonly cimdClientId?: string | null
 					readonly isSuspended?: boolean
 					readonly hasPassword?: boolean
-					readonly ssoIdentities?: ReadonlyArray<{
-						readonly issuer: string
-						readonly identityId: string
-						readonly detail: { readonly [x: string]: Schema.Json }
-					}>
+					readonly ssoIdentities?: ReadonlyArray<
+						{ readonly issuer: string; readonly identityId: string; readonly detail: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
 					readonly mfaVerificationFactors?: ReadonlyArray<
 						'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'
 					>
-					readonly roles?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string
-						readonly scopes: ReadonlyArray<{
+					readonly roles?: ReadonlyArray<
+						{
 							readonly id: string
 							readonly name: string
-							readonly description: string | null
-							readonly resourceId: string
-							readonly resource: {
-								readonly tenantId: string
-								readonly id: string
-								readonly name: string
-								readonly indicator: string
-								readonly isDefault: boolean
-								readonly accessTokenTtl: number
-							}
-						}>
-					}>
-					readonly organizations?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string | null
-					}>
-					readonly organizationRoles?: ReadonlyArray<{
-						readonly organizationId: string
-						readonly roleId: string
-						readonly roleName: string
-					}>
+							readonly description: string
+							readonly scopes: ReadonlyArray<
+								{
+									readonly id: string
+									readonly name: string
+									readonly description: string | null
+									readonly resourceId: string
+									readonly resource: {
+										readonly tenantId: string
+										readonly id: string
+										readonly name: string
+										readonly indicator: string
+										readonly isDefault: boolean
+										readonly accessTokenTtl: number
+									} & { readonly [x: string]: Schema.Json }
+								} & { readonly [x: string]: Schema.Json }
+							>
+						} & { readonly [x: string]: Schema.Json }
+					>
+					readonly organizations?: ReadonlyArray<
+						{ readonly id: string; readonly name: string; readonly description: string | null } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+					readonly organizationRoles?: ReadonlyArray<
+						{ readonly organizationId: string; readonly roleId: string; readonly roleName: string } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+				} & { readonly [x: string]: Schema.Json }
+				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } } & {
+					readonly [x: string]: Schema.Json
 				}
-				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } }
 				readonly interaction?: {
 					readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
 					readonly userId?: string
 					readonly verificationRecords?: ReadonlyArray<
-						| {
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone' | 'userId'; readonly value: string }
+								readonly identifier: {
+									readonly type: 'username' | 'email' | 'phone' | 'userId'
+									readonly value: string
+								} & { readonly [x: string]: Schema.Json }
 								readonly verified: boolean
-						  }
-						| {
-								readonly id: string
-								readonly templateType:
-									| 'SignIn'
-									| 'Register'
-									| 'ForgotPassword'
-									| 'OrganizationInvitation'
-									| 'Generic'
-									| 'UserPermissionValidation'
-									| 'BindNewIdentifier'
-									| 'MfaVerification'
-									| 'BindMfa'
-								readonly verified: boolean
-								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -1445,9 +1961,11 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -1461,9 +1979,11 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -1477,9 +1997,29 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
+								readonly id: string
+								readonly templateType:
+									| 'SignIn'
+									| 'Register'
+									| 'ForgotPassword'
+									| 'OrganizationInvitation'
+									| 'Generic'
+									| 'UserPermissionValidation'
+									| 'BindNewIdentifier'
+									| 'MfaVerification'
+									| 'BindMfa'
+								readonly verified: boolean
+								readonly type: string
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -1490,9 +2030,9 @@ export type UpsertJwtCustomizerResponse200 =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -1503,43 +2043,51 @@ export type UpsertJwtCustomizerResponse200 =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
+								} & { readonly [x: string]: Schema.Json }
 								readonly issuer?: string
-						  }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly code?: string }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly code?: string } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId?: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
 								readonly verified: boolean
-								readonly identifier: { readonly type: string; readonly value: string }
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
 								readonly oneTimeTokenContext?: {
 									readonly jitOrganizationIds?: ReadonlyArray<string>
 									readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
-						  }
+								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
 					>
 					readonly signInContext?: { readonly [x: string]: string }
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly application?: {
 					readonly tenantId?: string
 					readonly id?: string
@@ -1552,7 +2100,7 @@ export type UpsertJwtCustomizerResponse200 =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -1564,13 +2112,13 @@ export type UpsertJwtCustomizerResponse200 =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -1578,41 +2126,45 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly organization?: {
 					readonly id?: string
 					readonly name?: string
 					readonly description?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
-				}
-			}
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
 			readonly blockIssuanceOnError?: boolean
 			readonly tokenSample?: {
 				readonly jti?: string
@@ -1626,9 +2178,9 @@ export type UpsertJwtCustomizerResponse200 =
 				readonly sessionUid?: string
 				readonly sid?: string
 				readonly kind?: string
-			}
-	  }
-	| {
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly script: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly contextSample?: {
@@ -1644,7 +2196,7 @@ export type UpsertJwtCustomizerResponse200 =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -1656,13 +2208,13 @@ export type UpsertJwtCustomizerResponse200 =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -1670,35 +2222,39 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
-			}
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
 			readonly blockIssuanceOnError?: boolean
 			readonly tokenSample?: {
 				readonly jti?: string
@@ -1706,742 +2262,1177 @@ export type UpsertJwtCustomizerResponse200 =
 				readonly scope?: string
 				readonly clientId?: string
 				readonly kind?: string
-			}
-	  }
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
 export const UpsertJwtCustomizerResponse200 = Schema.Union(
 	[
-		Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(
-				Schema.Struct({
-					user: Schema.Struct({
-						id: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' })
-							)
-						),
-						username: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						primaryEmail: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						primaryPhone: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						name: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						avatar: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(
-									Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-								),
-								Schema.Null,
-							])
-						),
-						customData: Schema.optionalKey(
-							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-								description: 'arbitrary',
-							})
-						),
-						identities: Schema.optionalKey(
-							Schema.Record(
-								Schema.String,
+		Schema.StructWithRest(
+			Schema.Struct({
+				script: Schema.String,
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				contextSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							user: Schema.StructWithRest(
 								Schema.Struct({
-									userId: Schema.String,
-									details: Schema.optionalKey(
+									id: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+									),
+									username: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									primaryEmail: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									primaryPhone: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									name: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									avatar: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(2048).annotate({
+													expected: 'a string with at most 2048 code points',
+												})
+											),
+											Schema.Null,
+										])
+									),
+									customData: Schema.optionalKey(
 										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 											description: 'arbitrary',
 										})
 									),
-								})
-							)
-						),
-						lastSignInAt: Schema.optionalKey(
-							Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null])
-						),
-						createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						updatedAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						profile: Schema.optionalKey(
-							Schema.Struct({
-								familyName: Schema.optionalKey(Schema.String),
-								givenName: Schema.optionalKey(Schema.String),
-								middleName: Schema.optionalKey(Schema.String),
-								nickname: Schema.optionalKey(Schema.String),
-								preferredUsername: Schema.optionalKey(Schema.String),
-								profile: Schema.optionalKey(Schema.String),
-								website: Schema.optionalKey(Schema.String),
-								gender: Schema.optionalKey(Schema.String),
-								birthdate: Schema.optionalKey(Schema.String),
-								zoneinfo: Schema.optionalKey(Schema.String),
-								locale: Schema.optionalKey(Schema.String),
-								address: Schema.optionalKey(
-									Schema.Struct({
-										formatted: Schema.optionalKey(Schema.String),
-										streetAddress: Schema.optionalKey(Schema.String),
-										locality: Schema.optionalKey(Schema.String),
-										region: Schema.optionalKey(Schema.String),
-										postalCode: Schema.optionalKey(Schema.String),
-										country: Schema.optionalKey(Schema.String),
-									})
-								),
-							})
-						),
-						applicationId: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-								Schema.Null,
-							])
-						),
-						cimdClientId: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(
-									Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-								),
-								Schema.Null,
-							])
-						),
-						isSuspended: Schema.optionalKey(Schema.Boolean),
-						hasPassword: Schema.optionalKey(Schema.Boolean),
-						ssoIdentities: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									issuer: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-									identityId: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-										description: 'arbitrary',
-									}),
-								})
-							)
-						),
-						mfaVerificationFactors: Schema.optionalKey(
-							Schema.Array(
-								Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])
-							)
-						),
-						roles: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									id: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-									name: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									description: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									scopes: Schema.Array(
-										Schema.Struct({
-											id: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											name: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-											description: Schema.Union([Schema.String, Schema.Null]),
-											resourceId: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											resource: Schema.Struct({
-												tenantId: Schema.String.check(
-													Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-												),
-												id: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												).check(
-													Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-												),
-												name: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												),
-												indicator: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												),
-												isDefault: Schema.Boolean,
-												accessTokenTtl: Schema.Number.check(
-													Schema.isFinite().annotate({ expected: 'a finite number' })
-												),
-											}),
-										})
-									),
-								})
-							)
-						),
-						organizations: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									id: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-									name: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									description: Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-										),
-										Schema.Null,
-									]),
-								})
-							)
-						),
-						organizationRoles: Schema.optionalKey(
-							Schema.Array(Schema.Struct({ organizationId: Schema.String, roleId: Schema.String, roleName: Schema.String }))
-						),
-					}),
-					grant: Schema.optionalKey(
-						Schema.Struct({
-							type: Schema.optionalKey(
-								Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
-							),
-							subjectTokenContext: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-						})
-					),
-					interaction: Schema.optionalKey(
-						Schema.Struct({
-							interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
-							userId: Schema.optionalKey(Schema.String),
-							verificationRecords: Schema.optionalKey(
-								Schema.Array(
-									Schema.Union(
-										[
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"Password"' }),
-												identifier: Schema.Struct({
-													type: Schema.Union(
-														[Schema.Literals(['username', 'email', 'phone']), Schema.Literal('userId')],
-														{ mode: 'oneOf' }
+									identities: Schema.optionalKey(
+										Schema.Record(
+											Schema.String,
+											Schema.StructWithRest(
+												Schema.Struct({
+													userId: Schema.String,
+													details: Schema.optionalKey(
+														Schema.Record(
+															Schema.String,
+															Schema.Json.annotate({ expected: 'JSON value' })
+														).annotate({ description: 'arbitrary' })
 													),
-													value: Schema.String,
 												}),
-												verified: Schema.Boolean,
-											}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									lastSignInAt: Schema.optionalKey(
+										Schema.Union([
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+											Schema.Null,
+										])
+									),
+									createdAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+									updatedAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+									profile: Schema.optionalKey(
+										Schema.StructWithRest(
 											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"phone"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"phone"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												connectorId: Schema.String,
-												type: Schema.String.annotate({ format: '"Social"' }),
-												socialUserInfo: Schema.optionalKey(
-													Schema.Struct({
-														id: Schema.String,
-														email: Schema.optionalKey(Schema.String),
-														phone: Schema.optionalKey(Schema.String),
-														name: Schema.optionalKey(Schema.String),
-														avatar: Schema.optionalKey(Schema.String),
-														rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-													})
+												familyName: Schema.optionalKey(Schema.String),
+												givenName: Schema.optionalKey(Schema.String),
+												middleName: Schema.optionalKey(Schema.String),
+												nickname: Schema.optionalKey(Schema.String),
+												preferredUsername: Schema.optionalKey(Schema.String),
+												profile: Schema.optionalKey(Schema.String),
+												website: Schema.optionalKey(Schema.String),
+												gender: Schema.optionalKey(Schema.String),
+												birthdate: Schema.optionalKey(Schema.String),
+												zoneinfo: Schema.optionalKey(Schema.String),
+												locale: Schema.optionalKey(Schema.String),
+												address: Schema.optionalKey(
+													Schema.StructWithRest(
+														Schema.Struct({
+															formatted: Schema.optionalKey(Schema.String),
+															streetAddress: Schema.optionalKey(Schema.String),
+															locality: Schema.optionalKey(Schema.String),
+															region: Schema.optionalKey(Schema.String),
+															postalCode: Schema.optionalKey(Schema.String),
+															country: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
 												),
 											}),
-											Schema.Struct({
-												id: Schema.String,
-												connectorId: Schema.String,
-												type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
-												enterpriseSsoUserInfo: Schema.optionalKey(
-													Schema.Struct({
-														id: Schema.String,
-														email: Schema.optionalKey(Schema.String),
-														phone: Schema.optionalKey(Schema.String),
-														name: Schema.optionalKey(Schema.String),
-														avatar: Schema.optionalKey(Schema.String),
-														rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-													})
-												),
-												issuer: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"Totp"' }),
-												userId: Schema.String,
-												verified: Schema.Boolean,
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"BackupCode"' }),
-												userId: Schema.String,
-												code: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												verified: Schema.Boolean,
-												registrationRpId: Schema.optionalKey(Schema.String),
-												type: Schema.String.annotate({ format: '"WebAuthn"' }),
-												userId: Schema.String,
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												verified: Schema.Boolean,
-												registrationRpId: Schema.optionalKey(Schema.String),
-												type: Schema.String.annotate({ format: '"SignInPasskey"' }),
-												userId: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"OneTimeToken"' }),
-												verified: Schema.Boolean,
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									applicationId: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									cimdClientId: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(2048).annotate({
+													expected: 'a string with at most 2048 code points',
+												})
+											),
+											Schema.Null,
+										])
+									),
+									isSuspended: Schema.optionalKey(Schema.Boolean),
+									hasPassword: Schema.optionalKey(Schema.Boolean),
+									ssoIdentities: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													issuer: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													),
+													identityId: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													detail: Schema.Record(
+														Schema.String,
+														Schema.Json.annotate({ expected: 'JSON value' })
+													).annotate({ description: 'arbitrary' }),
 												}),
-												oneTimeTokenContext: Schema.optionalKey(
-													Schema.Struct({
-														jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-														interactionEvent: Schema.optionalKey(
-															Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									mfaVerificationFactors: Schema.optionalKey(
+										Schema.Array(
+											Schema.Literals([
+												'Totp',
+												'WebAuthn',
+												'BackupCode',
+												'EmailVerificationCode',
+												'PhoneVerificationCode',
+											])
+										)
+									),
+									roles: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(21).annotate({
+															expected: 'a string with at most 21 code points',
+														})
+													),
+													name: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													description: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													scopes: Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																name: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(256).annotate({
+																		expected: 'a string with at most 256 code points',
+																	})
+																),
+																description: Schema.Union([Schema.String, Schema.Null]),
+																resourceId: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																resource: Schema.StructWithRest(
+																	Schema.Struct({
+																		tenantId: Schema.String.check(
+																			Schema.isMaxCodePoints(21).annotate({
+																				expected: 'a string with at most 21 code points',
+																			})
+																		),
+																		id: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		).check(
+																			Schema.isMaxCodePoints(21).annotate({
+																				expected: 'a string with at most 21 code points',
+																			})
+																		),
+																		name: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		),
+																		indicator: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		),
+																		isDefault: Schema.Boolean,
+																		accessTokenTtl: Schema.Number.check(
+																			Schema.isFinite().annotate({ expected: 'a finite number' })
+																		),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									organizations: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(21).annotate({
+															expected: 'a string with at most 21 code points',
+														})
+													),
+													name: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													description: Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(256).annotate({
+																expected: 'a string with at most 256 code points',
+															})
 														),
-													})
-												),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
-												identifier: Schema.Struct({
-													type: Schema.Literals(['username', 'email', 'phone']),
-													value: Schema.String,
+														Schema.Null,
+													]),
 												}),
-											}),
-										],
-										{ mode: 'oneOf' }
-									)
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									organizationRoles: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													organizationId: Schema.String,
+													roleId: Schema.String,
+													roleName: Schema.String,
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+							grant: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										type: Schema.optionalKey(
+											Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
+										),
+										subjectTokenContext: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 								)
 							),
-							signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-						})
-					),
-					application: Schema.optionalKey(
-						Schema.Struct({
-							tenantId: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
+							interaction: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+										userId: Schema.optionalKey(Schema.String),
+										verificationRecords: Schema.optionalKey(
+											Schema.Array(
+												Schema.Union(
+													[
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"Password"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.Union(
+																			[
+																				Schema.Literals(['username', 'email', 'phone']),
+																				Schema.Literal('userId'),
+																			],
+																			{ mode: 'oneOf' }
+																		),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+																verified: Schema.Boolean,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"phone"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"phone"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																connectorId: Schema.String,
+																type: Schema.String.annotate({ format: '"Social"' }),
+																socialUserInfo: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			email: Schema.optionalKey(Schema.String),
+																			phone: Schema.optionalKey(Schema.String),
+																			name: Schema.optionalKey(Schema.String),
+																			avatar: Schema.optionalKey(Schema.String),
+																			rawData: Schema.optionalKey(
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																connectorId: Schema.String,
+																type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
+																enterpriseSsoUserInfo: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			email: Schema.optionalKey(Schema.String),
+																			phone: Schema.optionalKey(Schema.String),
+																			name: Schema.optionalKey(Schema.String),
+																			avatar: Schema.optionalKey(Schema.String),
+																			rawData: Schema.optionalKey(
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+																issuer: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"Totp"' }),
+																userId: Schema.String,
+																verified: Schema.Boolean,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"BackupCode"' }),
+																userId: Schema.String,
+																code: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																verified: Schema.Boolean,
+																registrationRpId: Schema.optionalKey(Schema.String),
+																type: Schema.String.annotate({ format: '"WebAuthn"' }),
+																userId: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																verified: Schema.Boolean,
+																registrationRpId: Schema.optionalKey(Schema.String),
+																type: Schema.String.annotate({ format: '"SignInPasskey"' }),
+																userId: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"OneTimeToken"' }),
+																verified: Schema.Boolean,
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+																oneTimeTokenContext: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			jitOrganizationIds: Schema.optionalKey(
+																				Schema.Array(Schema.String)
+																			),
+																			interactionEvent: Schema.optionalKey(
+																				Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.Literals(['username', 'email', 'phone']),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+													],
+													{ mode: 'oneOf' }
+												)
+											)
+										),
+										signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-							type: Schema.optionalKey(
-								Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-							),
-							oidcClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-									backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-									logoUri: Schema.optionalKey(Schema.String),
-								})
-							),
-							customClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									corsAllowedOrigins: Schema.optionalKey(
-										Schema.Array(
+							application: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										tenantId: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										id: Schema.optionalKey(
 											Schema.String.check(
 												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 											)
-										)
-									),
-									idTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtlInDays: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									tenantId: Schema.optionalKey(Schema.String),
-									alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-									rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-									allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-									isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-									maxAllowedGrants: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-							protectedAppMetadata: Schema.optionalKey(
-								Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											host: Schema.String,
-											origin: Schema.String,
-											sessionDuration: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-											pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-											additionalScopes: Schema.optionalKey(
-												Schema.Array(
-													Schema.Literals([
-														'custom_data',
-														'identities',
-														'roles',
-														'urn:logto:scope:organizations',
-														'urn:logto:scope:organization_roles',
-													])
-												)
-											),
-											customDomains: Schema.optionalKey(
-												Schema.Array(
-													Schema.Struct({
-														domain: Schema.String,
-														status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-														errorMessage: Schema.Union([Schema.String, Schema.Null]),
-														dnsRecords: Schema.Array(
-															Schema.Struct({
-																name: Schema.String,
-																type: Schema.String,
-																value: Schema.String,
-															})
-														),
-														cloudflareData: Schema.Union([
-															Schema.StructWithRest(
-																Schema.Struct({
-																	id: Schema.String,
-																	status: Schema.String,
-																	ssl: Schema.Struct({
-																		status: Schema.String,
-																		validation_errors: Schema.optionalKey(
-																			Schema.Array(Schema.Struct({ message: Schema.String }))
-																		),
-																	}),
-																	verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-																}),
-																[
-																	Schema.Record(
-																		Schema.String,
-																		Schema.Json.annotate({ expected: 'JSON value' })
-																	),
-																]
-															),
-															Schema.Null,
-														]),
-													})
-												)
-											),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								])
-							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-							isThirdParty: Schema.optionalKey(Schema.Boolean),
-							appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-							createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						})
-					),
-					organization: Schema.optionalKey(
-						Schema.Struct({
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							description: Schema.optionalKey(
-								Schema.Union([
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									),
-									Schema.Null,
-								])
-							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-						})
-					),
-				})
-			),
-			blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-			tokenSample: Schema.optionalKey(
-				Schema.Struct({
-					jti: Schema.optionalKey(Schema.String),
-					aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-					scope: Schema.optionalKey(Schema.String),
-					clientId: Schema.optionalKey(Schema.String),
-					accountId: Schema.optionalKey(Schema.String),
-					expiresWithSession: Schema.optionalKey(Schema.Boolean),
-					grantId: Schema.optionalKey(Schema.String),
-					gty: Schema.optionalKey(Schema.String),
-					sessionUid: Schema.optionalKey(Schema.String),
-					sid: Schema.optionalKey(Schema.String),
-					kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
-				})
-			),
-		}),
-		Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(
-				Schema.Struct({
-					application: Schema.optionalKey(
-						Schema.Struct({
-							tenantId: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-							type: Schema.optionalKey(
-								Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-							),
-							oidcClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-									backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-									logoUri: Schema.optionalKey(Schema.String),
-								})
-							),
-							customClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									corsAllowedOrigins: Schema.optionalKey(
-										Schema.Array(
+										),
+										name: Schema.optionalKey(
 											Schema.String.check(
 												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
 											)
-										)
-									),
-									idTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtlInDays: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									tenantId: Schema.optionalKey(Schema.String),
-									alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-									rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-									allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-									isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-									maxAllowedGrants: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-							protectedAppMetadata: Schema.optionalKey(
-								Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											host: Schema.String,
-											origin: Schema.String,
-											sessionDuration: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-											pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-											additionalScopes: Schema.optionalKey(
-												Schema.Array(
-													Schema.Literals([
-														'custom_data',
-														'identities',
-														'roles',
-														'urn:logto:scope:organizations',
-														'urn:logto:scope:organization_roles',
-													])
-												)
-											),
-											customDomains: Schema.optionalKey(
-												Schema.Array(
+										),
+										description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+										type: Schema.optionalKey(
+											Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+										),
+										oidcClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+													backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+													logoUri: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										customClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													corsAllowedOrigins: Schema.optionalKey(
+														Schema.Array(
+															Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															)
+														)
+													),
+													idTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtlInDays: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													tenantId: Schema.optionalKey(Schema.String),
+													alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+													rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+													allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+													isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+													maxAllowedGrants: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										protectedAppMetadata: Schema.optionalKey(
+											Schema.Union([
+												Schema.StructWithRest(
 													Schema.Struct({
-														domain: Schema.String,
-														status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-														errorMessage: Schema.Union([Schema.String, Schema.Null]),
-														dnsRecords: Schema.Array(
-															Schema.Struct({
-																name: Schema.String,
-																type: Schema.String,
-																value: Schema.String,
-															})
+														host: Schema.String,
+														origin: Schema.String,
+														sessionDuration: Schema.Number.check(
+															Schema.isFinite().annotate({ expected: 'a finite number' })
 														),
-														cloudflareData: Schema.Union([
-															Schema.StructWithRest(
-																Schema.Struct({
-																	id: Schema.String,
-																	status: Schema.String,
-																	ssl: Schema.Struct({
-																		status: Schema.String,
-																		validation_errors: Schema.optionalKey(
-																			Schema.Array(Schema.Struct({ message: Schema.String }))
+														pageRules: Schema.Array(
+															Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																),
+															])
+														),
+														additionalScopes: Schema.optionalKey(
+															Schema.Array(
+																Schema.Literals([
+																	'custom_data',
+																	'identities',
+																	'roles',
+																	'urn:logto:scope:organizations',
+																	'urn:logto:scope:organization_roles',
+																])
+															)
+														),
+														customDomains: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		domain: Schema.String,
+																		status: Schema.Literals([
+																			'PendingVerification',
+																			'PendingSsl',
+																			'Active',
+																			'Error',
+																		]),
+																		errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																		dnsRecords: Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					name: Schema.String,
+																					type: Schema.String,
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
 																		),
+																		cloudflareData: Schema.Union([
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					id: Schema.String,
+																					status: Schema.String,
+																					ssl: Schema.StructWithRest(
+																						Schema.Struct({
+																							status: Schema.String,
+																							validation_errors: Schema.optionalKey(
+																								Schema.Array(
+																									Schema.StructWithRest(
+																										Schema.Struct({
+																											message: Schema.String,
+																										}),
+																										[
+																											Schema.Record(
+																												Schema.String,
+																												Schema.Json.annotate({
+																													expected: 'JSON value',
+																												})
+																											),
+																										]
+																									)
+																								)
+																							),
+																						}),
+																						[
+																							Schema.Record(
+																								Schema.String,
+																								Schema.Json.annotate({
+																									expected: 'JSON value',
+																								})
+																							),
+																						]
+																					),
+																					verification_errors: Schema.optionalKey(
+																						Schema.Array(Schema.String)
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			Schema.Null,
+																		]),
 																	}),
-																	verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-																}),
-																[
-																	Schema.Record(
-																		Schema.String,
-																		Schema.Json.annotate({ expected: 'JSON value' })
-																	),
-																]
-															),
-															Schema.Null,
-														]),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+										isThirdParty: Schema.optionalKey(Schema.Boolean),
+										appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+										createdAt: Schema.optionalKey(
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							organization: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										id: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										name: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											)
+										),
+										description: Schema.optionalKey(
+											Schema.Union([
+												Schema.String.check(
+													Schema.isMaxCodePoints(256).annotate({
+														expected: 'a string with at most 256 code points',
 													})
-												)
-											),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								])
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+				tokenSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							jti: Schema.optionalKey(Schema.String),
+							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+							scope: Schema.optionalKey(Schema.String),
+							clientId: Schema.optionalKey(Schema.String),
+							accountId: Schema.optionalKey(Schema.String),
+							expiresWithSession: Schema.optionalKey(Schema.Boolean),
+							grantId: Schema.optionalKey(Schema.String),
+							gty: Schema.optionalKey(Schema.String),
+							sessionUid: Schema.optionalKey(Schema.String),
+							sid: Schema.optionalKey(Schema.String),
+							kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				script: Schema.String,
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				contextSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							application: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										tenantId: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										id: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										name: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+											)
+										),
+										description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+										type: Schema.optionalKey(
+											Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+										),
+										oidcClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+													backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+													logoUri: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										customClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													corsAllowedOrigins: Schema.optionalKey(
+														Schema.Array(
+															Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															)
+														)
+													),
+													idTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtlInDays: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													tenantId: Schema.optionalKey(Schema.String),
+													alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+													rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+													allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+													isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+													maxAllowedGrants: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										protectedAppMetadata: Schema.optionalKey(
+											Schema.Union([
+												Schema.StructWithRest(
+													Schema.Struct({
+														host: Schema.String,
+														origin: Schema.String,
+														sessionDuration: Schema.Number.check(
+															Schema.isFinite().annotate({ expected: 'a finite number' })
+														),
+														pageRules: Schema.Array(
+															Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																),
+															])
+														),
+														additionalScopes: Schema.optionalKey(
+															Schema.Array(
+																Schema.Literals([
+																	'custom_data',
+																	'identities',
+																	'roles',
+																	'urn:logto:scope:organizations',
+																	'urn:logto:scope:organization_roles',
+																])
+															)
+														),
+														customDomains: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		domain: Schema.String,
+																		status: Schema.Literals([
+																			'PendingVerification',
+																			'PendingSsl',
+																			'Active',
+																			'Error',
+																		]),
+																		errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																		dnsRecords: Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					name: Schema.String,
+																					type: Schema.String,
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
+																		),
+																		cloudflareData: Schema.Union([
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					id: Schema.String,
+																					status: Schema.String,
+																					ssl: Schema.StructWithRest(
+																						Schema.Struct({
+																							status: Schema.String,
+																							validation_errors: Schema.optionalKey(
+																								Schema.Array(
+																									Schema.StructWithRest(
+																										Schema.Struct({
+																											message: Schema.String,
+																										}),
+																										[
+																											Schema.Record(
+																												Schema.String,
+																												Schema.Json.annotate({
+																													expected: 'JSON value',
+																												})
+																											),
+																										]
+																									)
+																								)
+																							),
+																						}),
+																						[
+																							Schema.Record(
+																								Schema.String,
+																								Schema.Json.annotate({
+																									expected: 'JSON value',
+																								})
+																							),
+																						]
+																					),
+																					verification_errors: Schema.optionalKey(
+																						Schema.Array(Schema.String)
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			Schema.Null,
+																		]),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+										isThirdParty: Schema.optionalKey(Schema.Boolean),
+										appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+										createdAt: Schema.optionalKey(
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							isThirdParty: Schema.optionalKey(Schema.Boolean),
-							appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-							createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						})
-					),
-				})
-			),
-			blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-			tokenSample: Schema.optionalKey(
-				Schema.Struct({
-					jti: Schema.optionalKey(Schema.String),
-					aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-					scope: Schema.optionalKey(Schema.String),
-					clientId: Schema.optionalKey(Schema.String),
-					kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
-				})
-			),
-		}),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+				tokenSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							jti: Schema.optionalKey(Schema.String),
+							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+							scope: Schema.optionalKey(Schema.String),
+							clientId: Schema.optionalKey(Schema.String),
+							kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
 
 export type UpsertJwtCustomizerResponse201 =
-	| {
+	| ({
 			readonly script: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly contextSample?: {
@@ -2454,7 +3445,9 @@ export type UpsertJwtCustomizerResponse201 =
 					readonly avatar?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly identities?: {
-						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } }
+						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
 					}
 					readonly lastSignInAt?: number | null
 					readonly createdAt?: number
@@ -2478,78 +3471,71 @@ export type UpsertJwtCustomizerResponse201 =
 							readonly region?: string
 							readonly postalCode?: string
 							readonly country?: string
-						}
-					}
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
 					readonly applicationId?: string | null
 					readonly cimdClientId?: string | null
 					readonly isSuspended?: boolean
 					readonly hasPassword?: boolean
-					readonly ssoIdentities?: ReadonlyArray<{
-						readonly issuer: string
-						readonly identityId: string
-						readonly detail: { readonly [x: string]: Schema.Json }
-					}>
+					readonly ssoIdentities?: ReadonlyArray<
+						{ readonly issuer: string; readonly identityId: string; readonly detail: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
 					readonly mfaVerificationFactors?: ReadonlyArray<
 						'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'
 					>
-					readonly roles?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string
-						readonly scopes: ReadonlyArray<{
+					readonly roles?: ReadonlyArray<
+						{
 							readonly id: string
 							readonly name: string
-							readonly description: string | null
-							readonly resourceId: string
-							readonly resource: {
-								readonly tenantId: string
-								readonly id: string
-								readonly name: string
-								readonly indicator: string
-								readonly isDefault: boolean
-								readonly accessTokenTtl: number
-							}
-						}>
-					}>
-					readonly organizations?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string | null
-					}>
-					readonly organizationRoles?: ReadonlyArray<{
-						readonly organizationId: string
-						readonly roleId: string
-						readonly roleName: string
-					}>
+							readonly description: string
+							readonly scopes: ReadonlyArray<
+								{
+									readonly id: string
+									readonly name: string
+									readonly description: string | null
+									readonly resourceId: string
+									readonly resource: {
+										readonly tenantId: string
+										readonly id: string
+										readonly name: string
+										readonly indicator: string
+										readonly isDefault: boolean
+										readonly accessTokenTtl: number
+									} & { readonly [x: string]: Schema.Json }
+								} & { readonly [x: string]: Schema.Json }
+							>
+						} & { readonly [x: string]: Schema.Json }
+					>
+					readonly organizations?: ReadonlyArray<
+						{ readonly id: string; readonly name: string; readonly description: string | null } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+					readonly organizationRoles?: ReadonlyArray<
+						{ readonly organizationId: string; readonly roleId: string; readonly roleName: string } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+				} & { readonly [x: string]: Schema.Json }
+				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } } & {
+					readonly [x: string]: Schema.Json
 				}
-				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } }
 				readonly interaction?: {
 					readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
 					readonly userId?: string
 					readonly verificationRecords?: ReadonlyArray<
-						| {
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone' | 'userId'; readonly value: string }
+								readonly identifier: {
+									readonly type: 'username' | 'email' | 'phone' | 'userId'
+									readonly value: string
+								} & { readonly [x: string]: Schema.Json }
 								readonly verified: boolean
-						  }
-						| {
-								readonly id: string
-								readonly templateType:
-									| 'SignIn'
-									| 'Register'
-									| 'ForgotPassword'
-									| 'OrganizationInvitation'
-									| 'Generic'
-									| 'UserPermissionValidation'
-									| 'BindNewIdentifier'
-									| 'MfaVerification'
-									| 'BindMfa'
-								readonly verified: boolean
-								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -2563,9 +3549,11 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -2579,9 +3567,11 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -2595,9 +3585,29 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
+								readonly id: string
+								readonly templateType:
+									| 'SignIn'
+									| 'Register'
+									| 'ForgotPassword'
+									| 'OrganizationInvitation'
+									| 'Generic'
+									| 'UserPermissionValidation'
+									| 'BindNewIdentifier'
+									| 'MfaVerification'
+									| 'BindMfa'
+								readonly verified: boolean
+								readonly type: string
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -2608,9 +3618,9 @@ export type UpsertJwtCustomizerResponse201 =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -2621,43 +3631,51 @@ export type UpsertJwtCustomizerResponse201 =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
+								} & { readonly [x: string]: Schema.Json }
 								readonly issuer?: string
-						  }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly code?: string }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly code?: string } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId?: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
 								readonly verified: boolean
-								readonly identifier: { readonly type: string; readonly value: string }
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
 								readonly oneTimeTokenContext?: {
 									readonly jitOrganizationIds?: ReadonlyArray<string>
 									readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
-						  }
+								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
 					>
 					readonly signInContext?: { readonly [x: string]: string }
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly application?: {
 					readonly tenantId?: string
 					readonly id?: string
@@ -2670,7 +3688,7 @@ export type UpsertJwtCustomizerResponse201 =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -2682,13 +3700,13 @@ export type UpsertJwtCustomizerResponse201 =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -2696,41 +3714,45 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly organization?: {
 					readonly id?: string
 					readonly name?: string
 					readonly description?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
-				}
-			}
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
 			readonly blockIssuanceOnError?: boolean
 			readonly tokenSample?: {
 				readonly jti?: string
@@ -2744,9 +3766,9 @@ export type UpsertJwtCustomizerResponse201 =
 				readonly sessionUid?: string
 				readonly sid?: string
 				readonly kind?: string
-			}
-	  }
-	| {
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly script: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly contextSample?: {
@@ -2762,7 +3784,7 @@ export type UpsertJwtCustomizerResponse201 =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -2774,13 +3796,13 @@ export type UpsertJwtCustomizerResponse201 =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -2788,35 +3810,39 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
-			}
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
 			readonly blockIssuanceOnError?: boolean
 			readonly tokenSample?: {
 				readonly jti?: string
@@ -2824,736 +3850,1171 @@ export type UpsertJwtCustomizerResponse201 =
 				readonly scope?: string
 				readonly clientId?: string
 				readonly kind?: string
-			}
-	  }
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
 export const UpsertJwtCustomizerResponse201 = Schema.Union(
 	[
-		Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(
-				Schema.Struct({
-					user: Schema.Struct({
-						id: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' })
-							)
-						),
-						username: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						primaryEmail: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						primaryPhone: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						name: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						avatar: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(
-									Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-								),
-								Schema.Null,
-							])
-						),
-						customData: Schema.optionalKey(
-							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-								description: 'arbitrary',
-							})
-						),
-						identities: Schema.optionalKey(
-							Schema.Record(
-								Schema.String,
+		Schema.StructWithRest(
+			Schema.Struct({
+				script: Schema.String,
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				contextSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							user: Schema.StructWithRest(
 								Schema.Struct({
-									userId: Schema.String,
-									details: Schema.optionalKey(
+									id: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+									),
+									username: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									primaryEmail: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									primaryPhone: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									name: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									avatar: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(2048).annotate({
+													expected: 'a string with at most 2048 code points',
+												})
+											),
+											Schema.Null,
+										])
+									),
+									customData: Schema.optionalKey(
 										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 											description: 'arbitrary',
 										})
 									),
-								})
-							)
-						),
-						lastSignInAt: Schema.optionalKey(
-							Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null])
-						),
-						createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						updatedAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						profile: Schema.optionalKey(
-							Schema.Struct({
-								familyName: Schema.optionalKey(Schema.String),
-								givenName: Schema.optionalKey(Schema.String),
-								middleName: Schema.optionalKey(Schema.String),
-								nickname: Schema.optionalKey(Schema.String),
-								preferredUsername: Schema.optionalKey(Schema.String),
-								profile: Schema.optionalKey(Schema.String),
-								website: Schema.optionalKey(Schema.String),
-								gender: Schema.optionalKey(Schema.String),
-								birthdate: Schema.optionalKey(Schema.String),
-								zoneinfo: Schema.optionalKey(Schema.String),
-								locale: Schema.optionalKey(Schema.String),
-								address: Schema.optionalKey(
-									Schema.Struct({
-										formatted: Schema.optionalKey(Schema.String),
-										streetAddress: Schema.optionalKey(Schema.String),
-										locality: Schema.optionalKey(Schema.String),
-										region: Schema.optionalKey(Schema.String),
-										postalCode: Schema.optionalKey(Schema.String),
-										country: Schema.optionalKey(Schema.String),
-									})
-								),
-							})
-						),
-						applicationId: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-								Schema.Null,
-							])
-						),
-						cimdClientId: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(
-									Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-								),
-								Schema.Null,
-							])
-						),
-						isSuspended: Schema.optionalKey(Schema.Boolean),
-						hasPassword: Schema.optionalKey(Schema.Boolean),
-						ssoIdentities: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									issuer: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-									identityId: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-										description: 'arbitrary',
-									}),
-								})
-							)
-						),
-						mfaVerificationFactors: Schema.optionalKey(
-							Schema.Array(
-								Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])
-							)
-						),
-						roles: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									id: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-									name: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									description: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									scopes: Schema.Array(
-										Schema.Struct({
-											id: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											name: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-											description: Schema.Union([Schema.String, Schema.Null]),
-											resourceId: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											resource: Schema.Struct({
-												tenantId: Schema.String.check(
-													Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-												),
-												id: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												).check(
-													Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-												),
-												name: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												),
-												indicator: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												),
-												isDefault: Schema.Boolean,
-												accessTokenTtl: Schema.Number.check(
-													Schema.isFinite().annotate({ expected: 'a finite number' })
-												),
-											}),
-										})
-									),
-								})
-							)
-						),
-						organizations: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									id: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-									name: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									description: Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-										),
-										Schema.Null,
-									]),
-								})
-							)
-						),
-						organizationRoles: Schema.optionalKey(
-							Schema.Array(Schema.Struct({ organizationId: Schema.String, roleId: Schema.String, roleName: Schema.String }))
-						),
-					}),
-					grant: Schema.optionalKey(
-						Schema.Struct({
-							type: Schema.optionalKey(
-								Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
-							),
-							subjectTokenContext: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-						})
-					),
-					interaction: Schema.optionalKey(
-						Schema.Struct({
-							interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
-							userId: Schema.optionalKey(Schema.String),
-							verificationRecords: Schema.optionalKey(
-								Schema.Array(
-									Schema.Union(
-										[
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"Password"' }),
-												identifier: Schema.Struct({
-													type: Schema.Union(
-														[Schema.Literals(['username', 'email', 'phone']), Schema.Literal('userId')],
-														{ mode: 'oneOf' }
+									identities: Schema.optionalKey(
+										Schema.Record(
+											Schema.String,
+											Schema.StructWithRest(
+												Schema.Struct({
+													userId: Schema.String,
+													details: Schema.optionalKey(
+														Schema.Record(
+															Schema.String,
+															Schema.Json.annotate({ expected: 'JSON value' })
+														).annotate({ description: 'arbitrary' })
 													),
-													value: Schema.String,
 												}),
-												verified: Schema.Boolean,
-											}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									lastSignInAt: Schema.optionalKey(
+										Schema.Union([
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+											Schema.Null,
+										])
+									),
+									createdAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+									updatedAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+									profile: Schema.optionalKey(
+										Schema.StructWithRest(
 											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"phone"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"phone"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												connectorId: Schema.String,
-												type: Schema.String.annotate({ format: '"Social"' }),
-												socialUserInfo: Schema.optionalKey(
-													Schema.Struct({
-														id: Schema.String,
-														email: Schema.optionalKey(Schema.String),
-														phone: Schema.optionalKey(Schema.String),
-														name: Schema.optionalKey(Schema.String),
-														avatar: Schema.optionalKey(Schema.String),
-														rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-													})
+												familyName: Schema.optionalKey(Schema.String),
+												givenName: Schema.optionalKey(Schema.String),
+												middleName: Schema.optionalKey(Schema.String),
+												nickname: Schema.optionalKey(Schema.String),
+												preferredUsername: Schema.optionalKey(Schema.String),
+												profile: Schema.optionalKey(Schema.String),
+												website: Schema.optionalKey(Schema.String),
+												gender: Schema.optionalKey(Schema.String),
+												birthdate: Schema.optionalKey(Schema.String),
+												zoneinfo: Schema.optionalKey(Schema.String),
+												locale: Schema.optionalKey(Schema.String),
+												address: Schema.optionalKey(
+													Schema.StructWithRest(
+														Schema.Struct({
+															formatted: Schema.optionalKey(Schema.String),
+															streetAddress: Schema.optionalKey(Schema.String),
+															locality: Schema.optionalKey(Schema.String),
+															region: Schema.optionalKey(Schema.String),
+															postalCode: Schema.optionalKey(Schema.String),
+															country: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
 												),
 											}),
-											Schema.Struct({
-												id: Schema.String,
-												connectorId: Schema.String,
-												type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
-												enterpriseSsoUserInfo: Schema.optionalKey(
-													Schema.Struct({
-														id: Schema.String,
-														email: Schema.optionalKey(Schema.String),
-														phone: Schema.optionalKey(Schema.String),
-														name: Schema.optionalKey(Schema.String),
-														avatar: Schema.optionalKey(Schema.String),
-														rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-													})
-												),
-												issuer: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"Totp"' }),
-												userId: Schema.String,
-												verified: Schema.Boolean,
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"BackupCode"' }),
-												userId: Schema.String,
-												code: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												verified: Schema.Boolean,
-												registrationRpId: Schema.optionalKey(Schema.String),
-												type: Schema.String.annotate({ format: '"WebAuthn"' }),
-												userId: Schema.String,
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												verified: Schema.Boolean,
-												registrationRpId: Schema.optionalKey(Schema.String),
-												type: Schema.String.annotate({ format: '"SignInPasskey"' }),
-												userId: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"OneTimeToken"' }),
-												verified: Schema.Boolean,
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									applicationId: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									cimdClientId: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(2048).annotate({
+													expected: 'a string with at most 2048 code points',
+												})
+											),
+											Schema.Null,
+										])
+									),
+									isSuspended: Schema.optionalKey(Schema.Boolean),
+									hasPassword: Schema.optionalKey(Schema.Boolean),
+									ssoIdentities: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													issuer: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													),
+													identityId: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													detail: Schema.Record(
+														Schema.String,
+														Schema.Json.annotate({ expected: 'JSON value' })
+													).annotate({ description: 'arbitrary' }),
 												}),
-												oneTimeTokenContext: Schema.optionalKey(
-													Schema.Struct({
-														jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-														interactionEvent: Schema.optionalKey(
-															Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									mfaVerificationFactors: Schema.optionalKey(
+										Schema.Array(
+											Schema.Literals([
+												'Totp',
+												'WebAuthn',
+												'BackupCode',
+												'EmailVerificationCode',
+												'PhoneVerificationCode',
+											])
+										)
+									),
+									roles: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(21).annotate({
+															expected: 'a string with at most 21 code points',
+														})
+													),
+													name: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													description: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													scopes: Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																name: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(256).annotate({
+																		expected: 'a string with at most 256 code points',
+																	})
+																),
+																description: Schema.Union([Schema.String, Schema.Null]),
+																resourceId: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																resource: Schema.StructWithRest(
+																	Schema.Struct({
+																		tenantId: Schema.String.check(
+																			Schema.isMaxCodePoints(21).annotate({
+																				expected: 'a string with at most 21 code points',
+																			})
+																		),
+																		id: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		).check(
+																			Schema.isMaxCodePoints(21).annotate({
+																				expected: 'a string with at most 21 code points',
+																			})
+																		),
+																		name: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		),
+																		indicator: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		),
+																		isDefault: Schema.Boolean,
+																		accessTokenTtl: Schema.Number.check(
+																			Schema.isFinite().annotate({ expected: 'a finite number' })
+																		),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									organizations: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(21).annotate({
+															expected: 'a string with at most 21 code points',
+														})
+													),
+													name: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													description: Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(256).annotate({
+																expected: 'a string with at most 256 code points',
+															})
 														),
-													})
-												),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
-												identifier: Schema.Struct({
-													type: Schema.Literals(['username', 'email', 'phone']),
-													value: Schema.String,
+														Schema.Null,
+													]),
 												}),
-											}),
-										],
-										{ mode: 'oneOf' }
-									)
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									organizationRoles: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													organizationId: Schema.String,
+													roleId: Schema.String,
+													roleName: Schema.String,
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+							grant: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										type: Schema.optionalKey(
+											Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
+										),
+										subjectTokenContext: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 								)
 							),
-							signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-						})
-					),
-					application: Schema.optionalKey(
-						Schema.Struct({
-							tenantId: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
+							interaction: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+										userId: Schema.optionalKey(Schema.String),
+										verificationRecords: Schema.optionalKey(
+											Schema.Array(
+												Schema.Union(
+													[
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"Password"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.Union(
+																			[
+																				Schema.Literals(['username', 'email', 'phone']),
+																				Schema.Literal('userId'),
+																			],
+																			{ mode: 'oneOf' }
+																		),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+																verified: Schema.Boolean,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"phone"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"phone"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																connectorId: Schema.String,
+																type: Schema.String.annotate({ format: '"Social"' }),
+																socialUserInfo: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			email: Schema.optionalKey(Schema.String),
+																			phone: Schema.optionalKey(Schema.String),
+																			name: Schema.optionalKey(Schema.String),
+																			avatar: Schema.optionalKey(Schema.String),
+																			rawData: Schema.optionalKey(
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																connectorId: Schema.String,
+																type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
+																enterpriseSsoUserInfo: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			email: Schema.optionalKey(Schema.String),
+																			phone: Schema.optionalKey(Schema.String),
+																			name: Schema.optionalKey(Schema.String),
+																			avatar: Schema.optionalKey(Schema.String),
+																			rawData: Schema.optionalKey(
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+																issuer: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"Totp"' }),
+																userId: Schema.String,
+																verified: Schema.Boolean,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"BackupCode"' }),
+																userId: Schema.String,
+																code: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																verified: Schema.Boolean,
+																registrationRpId: Schema.optionalKey(Schema.String),
+																type: Schema.String.annotate({ format: '"WebAuthn"' }),
+																userId: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																verified: Schema.Boolean,
+																registrationRpId: Schema.optionalKey(Schema.String),
+																type: Schema.String.annotate({ format: '"SignInPasskey"' }),
+																userId: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"OneTimeToken"' }),
+																verified: Schema.Boolean,
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+																oneTimeTokenContext: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			jitOrganizationIds: Schema.optionalKey(
+																				Schema.Array(Schema.String)
+																			),
+																			interactionEvent: Schema.optionalKey(
+																				Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.Literals(['username', 'email', 'phone']),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+													],
+													{ mode: 'oneOf' }
+												)
+											)
+										),
+										signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-							type: Schema.optionalKey(
-								Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-							),
-							oidcClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-									backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-									logoUri: Schema.optionalKey(Schema.String),
-								})
-							),
-							customClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									corsAllowedOrigins: Schema.optionalKey(
-										Schema.Array(
+							application: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										tenantId: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										id: Schema.optionalKey(
 											Schema.String.check(
 												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 											)
-										)
-									),
-									idTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtlInDays: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									tenantId: Schema.optionalKey(Schema.String),
-									alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-									rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-									allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-									isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-									maxAllowedGrants: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-							protectedAppMetadata: Schema.optionalKey(
-								Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											host: Schema.String,
-											origin: Schema.String,
-											sessionDuration: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-											pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-											additionalScopes: Schema.optionalKey(
-												Schema.Array(
-													Schema.Literals([
-														'custom_data',
-														'identities',
-														'roles',
-														'urn:logto:scope:organizations',
-														'urn:logto:scope:organization_roles',
-													])
-												)
-											),
-											customDomains: Schema.optionalKey(
-												Schema.Array(
-													Schema.Struct({
-														domain: Schema.String,
-														status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-														errorMessage: Schema.Union([Schema.String, Schema.Null]),
-														dnsRecords: Schema.Array(
-															Schema.Struct({
-																name: Schema.String,
-																type: Schema.String,
-																value: Schema.String,
-															})
-														),
-														cloudflareData: Schema.Union([
-															Schema.StructWithRest(
-																Schema.Struct({
-																	id: Schema.String,
-																	status: Schema.String,
-																	ssl: Schema.Struct({
-																		status: Schema.String,
-																		validation_errors: Schema.optionalKey(
-																			Schema.Array(Schema.Struct({ message: Schema.String }))
-																		),
-																	}),
-																	verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-																}),
-																[
-																	Schema.Record(
-																		Schema.String,
-																		Schema.Json.annotate({ expected: 'JSON value' })
-																	),
-																]
-															),
-															Schema.Null,
-														]),
-													})
-												)
-											),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								])
-							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-							isThirdParty: Schema.optionalKey(Schema.Boolean),
-							appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-							createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						})
-					),
-					organization: Schema.optionalKey(
-						Schema.Struct({
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							description: Schema.optionalKey(
-								Schema.Union([
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									),
-									Schema.Null,
-								])
-							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-						})
-					),
-				})
-			),
-			blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-			tokenSample: Schema.optionalKey(
-				Schema.Struct({
-					jti: Schema.optionalKey(Schema.String),
-					aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-					scope: Schema.optionalKey(Schema.String),
-					clientId: Schema.optionalKey(Schema.String),
-					accountId: Schema.optionalKey(Schema.String),
-					expiresWithSession: Schema.optionalKey(Schema.Boolean),
-					grantId: Schema.optionalKey(Schema.String),
-					gty: Schema.optionalKey(Schema.String),
-					sessionUid: Schema.optionalKey(Schema.String),
-					sid: Schema.optionalKey(Schema.String),
-					kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
-				})
-			),
-		}),
-		Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(
-				Schema.Struct({
-					application: Schema.optionalKey(
-						Schema.Struct({
-							tenantId: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-							type: Schema.optionalKey(
-								Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-							),
-							oidcClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-									backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-									logoUri: Schema.optionalKey(Schema.String),
-								})
-							),
-							customClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									corsAllowedOrigins: Schema.optionalKey(
-										Schema.Array(
+										),
+										name: Schema.optionalKey(
 											Schema.String.check(
 												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
 											)
-										)
-									),
-									idTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtlInDays: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									tenantId: Schema.optionalKey(Schema.String),
-									alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-									rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-									allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-									isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-									maxAllowedGrants: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-							protectedAppMetadata: Schema.optionalKey(
-								Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											host: Schema.String,
-											origin: Schema.String,
-											sessionDuration: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-											pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-											additionalScopes: Schema.optionalKey(
-												Schema.Array(
-													Schema.Literals([
-														'custom_data',
-														'identities',
-														'roles',
-														'urn:logto:scope:organizations',
-														'urn:logto:scope:organization_roles',
-													])
-												)
-											),
-											customDomains: Schema.optionalKey(
-												Schema.Array(
+										),
+										description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+										type: Schema.optionalKey(
+											Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+										),
+										oidcClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+													backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+													logoUri: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										customClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													corsAllowedOrigins: Schema.optionalKey(
+														Schema.Array(
+															Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															)
+														)
+													),
+													idTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtlInDays: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													tenantId: Schema.optionalKey(Schema.String),
+													alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+													rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+													allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+													isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+													maxAllowedGrants: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										protectedAppMetadata: Schema.optionalKey(
+											Schema.Union([
+												Schema.StructWithRest(
 													Schema.Struct({
-														domain: Schema.String,
-														status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-														errorMessage: Schema.Union([Schema.String, Schema.Null]),
-														dnsRecords: Schema.Array(
-															Schema.Struct({
-																name: Schema.String,
-																type: Schema.String,
-																value: Schema.String,
-															})
+														host: Schema.String,
+														origin: Schema.String,
+														sessionDuration: Schema.Number.check(
+															Schema.isFinite().annotate({ expected: 'a finite number' })
 														),
-														cloudflareData: Schema.Union([
-															Schema.StructWithRest(
-																Schema.Struct({
-																	id: Schema.String,
-																	status: Schema.String,
-																	ssl: Schema.Struct({
-																		status: Schema.String,
-																		validation_errors: Schema.optionalKey(
-																			Schema.Array(Schema.Struct({ message: Schema.String }))
+														pageRules: Schema.Array(
+															Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																),
+															])
+														),
+														additionalScopes: Schema.optionalKey(
+															Schema.Array(
+																Schema.Literals([
+																	'custom_data',
+																	'identities',
+																	'roles',
+																	'urn:logto:scope:organizations',
+																	'urn:logto:scope:organization_roles',
+																])
+															)
+														),
+														customDomains: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		domain: Schema.String,
+																		status: Schema.Literals([
+																			'PendingVerification',
+																			'PendingSsl',
+																			'Active',
+																			'Error',
+																		]),
+																		errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																		dnsRecords: Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					name: Schema.String,
+																					type: Schema.String,
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
 																		),
+																		cloudflareData: Schema.Union([
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					id: Schema.String,
+																					status: Schema.String,
+																					ssl: Schema.StructWithRest(
+																						Schema.Struct({
+																							status: Schema.String,
+																							validation_errors: Schema.optionalKey(
+																								Schema.Array(
+																									Schema.StructWithRest(
+																										Schema.Struct({
+																											message: Schema.String,
+																										}),
+																										[
+																											Schema.Record(
+																												Schema.String,
+																												Schema.Json.annotate({
+																													expected: 'JSON value',
+																												})
+																											),
+																										]
+																									)
+																								)
+																							),
+																						}),
+																						[
+																							Schema.Record(
+																								Schema.String,
+																								Schema.Json.annotate({
+																									expected: 'JSON value',
+																								})
+																							),
+																						]
+																					),
+																					verification_errors: Schema.optionalKey(
+																						Schema.Array(Schema.String)
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			Schema.Null,
+																		]),
 																	}),
-																	verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-																}),
-																[
-																	Schema.Record(
-																		Schema.String,
-																		Schema.Json.annotate({ expected: 'JSON value' })
-																	),
-																]
-															),
-															Schema.Null,
-														]),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+										isThirdParty: Schema.optionalKey(Schema.Boolean),
+										appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+										createdAt: Schema.optionalKey(
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							organization: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										id: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										name: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											)
+										),
+										description: Schema.optionalKey(
+											Schema.Union([
+												Schema.String.check(
+													Schema.isMaxCodePoints(256).annotate({
+														expected: 'a string with at most 256 code points',
 													})
-												)
-											),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								])
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+				tokenSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							jti: Schema.optionalKey(Schema.String),
+							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+							scope: Schema.optionalKey(Schema.String),
+							clientId: Schema.optionalKey(Schema.String),
+							accountId: Schema.optionalKey(Schema.String),
+							expiresWithSession: Schema.optionalKey(Schema.Boolean),
+							grantId: Schema.optionalKey(Schema.String),
+							gty: Schema.optionalKey(Schema.String),
+							sessionUid: Schema.optionalKey(Schema.String),
+							sid: Schema.optionalKey(Schema.String),
+							kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				script: Schema.String,
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				contextSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							application: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										tenantId: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										id: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										name: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+											)
+										),
+										description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+										type: Schema.optionalKey(
+											Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+										),
+										oidcClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+													backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+													logoUri: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										customClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													corsAllowedOrigins: Schema.optionalKey(
+														Schema.Array(
+															Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															)
+														)
+													),
+													idTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtlInDays: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													tenantId: Schema.optionalKey(Schema.String),
+													alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+													rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+													allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+													isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+													maxAllowedGrants: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										protectedAppMetadata: Schema.optionalKey(
+											Schema.Union([
+												Schema.StructWithRest(
+													Schema.Struct({
+														host: Schema.String,
+														origin: Schema.String,
+														sessionDuration: Schema.Number.check(
+															Schema.isFinite().annotate({ expected: 'a finite number' })
+														),
+														pageRules: Schema.Array(
+															Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																),
+															])
+														),
+														additionalScopes: Schema.optionalKey(
+															Schema.Array(
+																Schema.Literals([
+																	'custom_data',
+																	'identities',
+																	'roles',
+																	'urn:logto:scope:organizations',
+																	'urn:logto:scope:organization_roles',
+																])
+															)
+														),
+														customDomains: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		domain: Schema.String,
+																		status: Schema.Literals([
+																			'PendingVerification',
+																			'PendingSsl',
+																			'Active',
+																			'Error',
+																		]),
+																		errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																		dnsRecords: Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					name: Schema.String,
+																					type: Schema.String,
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
+																		),
+																		cloudflareData: Schema.Union([
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					id: Schema.String,
+																					status: Schema.String,
+																					ssl: Schema.StructWithRest(
+																						Schema.Struct({
+																							status: Schema.String,
+																							validation_errors: Schema.optionalKey(
+																								Schema.Array(
+																									Schema.StructWithRest(
+																										Schema.Struct({
+																											message: Schema.String,
+																										}),
+																										[
+																											Schema.Record(
+																												Schema.String,
+																												Schema.Json.annotate({
+																													expected: 'JSON value',
+																												})
+																											),
+																										]
+																									)
+																								)
+																							),
+																						}),
+																						[
+																							Schema.Record(
+																								Schema.String,
+																								Schema.Json.annotate({
+																									expected: 'JSON value',
+																								})
+																							),
+																						]
+																					),
+																					verification_errors: Schema.optionalKey(
+																						Schema.Array(Schema.String)
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			Schema.Null,
+																		]),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+										isThirdParty: Schema.optionalKey(Schema.Boolean),
+										appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+										createdAt: Schema.optionalKey(
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							isThirdParty: Schema.optionalKey(Schema.Boolean),
-							appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-							createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						})
-					),
-				})
-			),
-			blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-			tokenSample: Schema.optionalKey(
-				Schema.Struct({
-					jti: Schema.optionalKey(Schema.String),
-					aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-					scope: Schema.optionalKey(Schema.String),
-					clientId: Schema.optionalKey(Schema.String),
-					kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
-				})
-			),
-		}),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+				tokenSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							jti: Schema.optionalKey(Schema.String),
+							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+							scope: Schema.optionalKey(Schema.String),
+							clientId: Schema.optionalKey(Schema.String),
+							kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
@@ -3607,7 +5068,7 @@ export const UpdateJwtCustomizerPayload = Schema.Union([
 ]).annotate({ examples: [{}] })
 
 export type UpdateJwtCustomizerResponse =
-	| {
+	| ({
 			readonly script: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly contextSample?: {
@@ -3620,7 +5081,9 @@ export type UpdateJwtCustomizerResponse =
 					readonly avatar?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly identities?: {
-						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } }
+						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
 					}
 					readonly lastSignInAt?: number | null
 					readonly createdAt?: number
@@ -3644,78 +5107,71 @@ export type UpdateJwtCustomizerResponse =
 							readonly region?: string
 							readonly postalCode?: string
 							readonly country?: string
-						}
-					}
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
 					readonly applicationId?: string | null
 					readonly cimdClientId?: string | null
 					readonly isSuspended?: boolean
 					readonly hasPassword?: boolean
-					readonly ssoIdentities?: ReadonlyArray<{
-						readonly issuer: string
-						readonly identityId: string
-						readonly detail: { readonly [x: string]: Schema.Json }
-					}>
+					readonly ssoIdentities?: ReadonlyArray<
+						{ readonly issuer: string; readonly identityId: string; readonly detail: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
 					readonly mfaVerificationFactors?: ReadonlyArray<
 						'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'
 					>
-					readonly roles?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string
-						readonly scopes: ReadonlyArray<{
+					readonly roles?: ReadonlyArray<
+						{
 							readonly id: string
 							readonly name: string
-							readonly description: string | null
-							readonly resourceId: string
-							readonly resource: {
-								readonly tenantId: string
-								readonly id: string
-								readonly name: string
-								readonly indicator: string
-								readonly isDefault: boolean
-								readonly accessTokenTtl: number
-							}
-						}>
-					}>
-					readonly organizations?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string | null
-					}>
-					readonly organizationRoles?: ReadonlyArray<{
-						readonly organizationId: string
-						readonly roleId: string
-						readonly roleName: string
-					}>
+							readonly description: string
+							readonly scopes: ReadonlyArray<
+								{
+									readonly id: string
+									readonly name: string
+									readonly description: string | null
+									readonly resourceId: string
+									readonly resource: {
+										readonly tenantId: string
+										readonly id: string
+										readonly name: string
+										readonly indicator: string
+										readonly isDefault: boolean
+										readonly accessTokenTtl: number
+									} & { readonly [x: string]: Schema.Json }
+								} & { readonly [x: string]: Schema.Json }
+							>
+						} & { readonly [x: string]: Schema.Json }
+					>
+					readonly organizations?: ReadonlyArray<
+						{ readonly id: string; readonly name: string; readonly description: string | null } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+					readonly organizationRoles?: ReadonlyArray<
+						{ readonly organizationId: string; readonly roleId: string; readonly roleName: string } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+				} & { readonly [x: string]: Schema.Json }
+				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } } & {
+					readonly [x: string]: Schema.Json
 				}
-				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } }
 				readonly interaction?: {
 					readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
 					readonly userId?: string
 					readonly verificationRecords?: ReadonlyArray<
-						| {
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone' | 'userId'; readonly value: string }
+								readonly identifier: {
+									readonly type: 'username' | 'email' | 'phone' | 'userId'
+									readonly value: string
+								} & { readonly [x: string]: Schema.Json }
 								readonly verified: boolean
-						  }
-						| {
-								readonly id: string
-								readonly templateType:
-									| 'SignIn'
-									| 'Register'
-									| 'ForgotPassword'
-									| 'OrganizationInvitation'
-									| 'Generic'
-									| 'UserPermissionValidation'
-									| 'BindNewIdentifier'
-									| 'MfaVerification'
-									| 'BindMfa'
-								readonly verified: boolean
-								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -3729,9 +5185,11 @@ export type UpdateJwtCustomizerResponse =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -3745,9 +5203,11 @@ export type UpdateJwtCustomizerResponse =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -3761,9 +5221,29 @@ export type UpdateJwtCustomizerResponse =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
+								readonly id: string
+								readonly templateType:
+									| 'SignIn'
+									| 'Register'
+									| 'ForgotPassword'
+									| 'OrganizationInvitation'
+									| 'Generic'
+									| 'UserPermissionValidation'
+									| 'BindNewIdentifier'
+									| 'MfaVerification'
+									| 'BindMfa'
+								readonly verified: boolean
+								readonly type: string
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -3774,9 +5254,9 @@ export type UpdateJwtCustomizerResponse =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -3787,43 +5267,51 @@ export type UpdateJwtCustomizerResponse =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
+								} & { readonly [x: string]: Schema.Json }
 								readonly issuer?: string
-						  }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly code?: string }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly code?: string } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId?: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
 								readonly verified: boolean
-								readonly identifier: { readonly type: string; readonly value: string }
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
 								readonly oneTimeTokenContext?: {
 									readonly jitOrganizationIds?: ReadonlyArray<string>
 									readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
-						  }
+								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
 					>
 					readonly signInContext?: { readonly [x: string]: string }
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly application?: {
 					readonly tenantId?: string
 					readonly id?: string
@@ -3836,7 +5324,7 @@ export type UpdateJwtCustomizerResponse =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -3848,13 +5336,13 @@ export type UpdateJwtCustomizerResponse =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -3862,41 +5350,45 @@ export type UpdateJwtCustomizerResponse =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly organization?: {
 					readonly id?: string
 					readonly name?: string
 					readonly description?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
-				}
-			}
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
 			readonly blockIssuanceOnError?: boolean
 			readonly tokenSample?: {
 				readonly jti?: string
@@ -3910,9 +5402,9 @@ export type UpdateJwtCustomizerResponse =
 				readonly sessionUid?: string
 				readonly sid?: string
 				readonly kind?: string
-			}
-	  }
-	| {
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly script: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly contextSample?: {
@@ -3928,7 +5420,7 @@ export type UpdateJwtCustomizerResponse =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -3940,13 +5432,13 @@ export type UpdateJwtCustomizerResponse =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -3954,35 +5446,39 @@ export type UpdateJwtCustomizerResponse =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
-			}
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
 			readonly blockIssuanceOnError?: boolean
 			readonly tokenSample?: {
 				readonly jti?: string
@@ -3990,742 +5486,1177 @@ export type UpdateJwtCustomizerResponse =
 				readonly scope?: string
 				readonly clientId?: string
 				readonly kind?: string
-			}
-	  }
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
 export const UpdateJwtCustomizerResponse = Schema.Union(
 	[
-		Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(
-				Schema.Struct({
-					user: Schema.Struct({
-						id: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' })
-							)
-						),
-						username: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						primaryEmail: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						primaryPhone: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						name: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								Schema.Null,
-							])
-						),
-						avatar: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(
-									Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-								),
-								Schema.Null,
-							])
-						),
-						customData: Schema.optionalKey(
-							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-								description: 'arbitrary',
-							})
-						),
-						identities: Schema.optionalKey(
-							Schema.Record(
-								Schema.String,
+		Schema.StructWithRest(
+			Schema.Struct({
+				script: Schema.String,
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				contextSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							user: Schema.StructWithRest(
 								Schema.Struct({
-									userId: Schema.String,
-									details: Schema.optionalKey(
+									id: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+									),
+									username: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									primaryEmail: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									primaryPhone: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									name: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									avatar: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(2048).annotate({
+													expected: 'a string with at most 2048 code points',
+												})
+											),
+											Schema.Null,
+										])
+									),
+									customData: Schema.optionalKey(
 										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 											description: 'arbitrary',
 										})
 									),
-								})
-							)
-						),
-						lastSignInAt: Schema.optionalKey(
-							Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null])
-						),
-						createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						updatedAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						profile: Schema.optionalKey(
-							Schema.Struct({
-								familyName: Schema.optionalKey(Schema.String),
-								givenName: Schema.optionalKey(Schema.String),
-								middleName: Schema.optionalKey(Schema.String),
-								nickname: Schema.optionalKey(Schema.String),
-								preferredUsername: Schema.optionalKey(Schema.String),
-								profile: Schema.optionalKey(Schema.String),
-								website: Schema.optionalKey(Schema.String),
-								gender: Schema.optionalKey(Schema.String),
-								birthdate: Schema.optionalKey(Schema.String),
-								zoneinfo: Schema.optionalKey(Schema.String),
-								locale: Schema.optionalKey(Schema.String),
-								address: Schema.optionalKey(
-									Schema.Struct({
-										formatted: Schema.optionalKey(Schema.String),
-										streetAddress: Schema.optionalKey(Schema.String),
-										locality: Schema.optionalKey(Schema.String),
-										region: Schema.optionalKey(Schema.String),
-										postalCode: Schema.optionalKey(Schema.String),
-										country: Schema.optionalKey(Schema.String),
-									})
-								),
-							})
-						),
-						applicationId: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-								Schema.Null,
-							])
-						),
-						cimdClientId: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(
-									Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-								),
-								Schema.Null,
-							])
-						),
-						isSuspended: Schema.optionalKey(Schema.Boolean),
-						hasPassword: Schema.optionalKey(Schema.Boolean),
-						ssoIdentities: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									issuer: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-									identityId: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-										description: 'arbitrary',
-									}),
-								})
-							)
-						),
-						mfaVerificationFactors: Schema.optionalKey(
-							Schema.Array(
-								Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])
-							)
-						),
-						roles: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									id: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-									name: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									description: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									scopes: Schema.Array(
-										Schema.Struct({
-											id: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											name: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-											description: Schema.Union([Schema.String, Schema.Null]),
-											resourceId: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											resource: Schema.Struct({
-												tenantId: Schema.String.check(
-													Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-												),
-												id: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												).check(
-													Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-												),
-												name: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												),
-												indicator: Schema.String.check(
-													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-												),
-												isDefault: Schema.Boolean,
-												accessTokenTtl: Schema.Number.check(
-													Schema.isFinite().annotate({ expected: 'a finite number' })
-												),
-											}),
-										})
-									),
-								})
-							)
-						),
-						organizations: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									id: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-									name: Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-									description: Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-										),
-										Schema.Null,
-									]),
-								})
-							)
-						),
-						organizationRoles: Schema.optionalKey(
-							Schema.Array(Schema.Struct({ organizationId: Schema.String, roleId: Schema.String, roleName: Schema.String }))
-						),
-					}),
-					grant: Schema.optionalKey(
-						Schema.Struct({
-							type: Schema.optionalKey(
-								Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
-							),
-							subjectTokenContext: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-						})
-					),
-					interaction: Schema.optionalKey(
-						Schema.Struct({
-							interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
-							userId: Schema.optionalKey(Schema.String),
-							verificationRecords: Schema.optionalKey(
-								Schema.Array(
-									Schema.Union(
-										[
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"Password"' }),
-												identifier: Schema.Struct({
-													type: Schema.Union(
-														[Schema.Literals(['username', 'email', 'phone']), Schema.Literal('userId')],
-														{ mode: 'oneOf' }
+									identities: Schema.optionalKey(
+										Schema.Record(
+											Schema.String,
+											Schema.StructWithRest(
+												Schema.Struct({
+													userId: Schema.String,
+													details: Schema.optionalKey(
+														Schema.Record(
+															Schema.String,
+															Schema.Json.annotate({ expected: 'JSON value' })
+														).annotate({ description: 'arbitrary' })
 													),
-													value: Schema.String,
 												}),
-												verified: Schema.Boolean,
-											}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									lastSignInAt: Schema.optionalKey(
+										Schema.Union([
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+											Schema.Null,
+										])
+									),
+									createdAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+									updatedAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+									profile: Schema.optionalKey(
+										Schema.StructWithRest(
 											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"phone"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												templateType: Schema.Literals([
-													'SignIn',
-													'Register',
-													'ForgotPassword',
-													'OrganizationInvitation',
-													'Generic',
-													'UserPermissionValidation',
-													'BindNewIdentifier',
-													'MfaVerification',
-													'BindMfa',
-												]),
-												verified: Schema.Boolean,
-												type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"phone"' }),
-													value: Schema.String,
-												}),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												connectorId: Schema.String,
-												type: Schema.String.annotate({ format: '"Social"' }),
-												socialUserInfo: Schema.optionalKey(
-													Schema.Struct({
-														id: Schema.String,
-														email: Schema.optionalKey(Schema.String),
-														phone: Schema.optionalKey(Schema.String),
-														name: Schema.optionalKey(Schema.String),
-														avatar: Schema.optionalKey(Schema.String),
-														rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-													})
+												familyName: Schema.optionalKey(Schema.String),
+												givenName: Schema.optionalKey(Schema.String),
+												middleName: Schema.optionalKey(Schema.String),
+												nickname: Schema.optionalKey(Schema.String),
+												preferredUsername: Schema.optionalKey(Schema.String),
+												profile: Schema.optionalKey(Schema.String),
+												website: Schema.optionalKey(Schema.String),
+												gender: Schema.optionalKey(Schema.String),
+												birthdate: Schema.optionalKey(Schema.String),
+												zoneinfo: Schema.optionalKey(Schema.String),
+												locale: Schema.optionalKey(Schema.String),
+												address: Schema.optionalKey(
+													Schema.StructWithRest(
+														Schema.Struct({
+															formatted: Schema.optionalKey(Schema.String),
+															streetAddress: Schema.optionalKey(Schema.String),
+															locality: Schema.optionalKey(Schema.String),
+															region: Schema.optionalKey(Schema.String),
+															postalCode: Schema.optionalKey(Schema.String),
+															country: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
 												),
 											}),
-											Schema.Struct({
-												id: Schema.String,
-												connectorId: Schema.String,
-												type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
-												enterpriseSsoUserInfo: Schema.optionalKey(
-													Schema.Struct({
-														id: Schema.String,
-														email: Schema.optionalKey(Schema.String),
-														phone: Schema.optionalKey(Schema.String),
-														name: Schema.optionalKey(Schema.String),
-														avatar: Schema.optionalKey(Schema.String),
-														rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-													})
-												),
-												issuer: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"Totp"' }),
-												userId: Schema.String,
-												verified: Schema.Boolean,
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"BackupCode"' }),
-												userId: Schema.String,
-												code: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												verified: Schema.Boolean,
-												registrationRpId: Schema.optionalKey(Schema.String),
-												type: Schema.String.annotate({ format: '"WebAuthn"' }),
-												userId: Schema.String,
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												verified: Schema.Boolean,
-												registrationRpId: Schema.optionalKey(Schema.String),
-												type: Schema.String.annotate({ format: '"SignInPasskey"' }),
-												userId: Schema.optionalKey(Schema.String),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"OneTimeToken"' }),
-												verified: Schema.Boolean,
-												identifier: Schema.Struct({
-													type: Schema.String.annotate({ format: '"email"' }),
-													value: Schema.String,
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									applicationId: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									cimdClientId: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(2048).annotate({
+													expected: 'a string with at most 2048 code points',
+												})
+											),
+											Schema.Null,
+										])
+									),
+									isSuspended: Schema.optionalKey(Schema.Boolean),
+									hasPassword: Schema.optionalKey(Schema.Boolean),
+									ssoIdentities: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													issuer: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													),
+													identityId: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													detail: Schema.Record(
+														Schema.String,
+														Schema.Json.annotate({ expected: 'JSON value' })
+													).annotate({ description: 'arbitrary' }),
 												}),
-												oneTimeTokenContext: Schema.optionalKey(
-													Schema.Struct({
-														jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-														interactionEvent: Schema.optionalKey(
-															Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									mfaVerificationFactors: Schema.optionalKey(
+										Schema.Array(
+											Schema.Literals([
+												'Totp',
+												'WebAuthn',
+												'BackupCode',
+												'EmailVerificationCode',
+												'PhoneVerificationCode',
+											])
+										)
+									),
+									roles: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(21).annotate({
+															expected: 'a string with at most 21 code points',
+														})
+													),
+													name: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													description: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													scopes: Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																name: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(256).annotate({
+																		expected: 'a string with at most 256 code points',
+																	})
+																),
+																description: Schema.Union([Schema.String, Schema.Null]),
+																resourceId: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																resource: Schema.StructWithRest(
+																	Schema.Struct({
+																		tenantId: Schema.String.check(
+																			Schema.isMaxCodePoints(21).annotate({
+																				expected: 'a string with at most 21 code points',
+																			})
+																		),
+																		id: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		).check(
+																			Schema.isMaxCodePoints(21).annotate({
+																				expected: 'a string with at most 21 code points',
+																			})
+																		),
+																		name: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		),
+																		indicator: Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		),
+																		isDefault: Schema.Boolean,
+																		accessTokenTtl: Schema.Number.check(
+																			Schema.isFinite().annotate({ expected: 'a finite number' })
+																		),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									organizations: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(21).annotate({
+															expected: 'a string with at most 21 code points',
+														})
+													),
+													name: Schema.String.check(
+														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+													).check(
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
+														})
+													),
+													description: Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(256).annotate({
+																expected: 'a string with at most 256 code points',
+															})
 														),
-													})
-												),
-											}),
-											Schema.Struct({
-												id: Schema.String,
-												type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
-												identifier: Schema.Struct({
-													type: Schema.Literals(['username', 'email', 'phone']),
-													value: Schema.String,
+														Schema.Null,
+													]),
 												}),
-											}),
-										],
-										{ mode: 'oneOf' }
-									)
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									organizationRoles: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													organizationId: Schema.String,
+													roleId: Schema.String,
+													roleName: Schema.String,
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+							grant: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										type: Schema.optionalKey(
+											Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
+										),
+										subjectTokenContext: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 								)
 							),
-							signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-						})
-					),
-					application: Schema.optionalKey(
-						Schema.Struct({
-							tenantId: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
+							interaction: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+										userId: Schema.optionalKey(Schema.String),
+										verificationRecords: Schema.optionalKey(
+											Schema.Array(
+												Schema.Union(
+													[
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"Password"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.Union(
+																			[
+																				Schema.Literals(['username', 'email', 'phone']),
+																				Schema.Literal('userId'),
+																			],
+																			{ mode: 'oneOf' }
+																		),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+																verified: Schema.Boolean,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"phone"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																templateType: Schema.Literals([
+																	'SignIn',
+																	'Register',
+																	'ForgotPassword',
+																	'OrganizationInvitation',
+																	'Generic',
+																	'UserPermissionValidation',
+																	'BindNewIdentifier',
+																	'MfaVerification',
+																	'BindMfa',
+																]),
+																verified: Schema.Boolean,
+																type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"phone"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																connectorId: Schema.String,
+																type: Schema.String.annotate({ format: '"Social"' }),
+																socialUserInfo: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			email: Schema.optionalKey(Schema.String),
+																			phone: Schema.optionalKey(Schema.String),
+																			name: Schema.optionalKey(Schema.String),
+																			avatar: Schema.optionalKey(Schema.String),
+																			rawData: Schema.optionalKey(
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																connectorId: Schema.String,
+																type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
+																enterpriseSsoUserInfo: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			email: Schema.optionalKey(Schema.String),
+																			phone: Schema.optionalKey(Schema.String),
+																			name: Schema.optionalKey(Schema.String),
+																			avatar: Schema.optionalKey(Schema.String),
+																			rawData: Schema.optionalKey(
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+																issuer: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"Totp"' }),
+																userId: Schema.String,
+																verified: Schema.Boolean,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"BackupCode"' }),
+																userId: Schema.String,
+																code: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																verified: Schema.Boolean,
+																registrationRpId: Schema.optionalKey(Schema.String),
+																type: Schema.String.annotate({ format: '"WebAuthn"' }),
+																userId: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																verified: Schema.Boolean,
+																registrationRpId: Schema.optionalKey(Schema.String),
+																type: Schema.String.annotate({ format: '"SignInPasskey"' }),
+																userId: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"OneTimeToken"' }),
+																verified: Schema.Boolean,
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.String.annotate({ format: '"email"' }),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+																oneTimeTokenContext: Schema.optionalKey(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			jitOrganizationIds: Schema.optionalKey(
+																				Schema.Array(Schema.String)
+																			),
+																			interactionEvent: Schema.optionalKey(
+																				Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String,
+																type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
+																identifier: Schema.StructWithRest(
+																	Schema.Struct({
+																		type: Schema.Literals(['username', 'email', 'phone']),
+																		value: Schema.String,
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														),
+													],
+													{ mode: 'oneOf' }
+												)
+											)
+										),
+										signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-							type: Schema.optionalKey(
-								Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-							),
-							oidcClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-									backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-									logoUri: Schema.optionalKey(Schema.String),
-								})
-							),
-							customClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									corsAllowedOrigins: Schema.optionalKey(
-										Schema.Array(
+							application: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										tenantId: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										id: Schema.optionalKey(
 											Schema.String.check(
 												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 											)
-										)
-									),
-									idTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtlInDays: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									tenantId: Schema.optionalKey(Schema.String),
-									alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-									rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-									allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-									isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-									maxAllowedGrants: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-							protectedAppMetadata: Schema.optionalKey(
-								Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											host: Schema.String,
-											origin: Schema.String,
-											sessionDuration: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-											pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-											additionalScopes: Schema.optionalKey(
-												Schema.Array(
-													Schema.Literals([
-														'custom_data',
-														'identities',
-														'roles',
-														'urn:logto:scope:organizations',
-														'urn:logto:scope:organization_roles',
-													])
-												)
-											),
-											customDomains: Schema.optionalKey(
-												Schema.Array(
-													Schema.Struct({
-														domain: Schema.String,
-														status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-														errorMessage: Schema.Union([Schema.String, Schema.Null]),
-														dnsRecords: Schema.Array(
-															Schema.Struct({
-																name: Schema.String,
-																type: Schema.String,
-																value: Schema.String,
-															})
-														),
-														cloudflareData: Schema.Union([
-															Schema.StructWithRest(
-																Schema.Struct({
-																	id: Schema.String,
-																	status: Schema.String,
-																	ssl: Schema.Struct({
-																		status: Schema.String,
-																		validation_errors: Schema.optionalKey(
-																			Schema.Array(Schema.Struct({ message: Schema.String }))
-																		),
-																	}),
-																	verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-																}),
-																[
-																	Schema.Record(
-																		Schema.String,
-																		Schema.Json.annotate({ expected: 'JSON value' })
-																	),
-																]
-															),
-															Schema.Null,
-														]),
-													})
-												)
-											),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								])
-							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-							isThirdParty: Schema.optionalKey(Schema.Boolean),
-							appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-							createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						})
-					),
-					organization: Schema.optionalKey(
-						Schema.Struct({
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-							),
-							description: Schema.optionalKey(
-								Schema.Union([
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									),
-									Schema.Null,
-								])
-							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
-							),
-						})
-					),
-				})
-			),
-			blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-			tokenSample: Schema.optionalKey(
-				Schema.Struct({
-					jti: Schema.optionalKey(Schema.String),
-					aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-					scope: Schema.optionalKey(Schema.String),
-					clientId: Schema.optionalKey(Schema.String),
-					accountId: Schema.optionalKey(Schema.String),
-					expiresWithSession: Schema.optionalKey(Schema.Boolean),
-					grantId: Schema.optionalKey(Schema.String),
-					gty: Schema.optionalKey(Schema.String),
-					sessionUid: Schema.optionalKey(Schema.String),
-					sid: Schema.optionalKey(Schema.String),
-					kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
-				})
-			),
-		}),
-		Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(
-				Schema.Struct({
-					application: Schema.optionalKey(
-						Schema.Struct({
-							tenantId: Schema.optionalKey(
-								Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							id: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-							),
-							name: Schema.optionalKey(
-								Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-							),
-							description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-							type: Schema.optionalKey(
-								Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-							),
-							oidcClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-									backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-									backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-									logoUri: Schema.optionalKey(Schema.String),
-								})
-							),
-							customClientMetadata: Schema.optionalKey(
-								Schema.Struct({
-									corsAllowedOrigins: Schema.optionalKey(
-										Schema.Array(
+										),
+										name: Schema.optionalKey(
 											Schema.String.check(
 												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
 											)
-										)
-									),
-									idTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtl: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									refreshTokenTtlInDays: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-									tenantId: Schema.optionalKey(Schema.String),
-									alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-									rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-									allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-									isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-									maxAllowedGrants: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-							protectedAppMetadata: Schema.optionalKey(
-								Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											host: Schema.String,
-											origin: Schema.String,
-											sessionDuration: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-											pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-											additionalScopes: Schema.optionalKey(
-												Schema.Array(
-													Schema.Literals([
-														'custom_data',
-														'identities',
-														'roles',
-														'urn:logto:scope:organizations',
-														'urn:logto:scope:organization_roles',
-													])
-												)
-											),
-											customDomains: Schema.optionalKey(
-												Schema.Array(
+										),
+										description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+										type: Schema.optionalKey(
+											Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+										),
+										oidcClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+													backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+													logoUri: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										customClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													corsAllowedOrigins: Schema.optionalKey(
+														Schema.Array(
+															Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															)
+														)
+													),
+													idTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtlInDays: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													tenantId: Schema.optionalKey(Schema.String),
+													alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+													rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+													allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+													isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+													maxAllowedGrants: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										protectedAppMetadata: Schema.optionalKey(
+											Schema.Union([
+												Schema.StructWithRest(
 													Schema.Struct({
-														domain: Schema.String,
-														status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-														errorMessage: Schema.Union([Schema.String, Schema.Null]),
-														dnsRecords: Schema.Array(
-															Schema.Struct({
-																name: Schema.String,
-																type: Schema.String,
-																value: Schema.String,
-															})
+														host: Schema.String,
+														origin: Schema.String,
+														sessionDuration: Schema.Number.check(
+															Schema.isFinite().annotate({ expected: 'a finite number' })
 														),
-														cloudflareData: Schema.Union([
-															Schema.StructWithRest(
-																Schema.Struct({
-																	id: Schema.String,
-																	status: Schema.String,
-																	ssl: Schema.Struct({
-																		status: Schema.String,
-																		validation_errors: Schema.optionalKey(
-																			Schema.Array(Schema.Struct({ message: Schema.String }))
+														pageRules: Schema.Array(
+															Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																),
+															])
+														),
+														additionalScopes: Schema.optionalKey(
+															Schema.Array(
+																Schema.Literals([
+																	'custom_data',
+																	'identities',
+																	'roles',
+																	'urn:logto:scope:organizations',
+																	'urn:logto:scope:organization_roles',
+																])
+															)
+														),
+														customDomains: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		domain: Schema.String,
+																		status: Schema.Literals([
+																			'PendingVerification',
+																			'PendingSsl',
+																			'Active',
+																			'Error',
+																		]),
+																		errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																		dnsRecords: Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					name: Schema.String,
+																					type: Schema.String,
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
 																		),
+																		cloudflareData: Schema.Union([
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					id: Schema.String,
+																					status: Schema.String,
+																					ssl: Schema.StructWithRest(
+																						Schema.Struct({
+																							status: Schema.String,
+																							validation_errors: Schema.optionalKey(
+																								Schema.Array(
+																									Schema.StructWithRest(
+																										Schema.Struct({
+																											message: Schema.String,
+																										}),
+																										[
+																											Schema.Record(
+																												Schema.String,
+																												Schema.Json.annotate({
+																													expected: 'JSON value',
+																												})
+																											),
+																										]
+																									)
+																								)
+																							),
+																						}),
+																						[
+																							Schema.Record(
+																								Schema.String,
+																								Schema.Json.annotate({
+																									expected: 'JSON value',
+																								})
+																							),
+																						]
+																					),
+																					verification_errors: Schema.optionalKey(
+																						Schema.Array(Schema.String)
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			Schema.Null,
+																		]),
 																	}),
-																	verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-																}),
-																[
-																	Schema.Record(
-																		Schema.String,
-																		Schema.Json.annotate({ expected: 'JSON value' })
-																	),
-																]
-															),
-															Schema.Null,
-														]),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+										isThirdParty: Schema.optionalKey(Schema.Boolean),
+										appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+										createdAt: Schema.optionalKey(
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							organization: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										id: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										name: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+											)
+										),
+										description: Schema.optionalKey(
+											Schema.Union([
+												Schema.String.check(
+													Schema.isMaxCodePoints(256).annotate({
+														expected: 'a string with at most 256 code points',
 													})
-												)
-											),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								])
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							customData: Schema.optionalKey(
-								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								})
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+				tokenSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							jti: Schema.optionalKey(Schema.String),
+							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+							scope: Schema.optionalKey(Schema.String),
+							clientId: Schema.optionalKey(Schema.String),
+							accountId: Schema.optionalKey(Schema.String),
+							expiresWithSession: Schema.optionalKey(Schema.Boolean),
+							grantId: Schema.optionalKey(Schema.String),
+							gty: Schema.optionalKey(Schema.String),
+							sessionUid: Schema.optionalKey(Schema.String),
+							sid: Schema.optionalKey(Schema.String),
+							kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				script: Schema.String,
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				contextSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							application: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										tenantId: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										id: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+											)
+										),
+										name: Schema.optionalKey(
+											Schema.String.check(
+												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											).check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+											)
+										),
+										description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+										type: Schema.optionalKey(
+											Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+										),
+										oidcClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+													backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+													backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+													logoUri: Schema.optionalKey(Schema.String),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										customClientMetadata: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													corsAllowedOrigins: Schema.optionalKey(
+														Schema.Array(
+															Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															)
+														)
+													),
+													idTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtl: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													refreshTokenTtlInDays: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+													tenantId: Schema.optionalKey(Schema.String),
+													alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+													rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+													allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+													isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+													maxAllowedGrants: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										protectedAppMetadata: Schema.optionalKey(
+											Schema.Union([
+												Schema.StructWithRest(
+													Schema.Struct({
+														host: Schema.String,
+														origin: Schema.String,
+														sessionDuration: Schema.Number.check(
+															Schema.isFinite().annotate({ expected: 'a finite number' })
+														),
+														pageRules: Schema.Array(
+															Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																),
+															])
+														),
+														additionalScopes: Schema.optionalKey(
+															Schema.Array(
+																Schema.Literals([
+																	'custom_data',
+																	'identities',
+																	'roles',
+																	'urn:logto:scope:organizations',
+																	'urn:logto:scope:organization_roles',
+																])
+															)
+														),
+														customDomains: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		domain: Schema.String,
+																		status: Schema.Literals([
+																			'PendingVerification',
+																			'PendingSsl',
+																			'Active',
+																			'Error',
+																		]),
+																		errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																		dnsRecords: Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					name: Schema.String,
+																					type: Schema.String,
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
+																		),
+																		cloudflareData: Schema.Union([
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					id: Schema.String,
+																					status: Schema.String,
+																					ssl: Schema.StructWithRest(
+																						Schema.Struct({
+																							status: Schema.String,
+																							validation_errors: Schema.optionalKey(
+																								Schema.Array(
+																									Schema.StructWithRest(
+																										Schema.Struct({
+																											message: Schema.String,
+																										}),
+																										[
+																											Schema.Record(
+																												Schema.String,
+																												Schema.Json.annotate({
+																													expected: 'JSON value',
+																												})
+																											),
+																										]
+																									)
+																								)
+																							),
+																						}),
+																						[
+																							Schema.Record(
+																								Schema.String,
+																								Schema.Json.annotate({
+																									expected: 'JSON value',
+																								})
+																							),
+																						]
+																					),
+																					verification_errors: Schema.optionalKey(
+																						Schema.Array(Schema.String)
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			Schema.Null,
+																		]),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												Schema.Null,
+											])
+										),
+										customData: Schema.optionalKey(
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+												description: 'arbitrary',
+											})
+										),
+										isThirdParty: Schema.optionalKey(Schema.Boolean),
+										appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+										createdAt: Schema.optionalKey(
+											Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							isThirdParty: Schema.optionalKey(Schema.Boolean),
-							appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-							createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-						})
-					),
-				})
-			),
-			blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-			tokenSample: Schema.optionalKey(
-				Schema.Struct({
-					jti: Schema.optionalKey(Schema.String),
-					aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-					scope: Schema.optionalKey(Schema.String),
-					clientId: Schema.optionalKey(Schema.String),
-					kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
-				})
-			),
-		}),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+				blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+				tokenSample: Schema.optionalKey(
+					Schema.StructWithRest(
+						Schema.Struct({
+							jti: Schema.optionalKey(Schema.String),
+							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+							scope: Schema.optionalKey(Schema.String),
+							clientId: Schema.optionalKey(Schema.String),
+							kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
 
 export type ListJwtCustomizersResponse = ReadonlyArray<
-	| {
+	| ({
 			readonly key: string
 			readonly value: {
 				readonly script: string
@@ -4740,7 +6671,9 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 						readonly avatar?: string | null
 						readonly customData?: { readonly [x: string]: Schema.Json }
 						readonly identities?: {
-							readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } }
+							readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } } & {
+								readonly [x: string]: Schema.Json
+							}
 						}
 						readonly lastSignInAt?: number | null
 						readonly createdAt?: number
@@ -4764,65 +6697,91 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 								readonly region?: string
 								readonly postalCode?: string
 								readonly country?: string
-							}
-						}
+							} & { readonly [x: string]: Schema.Json }
+						} & { readonly [x: string]: Schema.Json }
 						readonly applicationId?: string | null
 						readonly cimdClientId?: string | null
 						readonly isSuspended?: boolean
 						readonly hasPassword?: boolean
-						readonly ssoIdentities?: ReadonlyArray<{
-							readonly issuer: string
-							readonly identityId: string
-							readonly detail: { readonly [x: string]: Schema.Json }
-						}>
+						readonly ssoIdentities?: ReadonlyArray<
+							{
+								readonly issuer: string
+								readonly identityId: string
+								readonly detail: { readonly [x: string]: Schema.Json }
+							} & { readonly [x: string]: Schema.Json }
+						>
 						readonly mfaVerificationFactors?: ReadonlyArray<
 							'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'
 						>
-						readonly roles?: ReadonlyArray<{
-							readonly id: string
-							readonly name: string
-							readonly description: string
-							readonly scopes: ReadonlyArray<{
+						readonly roles?: ReadonlyArray<
+							{
 								readonly id: string
 								readonly name: string
-								readonly description: string | null
-								readonly resourceId: string
-								readonly resource: {
-									readonly tenantId: string
-									readonly id: string
-									readonly name: string
-									readonly indicator: string
-									readonly isDefault: boolean
-									readonly accessTokenTtl: number
-								}
-							}>
-						}>
-						readonly organizations?: ReadonlyArray<{
-							readonly id: string
-							readonly name: string
-							readonly description: string | null
-						}>
-						readonly organizationRoles?: ReadonlyArray<{
-							readonly organizationId: string
-							readonly roleId: string
-							readonly roleName: string
-						}>
+								readonly description: string
+								readonly scopes: ReadonlyArray<
+									{
+										readonly id: string
+										readonly name: string
+										readonly description: string | null
+										readonly resourceId: string
+										readonly resource: {
+											readonly tenantId: string
+											readonly id: string
+											readonly name: string
+											readonly indicator: string
+											readonly isDefault: boolean
+											readonly accessTokenTtl: number
+										} & { readonly [x: string]: Schema.Json }
+									} & { readonly [x: string]: Schema.Json }
+								>
+							} & { readonly [x: string]: Schema.Json }
+						>
+						readonly organizations?: ReadonlyArray<
+							{ readonly id: string; readonly name: string; readonly description: string | null } & {
+								readonly [x: string]: Schema.Json
+							}
+						>
+						readonly organizationRoles?: ReadonlyArray<
+							{ readonly organizationId: string; readonly roleId: string; readonly roleName: string } & {
+								readonly [x: string]: Schema.Json
+							}
+						>
+					} & { readonly [x: string]: Schema.Json }
+					readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } } & {
+						readonly [x: string]: Schema.Json
 					}
-					readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } }
 					readonly interaction?: {
 						readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
 						readonly userId?: string
 						readonly verificationRecords?: ReadonlyArray<
-							| {
+							| ({
 									readonly id: string
 									readonly type: string
 									readonly identifier: {
 										readonly type: 'username' | 'email' | 'phone' | 'userId'
 										readonly value: string
+									} & { readonly [x: string]: Schema.Json }
+									readonly verified: boolean
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
+									readonly id: string
+									readonly templateType:
+										| 'SignIn'
+										| 'Register'
+										| 'ForgotPassword'
+										| 'OrganizationInvitation'
+										| 'Generic'
+										| 'UserPermissionValidation'
+										| 'BindNewIdentifier'
+										| 'MfaVerification'
+										| 'BindMfa'
+									readonly verified: boolean
+									readonly type: string
+									readonly identifier: { readonly type: string; readonly value: string } & {
+										readonly [x: string]: Schema.Json
 									}
-									readonly verified: boolean
-							  }
-							| {
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
 									readonly id: string
 									readonly templateType:
 										| 'SignIn'
@@ -4836,9 +6795,11 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'BindMfa'
 									readonly verified: boolean
 									readonly type: string
-									readonly identifier: { readonly type: string; readonly value: string }
-							  }
-							| {
+									readonly identifier: { readonly type: string; readonly value: string } & {
+										readonly [x: string]: Schema.Json
+									}
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
 									readonly id: string
 									readonly templateType:
 										| 'SignIn'
@@ -4852,9 +6813,11 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'BindMfa'
 									readonly verified: boolean
 									readonly type: string
-									readonly identifier: { readonly type: string; readonly value: string }
-							  }
-							| {
+									readonly identifier: { readonly type: string; readonly value: string } & {
+										readonly [x: string]: Schema.Json
+									}
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
 									readonly id: string
 									readonly templateType:
 										| 'SignIn'
@@ -4868,25 +6831,11 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'BindMfa'
 									readonly verified: boolean
 									readonly type: string
-									readonly identifier: { readonly type: string; readonly value: string }
-							  }
-							| {
-									readonly id: string
-									readonly templateType:
-										| 'SignIn'
-										| 'Register'
-										| 'ForgotPassword'
-										| 'OrganizationInvitation'
-										| 'Generic'
-										| 'UserPermissionValidation'
-										| 'BindNewIdentifier'
-										| 'MfaVerification'
-										| 'BindMfa'
-									readonly verified: boolean
-									readonly type: string
-									readonly identifier: { readonly type: string; readonly value: string }
-							  }
-							| {
+									readonly identifier: { readonly type: string; readonly value: string } & {
+										readonly [x: string]: Schema.Json
+									}
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
 									readonly id: string
 									readonly connectorId: string
 									readonly type: string
@@ -4897,9 +6846,9 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										readonly name?: string
 										readonly avatar?: string
 										readonly rawData?: Schema.Json
-									}
-							  }
-							| {
+									} & { readonly [x: string]: Schema.Json }
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
 									readonly id: string
 									readonly connectorId: string
 									readonly type: string
@@ -4910,43 +6859,51 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										readonly name?: string
 										readonly avatar?: string
 										readonly rawData?: Schema.Json
-									}
+									} & { readonly [x: string]: Schema.Json }
 									readonly issuer?: string
-							  }
-							| { readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean }
-							| { readonly id: string; readonly type: string; readonly userId: string; readonly code?: string }
-							| {
+							  } & { readonly [x: string]: Schema.Json })
+							| ({ readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean } & {
+									readonly [x: string]: Schema.Json
+							  })
+							| ({ readonly id: string; readonly type: string; readonly userId: string; readonly code?: string } & {
+									readonly [x: string]: Schema.Json
+							  })
+							| ({
 									readonly id: string
 									readonly verified: boolean
 									readonly registrationRpId?: string
 									readonly type: string
 									readonly userId: string
-							  }
-							| {
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
 									readonly id: string
 									readonly verified: boolean
 									readonly registrationRpId?: string
 									readonly type: string
 									readonly userId?: string
-							  }
-							| {
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
 									readonly id: string
 									readonly type: string
 									readonly verified: boolean
-									readonly identifier: { readonly type: string; readonly value: string }
+									readonly identifier: { readonly type: string; readonly value: string } & {
+										readonly [x: string]: Schema.Json
+									}
 									readonly oneTimeTokenContext?: {
 										readonly jitOrganizationIds?: ReadonlyArray<string>
 										readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-									}
-							  }
-							| {
+									} & { readonly [x: string]: Schema.Json }
+							  } & { readonly [x: string]: Schema.Json })
+							| ({
 									readonly id: string
 									readonly type: string
-									readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
-							  }
+									readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & {
+										readonly [x: string]: Schema.Json
+									}
+							  } & { readonly [x: string]: Schema.Json })
 						>
 						readonly signInContext?: { readonly [x: string]: string }
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly application?: {
 						readonly tenantId?: string
 						readonly id?: string
@@ -4959,7 +6916,7 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 							readonly backchannelLogoutUri?: string
 							readonly backchannelLogoutSessionRequired?: boolean
 							readonly logoUri?: string
-						}
+						} & { readonly [x: string]: Schema.Json }
 						readonly customClientMetadata?: {
 							readonly corsAllowedOrigins?: ReadonlyArray<string>
 							readonly idTokenTtl?: number
@@ -4971,13 +6928,13 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 							readonly allowTokenExchange?: boolean
 							readonly isDeviceFlow?: boolean
 							readonly maxAllowedGrants?: number
-						}
+						} & { readonly [x: string]: Schema.Json }
 						readonly protectedAppMetadata?:
 							| ({
 									readonly host: string
 									readonly origin: string
 									readonly sessionDuration: number
-									readonly pageRules: ReadonlyArray<{ readonly path: string }>
+									readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 									readonly additionalScopes?: ReadonlyArray<
 										| 'custom_data'
 										| 'identities'
@@ -4985,41 +6942,45 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'urn:logto:scope:organizations'
 										| 'urn:logto:scope:organization_roles'
 									>
-									readonly customDomains?: ReadonlyArray<{
-										readonly domain: string
-										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-										readonly errorMessage: string | null
-										readonly dnsRecords: ReadonlyArray<{
-											readonly name: string
-											readonly type: string
-											readonly value: string
-										}>
-										readonly cloudflareData:
-											| ({
-													readonly id: string
-													readonly status: string
-													readonly ssl: {
+									readonly customDomains?: ReadonlyArray<
+										{
+											readonly domain: string
+											readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+											readonly errorMessage: string | null
+											readonly dnsRecords: ReadonlyArray<
+												{ readonly name: string; readonly type: string; readonly value: string } & {
+													readonly [x: string]: Schema.Json
+												}
+											>
+											readonly cloudflareData:
+												| ({
+														readonly id: string
 														readonly status: string
-														readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-													}
-													readonly verification_errors?: ReadonlyArray<string>
-											  } & { readonly [x: string]: Schema.Json })
-											| null
-									}>
+														readonly ssl: {
+															readonly status: string
+															readonly validation_errors?: ReadonlyArray<
+																{ readonly message: string } & { readonly [x: string]: Schema.Json }
+															>
+														} & { readonly [x: string]: Schema.Json }
+														readonly verification_errors?: ReadonlyArray<string>
+												  } & { readonly [x: string]: Schema.Json })
+												| null
+										} & { readonly [x: string]: Schema.Json }
+									>
 							  } & { readonly [x: string]: Schema.Json })
 							| null
 						readonly customData?: { readonly [x: string]: Schema.Json }
 						readonly isThirdParty?: boolean
 						readonly appLevelAccessControlEnabled?: boolean
 						readonly createdAt?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly organization?: {
 						readonly id?: string
 						readonly name?: string
 						readonly description?: string | null
 						readonly customData?: { readonly [x: string]: Schema.Json }
-					}
-				}
+					} & { readonly [x: string]: Schema.Json }
+				} & { readonly [x: string]: Schema.Json }
 				readonly blockIssuanceOnError?: boolean
 				readonly tokenSample?: {
 					readonly jti?: string
@@ -5033,10 +6994,10 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 					readonly sessionUid?: string
 					readonly sid?: string
 					readonly kind?: string
-				}
-			}
-	  }
-	| {
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly key: string
 			readonly value: {
 				readonly script: string
@@ -5054,7 +7015,7 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 							readonly backchannelLogoutUri?: string
 							readonly backchannelLogoutSessionRequired?: boolean
 							readonly logoUri?: string
-						}
+						} & { readonly [x: string]: Schema.Json }
 						readonly customClientMetadata?: {
 							readonly corsAllowedOrigins?: ReadonlyArray<string>
 							readonly idTokenTtl?: number
@@ -5066,13 +7027,13 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 							readonly allowTokenExchange?: boolean
 							readonly isDeviceFlow?: boolean
 							readonly maxAllowedGrants?: number
-						}
+						} & { readonly [x: string]: Schema.Json }
 						readonly protectedAppMetadata?:
 							| ({
 									readonly host: string
 									readonly origin: string
 									readonly sessionDuration: number
-									readonly pageRules: ReadonlyArray<{ readonly path: string }>
+									readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 									readonly additionalScopes?: ReadonlyArray<
 										| 'custom_data'
 										| 'identities'
@@ -5080,35 +7041,39 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'urn:logto:scope:organizations'
 										| 'urn:logto:scope:organization_roles'
 									>
-									readonly customDomains?: ReadonlyArray<{
-										readonly domain: string
-										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-										readonly errorMessage: string | null
-										readonly dnsRecords: ReadonlyArray<{
-											readonly name: string
-											readonly type: string
-											readonly value: string
-										}>
-										readonly cloudflareData:
-											| ({
-													readonly id: string
-													readonly status: string
-													readonly ssl: {
+									readonly customDomains?: ReadonlyArray<
+										{
+											readonly domain: string
+											readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+											readonly errorMessage: string | null
+											readonly dnsRecords: ReadonlyArray<
+												{ readonly name: string; readonly type: string; readonly value: string } & {
+													readonly [x: string]: Schema.Json
+												}
+											>
+											readonly cloudflareData:
+												| ({
+														readonly id: string
 														readonly status: string
-														readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-													}
-													readonly verification_errors?: ReadonlyArray<string>
-											  } & { readonly [x: string]: Schema.Json })
-											| null
-									}>
+														readonly ssl: {
+															readonly status: string
+															readonly validation_errors?: ReadonlyArray<
+																{ readonly message: string } & { readonly [x: string]: Schema.Json }
+															>
+														} & { readonly [x: string]: Schema.Json }
+														readonly verification_errors?: ReadonlyArray<string>
+												  } & { readonly [x: string]: Schema.Json })
+												| null
+										} & { readonly [x: string]: Schema.Json }
+									>
 							  } & { readonly [x: string]: Schema.Json })
 							| null
 						readonly customData?: { readonly [x: string]: Schema.Json }
 						readonly isThirdParty?: boolean
 						readonly appLevelAccessControlEnabled?: boolean
 						readonly createdAt?: number
-					}
-				}
+					} & { readonly [x: string]: Schema.Json }
+				} & { readonly [x: string]: Schema.Json }
 				readonly blockIssuanceOnError?: boolean
 				readonly tokenSample?: {
 					readonly jti?: string
@@ -5116,821 +7081,1426 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 					readonly scope?: string
 					readonly clientId?: string
 					readonly kind?: string
-				}
-			}
-	  }
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
 >
 export const ListJwtCustomizersResponse = Schema.Array(
 	Schema.Union(
 		[
-			Schema.Struct({
-				key: Schema.String.annotate({ format: '"jwt.accessToken"' }),
-				value: Schema.Struct({
-					script: Schema.String,
-					environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-					contextSample: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					key: Schema.String.annotate({ format: '"jwt.accessToken"' }),
+					value: Schema.StructWithRest(
 						Schema.Struct({
-							user: Schema.Struct({
-								id: Schema.optionalKey(
-									Schema.String.check(
-										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' }))
-								),
-								username: Schema.optionalKey(
-									Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										),
-										Schema.Null,
-									])
-								),
-								primaryEmail: Schema.optionalKey(
-									Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										),
-										Schema.Null,
-									])
-								),
-								primaryPhone: Schema.optionalKey(
-									Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										),
-										Schema.Null,
-									])
-								),
-								name: Schema.optionalKey(
-									Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-										),
-										Schema.Null,
-									])
-								),
-								avatar: Schema.optionalKey(
-									Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-										),
-										Schema.Null,
-									])
-								),
-								customData: Schema.optionalKey(
-									Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-										description: 'arbitrary',
-									})
-								),
-								identities: Schema.optionalKey(
-									Schema.Record(
-										Schema.String,
-										Schema.Struct({
-											userId: Schema.String,
-											details: Schema.optionalKey(
-												Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-													description: 'arbitrary',
-												})
-											),
-										})
-									)
-								),
-								lastSignInAt: Schema.optionalKey(
-									Schema.Union([
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-										Schema.Null,
-									])
-								),
-								createdAt: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								updatedAt: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								profile: Schema.optionalKey(
+							script: Schema.String,
+							environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+							contextSample: Schema.optionalKey(
+								Schema.StructWithRest(
 									Schema.Struct({
-										familyName: Schema.optionalKey(Schema.String),
-										givenName: Schema.optionalKey(Schema.String),
-										middleName: Schema.optionalKey(Schema.String),
-										nickname: Schema.optionalKey(Schema.String),
-										preferredUsername: Schema.optionalKey(Schema.String),
-										profile: Schema.optionalKey(Schema.String),
-										website: Schema.optionalKey(Schema.String),
-										gender: Schema.optionalKey(Schema.String),
-										birthdate: Schema.optionalKey(Schema.String),
-										zoneinfo: Schema.optionalKey(Schema.String),
-										locale: Schema.optionalKey(Schema.String),
-										address: Schema.optionalKey(
+										user: Schema.StructWithRest(
 											Schema.Struct({
-												formatted: Schema.optionalKey(Schema.String),
-												streetAddress: Schema.optionalKey(Schema.String),
-												locality: Schema.optionalKey(Schema.String),
-												region: Schema.optionalKey(Schema.String),
-												postalCode: Schema.optionalKey(Schema.String),
-												country: Schema.optionalKey(Schema.String),
-											})
-										),
-									})
-								),
-								applicationId: Schema.optionalKey(
-									Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-										),
-										Schema.Null,
-									])
-								),
-								cimdClientId: Schema.optionalKey(
-									Schema.Union([
-										Schema.String.check(
-											Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })
-										),
-										Schema.Null,
-									])
-								),
-								isSuspended: Schema.optionalKey(Schema.Boolean),
-								hasPassword: Schema.optionalKey(Schema.Boolean),
-								ssoIdentities: Schema.optionalKey(
-									Schema.Array(
-										Schema.Struct({
-											issuer: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-											identityId: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-											detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate(
-												{ description: 'arbitrary' }
-											),
-										})
-									)
-								),
-								mfaVerificationFactors: Schema.optionalKey(
-									Schema.Array(
-										Schema.Literals([
-											'Totp',
-											'WebAuthn',
-											'BackupCode',
-											'EmailVerificationCode',
-											'PhoneVerificationCode',
-										])
-									)
-								),
-								roles: Schema.optionalKey(
-									Schema.Array(
-										Schema.Struct({
-											id: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											name: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-											description: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-											scopes: Schema.Array(
-												Schema.Struct({
-													id: Schema.String.check(
+												id: Schema.optionalKey(
+													Schema.String.check(
 														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
 													).check(
-														Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-													),
-													name: Schema.String.check(
-														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-													).check(
-														Schema.isMaxLength(256).annotate({
-															expected: 'a value with a length of at most 256',
+														Schema.isMaxCodePoints(12).annotate({
+															expected: 'a string with at most 12 code points',
 														})
-													),
-													description: Schema.Union([Schema.String, Schema.Null]),
-													resourceId: Schema.String.check(
-														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-													).check(
-														Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-													),
-													resource: Schema.Struct({
-														tenantId: Schema.String.check(
-															Schema.isMaxLength(21).annotate({
-																expected: 'a value with a length of at most 21',
+													)
+												),
+												username: Schema.optionalKey(
+													Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
 															})
 														),
-														id: Schema.String.check(
+														Schema.Null,
+													])
+												),
+												primaryEmail: Schema.optionalKey(
+													Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
+															})
+														),
+														Schema.Null,
+													])
+												),
+												primaryPhone: Schema.optionalKey(
+													Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
+															})
+														),
+														Schema.Null,
+													])
+												),
+												name: Schema.optionalKey(
+													Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
+															})
+														),
+														Schema.Null,
+													])
+												),
+												avatar: Schema.optionalKey(
+													Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(2048).annotate({
+																expected: 'a string with at most 2048 code points',
+															})
+														),
+														Schema.Null,
+													])
+												),
+												customData: Schema.optionalKey(
+													Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate(
+														{ description: 'arbitrary' }
+													)
+												),
+												identities: Schema.optionalKey(
+													Schema.Record(
+														Schema.String,
+														Schema.StructWithRest(
+															Schema.Struct({
+																userId: Schema.String,
+																details: Schema.optionalKey(
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	).annotate({ description: 'arbitrary' })
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												lastSignInAt: Schema.optionalKey(
+													Schema.Union([
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+														Schema.Null,
+													])
+												),
+												createdAt: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												updatedAt: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												profile: Schema.optionalKey(
+													Schema.StructWithRest(
+														Schema.Struct({
+															familyName: Schema.optionalKey(Schema.String),
+															givenName: Schema.optionalKey(Schema.String),
+															middleName: Schema.optionalKey(Schema.String),
+															nickname: Schema.optionalKey(Schema.String),
+															preferredUsername: Schema.optionalKey(Schema.String),
+															profile: Schema.optionalKey(Schema.String),
+															website: Schema.optionalKey(Schema.String),
+															gender: Schema.optionalKey(Schema.String),
+															birthdate: Schema.optionalKey(Schema.String),
+															zoneinfo: Schema.optionalKey(Schema.String),
+															locale: Schema.optionalKey(Schema.String),
+															address: Schema.optionalKey(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		formatted: Schema.optionalKey(Schema.String),
+																		streetAddress: Schema.optionalKey(Schema.String),
+																		locality: Schema.optionalKey(Schema.String),
+																		region: Schema.optionalKey(Schema.String),
+																		postalCode: Schema.optionalKey(Schema.String),
+																		country: Schema.optionalKey(Schema.String),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
+												),
+												applicationId: Schema.optionalKey(
+													Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(21).annotate({
+																expected: 'a string with at most 21 code points',
+															})
+														),
+														Schema.Null,
+													])
+												),
+												cimdClientId: Schema.optionalKey(
+													Schema.Union([
+														Schema.String.check(
+															Schema.isMaxCodePoints(2048).annotate({
+																expected: 'a string with at most 2048 code points',
+															})
+														),
+														Schema.Null,
+													])
+												),
+												isSuspended: Schema.optionalKey(Schema.Boolean),
+												hasPassword: Schema.optionalKey(Schema.Boolean),
+												ssoIdentities: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																issuer: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(256).annotate({
+																		expected: 'a string with at most 256 code points',
+																	})
+																),
+																identityId: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(128).annotate({
+																		expected: 'a string with at most 128 code points',
+																	})
+																),
+																detail: Schema.Record(
+																	Schema.String,
+																	Schema.Json.annotate({ expected: 'JSON value' })
+																).annotate({ description: 'arbitrary' }),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												mfaVerificationFactors: Schema.optionalKey(
+													Schema.Array(
+														Schema.Literals([
+															'Totp',
+															'WebAuthn',
+															'BackupCode',
+															'EmailVerificationCode',
+															'PhoneVerificationCode',
+														])
+													)
+												),
+												roles: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																name: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(128).annotate({
+																		expected: 'a string with at most 128 code points',
+																	})
+																),
+																description: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(128).annotate({
+																		expected: 'a string with at most 128 code points',
+																	})
+																),
+																scopes: Schema.Array(
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String.check(
+																				Schema.isMinLength(1).annotate({
+																					expected: 'a value with a length of at least 1',
+																				})
+																			).check(
+																				Schema.isMaxCodePoints(21).annotate({
+																					expected: 'a string with at most 21 code points',
+																				})
+																			),
+																			name: Schema.String.check(
+																				Schema.isMinLength(1).annotate({
+																					expected: 'a value with a length of at least 1',
+																				})
+																			).check(
+																				Schema.isMaxCodePoints(256).annotate({
+																					expected: 'a string with at most 256 code points',
+																				})
+																			),
+																			description: Schema.Union([Schema.String, Schema.Null]),
+																			resourceId: Schema.String.check(
+																				Schema.isMinLength(1).annotate({
+																					expected: 'a value with a length of at least 1',
+																				})
+																			).check(
+																				Schema.isMaxCodePoints(21).annotate({
+																					expected: 'a string with at most 21 code points',
+																				})
+																			),
+																			resource: Schema.StructWithRest(
+																				Schema.Struct({
+																					tenantId: Schema.String.check(
+																						Schema.isMaxCodePoints(21).annotate({
+																							expected:
+																								'a string with at most 21 code points',
+																						})
+																					),
+																					id: Schema.String.check(
+																						Schema.isMinLength(1).annotate({
+																							expected: 'a value with a length of at least 1',
+																						})
+																					).check(
+																						Schema.isMaxCodePoints(21).annotate({
+																							expected:
+																								'a string with at most 21 code points',
+																						})
+																					),
+																					name: Schema.String.check(
+																						Schema.isMinLength(1).annotate({
+																							expected: 'a value with a length of at least 1',
+																						})
+																					),
+																					indicator: Schema.String.check(
+																						Schema.isMinLength(1).annotate({
+																							expected: 'a value with a length of at least 1',
+																						})
+																					),
+																					isDefault: Schema.Boolean,
+																					accessTokenTtl: Schema.Number.check(
+																						Schema.isFinite().annotate({
+																							expected: 'a finite number',
+																						})
+																					),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												organizations: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																id: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(21).annotate({
+																		expected: 'a string with at most 21 code points',
+																	})
+																),
+																name: Schema.String.check(
+																	Schema.isMinLength(1).annotate({
+																		expected: 'a value with a length of at least 1',
+																	})
+																).check(
+																	Schema.isMaxCodePoints(128).annotate({
+																		expected: 'a string with at most 128 code points',
+																	})
+																),
+																description: Schema.Union([
+																	Schema.String.check(
+																		Schema.isMaxCodePoints(256).annotate({
+																			expected: 'a string with at most 256 code points',
+																		})
+																	),
+																	Schema.Null,
+																]),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+												organizationRoles: Schema.optionalKey(
+													Schema.Array(
+														Schema.StructWithRest(
+															Schema.Struct({
+																organizationId: Schema.String,
+																roleId: Schema.String,
+																roleName: Schema.String,
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													)
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										),
+										grant: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													type: Schema.optionalKey(
+														Schema.String.annotate({
+															format: '"urn:ietf:params:oauth:grant-type:token-exchange"',
+														})
+													),
+													subjectTokenContext: Schema.optionalKey(
+														Schema.Record(
+															Schema.String,
+															Schema.Json.annotate({ expected: 'JSON value' })
+														).annotate({ description: 'arbitrary' })
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										interaction: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													interactionEvent: Schema.optionalKey(
+														Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+													),
+													userId: Schema.optionalKey(Schema.String),
+													verificationRecords: Schema.optionalKey(
+														Schema.Array(
+															Schema.Union(
+																[
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			type: Schema.String.annotate({ format: '"Password"' }),
+																			identifier: Schema.StructWithRest(
+																				Schema.Struct({
+																					type: Schema.Union(
+																						[
+																							Schema.Literals(['username', 'email', 'phone']),
+																							Schema.Literal('userId'),
+																						],
+																						{ mode: 'oneOf' }
+																					),
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			verified: Schema.Boolean,
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			templateType: Schema.Literals([
+																				'SignIn',
+																				'Register',
+																				'ForgotPassword',
+																				'OrganizationInvitation',
+																				'Generic',
+																				'UserPermissionValidation',
+																				'BindNewIdentifier',
+																				'MfaVerification',
+																				'BindMfa',
+																			]),
+																			verified: Schema.Boolean,
+																			type: Schema.String.annotate({
+																				format: '"EmailVerificationCode"',
+																			}),
+																			identifier: Schema.StructWithRest(
+																				Schema.Struct({
+																					type: Schema.String.annotate({ format: '"email"' }),
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			templateType: Schema.Literals([
+																				'SignIn',
+																				'Register',
+																				'ForgotPassword',
+																				'OrganizationInvitation',
+																				'Generic',
+																				'UserPermissionValidation',
+																				'BindNewIdentifier',
+																				'MfaVerification',
+																				'BindMfa',
+																			]),
+																			verified: Schema.Boolean,
+																			type: Schema.String.annotate({
+																				format: '"PhoneVerificationCode"',
+																			}),
+																			identifier: Schema.StructWithRest(
+																				Schema.Struct({
+																					type: Schema.String.annotate({ format: '"phone"' }),
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			templateType: Schema.Literals([
+																				'SignIn',
+																				'Register',
+																				'ForgotPassword',
+																				'OrganizationInvitation',
+																				'Generic',
+																				'UserPermissionValidation',
+																				'BindNewIdentifier',
+																				'MfaVerification',
+																				'BindMfa',
+																			]),
+																			verified: Schema.Boolean,
+																			type: Schema.String.annotate({
+																				format: '"MfaEmailVerificationCode"',
+																			}),
+																			identifier: Schema.StructWithRest(
+																				Schema.Struct({
+																					type: Schema.String.annotate({ format: '"email"' }),
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			templateType: Schema.Literals([
+																				'SignIn',
+																				'Register',
+																				'ForgotPassword',
+																				'OrganizationInvitation',
+																				'Generic',
+																				'UserPermissionValidation',
+																				'BindNewIdentifier',
+																				'MfaVerification',
+																				'BindMfa',
+																			]),
+																			verified: Schema.Boolean,
+																			type: Schema.String.annotate({
+																				format: '"MfaPhoneVerificationCode"',
+																			}),
+																			identifier: Schema.StructWithRest(
+																				Schema.Struct({
+																					type: Schema.String.annotate({ format: '"phone"' }),
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			connectorId: Schema.String,
+																			type: Schema.String.annotate({ format: '"Social"' }),
+																			socialUserInfo: Schema.optionalKey(
+																				Schema.StructWithRest(
+																					Schema.Struct({
+																						id: Schema.String,
+																						email: Schema.optionalKey(Schema.String),
+																						phone: Schema.optionalKey(Schema.String),
+																						name: Schema.optionalKey(Schema.String),
+																						avatar: Schema.optionalKey(Schema.String),
+																						rawData: Schema.optionalKey(
+																							Schema.Json.annotate({ expected: 'JSON value' })
+																						),
+																					}),
+																					[
+																						Schema.Record(
+																							Schema.String,
+																							Schema.Json.annotate({ expected: 'JSON value' })
+																						),
+																					]
+																				)
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			connectorId: Schema.String,
+																			type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
+																			enterpriseSsoUserInfo: Schema.optionalKey(
+																				Schema.StructWithRest(
+																					Schema.Struct({
+																						id: Schema.String,
+																						email: Schema.optionalKey(Schema.String),
+																						phone: Schema.optionalKey(Schema.String),
+																						name: Schema.optionalKey(Schema.String),
+																						avatar: Schema.optionalKey(Schema.String),
+																						rawData: Schema.optionalKey(
+																							Schema.Json.annotate({ expected: 'JSON value' })
+																						),
+																					}),
+																					[
+																						Schema.Record(
+																							Schema.String,
+																							Schema.Json.annotate({ expected: 'JSON value' })
+																						),
+																					]
+																				)
+																			),
+																			issuer: Schema.optionalKey(Schema.String),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			type: Schema.String.annotate({ format: '"Totp"' }),
+																			userId: Schema.String,
+																			verified: Schema.Boolean,
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			type: Schema.String.annotate({ format: '"BackupCode"' }),
+																			userId: Schema.String,
+																			code: Schema.optionalKey(Schema.String),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			verified: Schema.Boolean,
+																			registrationRpId: Schema.optionalKey(Schema.String),
+																			type: Schema.String.annotate({ format: '"WebAuthn"' }),
+																			userId: Schema.String,
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			verified: Schema.Boolean,
+																			registrationRpId: Schema.optionalKey(Schema.String),
+																			type: Schema.String.annotate({ format: '"SignInPasskey"' }),
+																			userId: Schema.optionalKey(Schema.String),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			type: Schema.String.annotate({ format: '"OneTimeToken"' }),
+																			verified: Schema.Boolean,
+																			identifier: Schema.StructWithRest(
+																				Schema.Struct({
+																					type: Schema.String.annotate({ format: '"email"' }),
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																			oneTimeTokenContext: Schema.optionalKey(
+																				Schema.StructWithRest(
+																					Schema.Struct({
+																						jitOrganizationIds: Schema.optionalKey(
+																							Schema.Array(Schema.String)
+																						),
+																						interactionEvent: Schema.optionalKey(
+																							Schema.Literals([
+																								'SignIn',
+																								'Register',
+																								'ForgotPassword',
+																							])
+																						),
+																					}),
+																					[
+																						Schema.Record(
+																							Schema.String,
+																							Schema.Json.annotate({ expected: 'JSON value' })
+																						),
+																					]
+																				)
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																	Schema.StructWithRest(
+																		Schema.Struct({
+																			id: Schema.String,
+																			type: Schema.String.annotate({
+																				format: '"NewPasswordIdentity"',
+																			}),
+																			identifier: Schema.StructWithRest(
+																				Schema.Struct({
+																					type: Schema.Literals(['username', 'email', 'phone']),
+																					value: Schema.String,
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			),
+																		}),
+																		[
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		]
+																	),
+																],
+																{ mode: 'oneOf' }
+															)
+														)
+													),
+													signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										application: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													tenantId: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMaxCodePoints(21).annotate({
+																expected: 'a string with at most 21 code points',
+															})
+														)
+													),
+													id: Schema.optionalKey(
+														Schema.String.check(
 															Schema.isMinLength(1).annotate({
 																expected: 'a value with a length of at least 1',
 															})
 														).check(
-															Schema.isMaxLength(21).annotate({
-																expected: 'a value with a length of at most 21',
+															Schema.isMaxCodePoints(21).annotate({
+																expected: 'a string with at most 21 code points',
 															})
-														),
-														name: Schema.String.check(
+														)
+													),
+													name: Schema.optionalKey(
+														Schema.String.check(
 															Schema.isMinLength(1).annotate({
 																expected: 'a value with a length of at least 1',
 															})
-														),
-														indicator: Schema.String.check(
-															Schema.isMinLength(1).annotate({
-																expected: 'a value with a length of at least 1',
+														).check(
+															Schema.isMaxCodePoints(256).annotate({
+																expected: 'a string with at most 256 code points',
 															})
-														),
-														isDefault: Schema.Boolean,
-														accessTokenTtl: Schema.Number.check(
-															Schema.isFinite().annotate({ expected: 'a finite number' })
-														),
-													}),
-												})
-											),
-										})
-									)
-								),
-								organizations: Schema.optionalKey(
-									Schema.Array(
-										Schema.Struct({
-											id: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											name: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-											description: Schema.Union([
-												Schema.String.check(
-													Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-												),
-												Schema.Null,
-											]),
-										})
-									)
-								),
-								organizationRoles: Schema.optionalKey(
-									Schema.Array(
-										Schema.Struct({ organizationId: Schema.String, roleId: Schema.String, roleName: Schema.String })
-									)
-								),
-							}),
-							grant: Schema.optionalKey(
-								Schema.Struct({
-									type: Schema.optionalKey(
-										Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
-									),
-									subjectTokenContext: Schema.optionalKey(
-										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-											description: 'arbitrary',
-										})
-									),
-								})
-							),
-							interaction: Schema.optionalKey(
-								Schema.Struct({
-									interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
-									userId: Schema.optionalKey(Schema.String),
-									verificationRecords: Schema.optionalKey(
-										Schema.Array(
-											Schema.Union(
-												[
-													Schema.Struct({
-														id: Schema.String,
-														type: Schema.String.annotate({ format: '"Password"' }),
-														identifier: Schema.Struct({
-															type: Schema.Union(
-																[Schema.Literals(['username', 'email', 'phone']), Schema.Literal('userId')],
-																{ mode: 'oneOf' }
+														)
+													),
+													description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+													type: Schema.optionalKey(
+														Schema.Literals([
+															'Native',
+															'SPA',
+															'Traditional',
+															'MachineToMachine',
+															'Protected',
+															'SAML',
+														])
+													),
+													oidcClientMetadata: Schema.optionalKey(
+														Schema.StructWithRest(
+															Schema.Struct({
+																redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+																postLogoutRedirectUris: Schema.Array(
+																	Schema.String.annotate({ format: 'uri' })
+																),
+																backchannelLogoutUri: Schema.optionalKey(
+																	Schema.String.annotate({ format: 'url' })
+																),
+																backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+																logoUri: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													),
+													customClientMetadata: Schema.optionalKey(
+														Schema.StructWithRest(
+															Schema.Struct({
+																corsAllowedOrigins: Schema.optionalKey(
+																	Schema.Array(
+																		Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		)
+																	)
+																),
+																idTokenTtl: Schema.optionalKey(
+																	Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	)
+																),
+																refreshTokenTtl: Schema.optionalKey(
+																	Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	)
+																),
+																refreshTokenTtlInDays: Schema.optionalKey(
+																	Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	)
+																),
+																tenantId: Schema.optionalKey(Schema.String),
+																alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+																rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+																allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+																isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+																maxAllowedGrants: Schema.optionalKey(
+																	Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													),
+													protectedAppMetadata: Schema.optionalKey(
+														Schema.Union([
+															Schema.StructWithRest(
+																Schema.Struct({
+																	host: Schema.String,
+																	origin: Schema.String,
+																	sessionDuration: Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	),
+																	pageRules: Schema.Array(
+																		Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+																			Schema.Record(
+																				Schema.String,
+																				Schema.Json.annotate({ expected: 'JSON value' })
+																			),
+																		])
+																	),
+																	additionalScopes: Schema.optionalKey(
+																		Schema.Array(
+																			Schema.Literals([
+																				'custom_data',
+																				'identities',
+																				'roles',
+																				'urn:logto:scope:organizations',
+																				'urn:logto:scope:organization_roles',
+																			])
+																		)
+																	),
+																	customDomains: Schema.optionalKey(
+																		Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					domain: Schema.String,
+																					status: Schema.Literals([
+																						'PendingVerification',
+																						'PendingSsl',
+																						'Active',
+																						'Error',
+																					]),
+																					errorMessage: Schema.Union([
+																						Schema.String,
+																						Schema.Null,
+																					]),
+																					dnsRecords: Schema.Array(
+																						Schema.StructWithRest(
+																							Schema.Struct({
+																								name: Schema.String,
+																								type: Schema.String,
+																								value: Schema.String,
+																							}),
+																							[
+																								Schema.Record(
+																									Schema.String,
+																									Schema.Json.annotate({
+																										expected: 'JSON value',
+																									})
+																								),
+																							]
+																						)
+																					),
+																					cloudflareData: Schema.Union([
+																						Schema.StructWithRest(
+																							Schema.Struct({
+																								id: Schema.String,
+																								status: Schema.String,
+																								ssl: Schema.StructWithRest(
+																									Schema.Struct({
+																										status: Schema.String,
+																										validation_errors:
+																											Schema.optionalKey(
+																												Schema.Array(
+																													Schema.StructWithRest(
+																														Schema.Struct({
+																															message:
+																																Schema.String,
+																														}),
+																														[
+																															Schema.Record(
+																																Schema.String,
+																																Schema.Json.annotate(
+																																	{
+																																		expected:
+																																			'JSON value',
+																																	}
+																																)
+																															),
+																														]
+																													)
+																												)
+																											),
+																									}),
+																									[
+																										Schema.Record(
+																											Schema.String,
+																											Schema.Json.annotate({
+																												expected: 'JSON value',
+																											})
+																										),
+																									]
+																								),
+																								verification_errors: Schema.optionalKey(
+																									Schema.Array(Schema.String)
+																								),
+																							}),
+																							[
+																								Schema.Record(
+																									Schema.String,
+																									Schema.Json.annotate({
+																										expected: 'JSON value',
+																									})
+																								),
+																							]
+																						),
+																						Schema.Null,
+																					]),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
+																		)
+																	),
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
 															),
-															value: Schema.String,
-														}),
-														verified: Schema.Boolean,
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														templateType: Schema.Literals([
-															'SignIn',
-															'Register',
-															'ForgotPassword',
-															'OrganizationInvitation',
-															'Generic',
-															'UserPermissionValidation',
-															'BindNewIdentifier',
-															'MfaVerification',
-															'BindMfa',
-														]),
-														verified: Schema.Boolean,
-														type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
-														identifier: Schema.Struct({
-															type: Schema.String.annotate({ format: '"email"' }),
-															value: Schema.String,
-														}),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														templateType: Schema.Literals([
-															'SignIn',
-															'Register',
-															'ForgotPassword',
-															'OrganizationInvitation',
-															'Generic',
-															'UserPermissionValidation',
-															'BindNewIdentifier',
-															'MfaVerification',
-															'BindMfa',
-														]),
-														verified: Schema.Boolean,
-														type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
-														identifier: Schema.Struct({
-															type: Schema.String.annotate({ format: '"phone"' }),
-															value: Schema.String,
-														}),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														templateType: Schema.Literals([
-															'SignIn',
-															'Register',
-															'ForgotPassword',
-															'OrganizationInvitation',
-															'Generic',
-															'UserPermissionValidation',
-															'BindNewIdentifier',
-															'MfaVerification',
-															'BindMfa',
-														]),
-														verified: Schema.Boolean,
-														type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
-														identifier: Schema.Struct({
-															type: Schema.String.annotate({ format: '"email"' }),
-															value: Schema.String,
-														}),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														templateType: Schema.Literals([
-															'SignIn',
-															'Register',
-															'ForgotPassword',
-															'OrganizationInvitation',
-															'Generic',
-															'UserPermissionValidation',
-															'BindNewIdentifier',
-															'MfaVerification',
-															'BindMfa',
-														]),
-														verified: Schema.Boolean,
-														type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
-														identifier: Schema.Struct({
-															type: Schema.String.annotate({ format: '"phone"' }),
-															value: Schema.String,
-														}),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														connectorId: Schema.String,
-														type: Schema.String.annotate({ format: '"Social"' }),
-														socialUserInfo: Schema.optionalKey(
-															Schema.Struct({
-																id: Schema.String,
-																email: Schema.optionalKey(Schema.String),
-																phone: Schema.optionalKey(Schema.String),
-																name: Schema.optionalKey(Schema.String),
-																avatar: Schema.optionalKey(Schema.String),
-																rawData: Schema.optionalKey(
-																	Schema.Json.annotate({ expected: 'JSON value' })
-																),
-															})
-														),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														connectorId: Schema.String,
-														type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
-														enterpriseSsoUserInfo: Schema.optionalKey(
-															Schema.Struct({
-																id: Schema.String,
-																email: Schema.optionalKey(Schema.String),
-																phone: Schema.optionalKey(Schema.String),
-																name: Schema.optionalKey(Schema.String),
-																avatar: Schema.optionalKey(Schema.String),
-																rawData: Schema.optionalKey(
-																	Schema.Json.annotate({ expected: 'JSON value' })
-																),
-															})
-														),
-														issuer: Schema.optionalKey(Schema.String),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														type: Schema.String.annotate({ format: '"Totp"' }),
-														userId: Schema.String,
-														verified: Schema.Boolean,
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														type: Schema.String.annotate({ format: '"BackupCode"' }),
-														userId: Schema.String,
-														code: Schema.optionalKey(Schema.String),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														verified: Schema.Boolean,
-														registrationRpId: Schema.optionalKey(Schema.String),
-														type: Schema.String.annotate({ format: '"WebAuthn"' }),
-														userId: Schema.String,
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														verified: Schema.Boolean,
-														registrationRpId: Schema.optionalKey(Schema.String),
-														type: Schema.String.annotate({ format: '"SignInPasskey"' }),
-														userId: Schema.optionalKey(Schema.String),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														type: Schema.String.annotate({ format: '"OneTimeToken"' }),
-														verified: Schema.Boolean,
-														identifier: Schema.Struct({
-															type: Schema.String.annotate({ format: '"email"' }),
-															value: Schema.String,
-														}),
-														oneTimeTokenContext: Schema.optionalKey(
-															Schema.Struct({
-																jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-																interactionEvent: Schema.optionalKey(
-																	Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
-																),
-															})
-														),
-													}),
-													Schema.Struct({
-														id: Schema.String,
-														type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
-														identifier: Schema.Struct({
-															type: Schema.Literals(['username', 'email', 'phone']),
-															value: Schema.String,
-														}),
-													}),
-												],
-												{ mode: 'oneOf' }
+															Schema.Null,
+														])
+													),
+													customData: Schema.optionalKey(
+														Schema.Record(
+															Schema.String,
+															Schema.Json.annotate({ expected: 'JSON value' })
+														).annotate({ description: 'arbitrary' })
+													),
+													isThirdParty: Schema.optionalKey(Schema.Boolean),
+													appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+													createdAt: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 											)
-										)
-									),
-									signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-								})
-							),
-							application: Schema.optionalKey(
-								Schema.Struct({
-									tenantId: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-										)
-									),
-									id: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-									),
-									name: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-									),
-									description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-									type: Schema.optionalKey(
-										Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-									),
-									oidcClientMetadata: Schema.optionalKey(
-										Schema.Struct({
-											redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-											postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-											backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-											backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-											logoUri: Schema.optionalKey(Schema.String),
-										})
-									),
-									customClientMetadata: Schema.optionalKey(
-										Schema.Struct({
-											corsAllowedOrigins: Schema.optionalKey(
-												Schema.Array(
-													Schema.String.check(
-														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-													)
-												)
-											),
-											idTokenTtl: Schema.optionalKey(
-												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-											),
-											refreshTokenTtl: Schema.optionalKey(
-												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-											),
-											refreshTokenTtlInDays: Schema.optionalKey(
-												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-											),
-											tenantId: Schema.optionalKey(Schema.String),
-											alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-											rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-											allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-											isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-											maxAllowedGrants: Schema.optionalKey(
-												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-											),
-										})
-									),
-									protectedAppMetadata: Schema.optionalKey(
-										Schema.Union([
+										),
+										organization: Schema.optionalKey(
 											Schema.StructWithRest(
 												Schema.Struct({
-													host: Schema.String,
-													origin: Schema.String,
-													sessionDuration: Schema.Number.check(
-														Schema.isFinite().annotate({ expected: 'a finite number' })
-													),
-													pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-													additionalScopes: Schema.optionalKey(
-														Schema.Array(
-															Schema.Literals([
-																'custom_data',
-																'identities',
-																'roles',
-																'urn:logto:scope:organizations',
-																'urn:logto:scope:organization_roles',
-															])
+													id: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMinLength(1).annotate({
+																expected: 'a value with a length of at least 1',
+															})
+														).check(
+															Schema.isMaxCodePoints(21).annotate({
+																expected: 'a string with at most 21 code points',
+															})
 														)
 													),
-													customDomains: Schema.optionalKey(
-														Schema.Array(
+													name: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMinLength(1).annotate({
+																expected: 'a value with a length of at least 1',
+															})
+														).check(
+															Schema.isMaxCodePoints(128).annotate({
+																expected: 'a string with at most 128 code points',
+															})
+														)
+													),
+													description: Schema.optionalKey(
+														Schema.Union([
+															Schema.String.check(
+																Schema.isMaxCodePoints(256).annotate({
+																	expected: 'a string with at most 256 code points',
+																})
+															),
+															Schema.Null,
+														])
+													),
+													customData: Schema.optionalKey(
+														Schema.Record(
+															Schema.String,
+															Schema.Json.annotate({ expected: 'JSON value' })
+														).annotate({ description: 'arbitrary' })
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+							blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+							tokenSample: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										jti: Schema.optionalKey(Schema.String),
+										aud: Schema.optionalKey(
+											Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })
+										),
+										scope: Schema.optionalKey(Schema.String),
+										clientId: Schema.optionalKey(Schema.String),
+										accountId: Schema.optionalKey(Schema.String),
+										expiresWithSession: Schema.optionalKey(Schema.Boolean),
+										grantId: Schema.optionalKey(Schema.String),
+										gty: Schema.optionalKey(Schema.String),
+										sessionUid: Schema.optionalKey(Schema.String),
+										sid: Schema.optionalKey(Schema.String),
+										kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.StructWithRest(
+				Schema.Struct({
+					key: Schema.String.annotate({ format: '"jwt.clientCredentials"' }),
+					value: Schema.StructWithRest(
+						Schema.Struct({
+							script: Schema.String,
+							environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+							contextSample: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										application: Schema.optionalKey(
+											Schema.StructWithRest(
+												Schema.Struct({
+													tenantId: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMaxCodePoints(21).annotate({
+																expected: 'a string with at most 21 code points',
+															})
+														)
+													),
+													id: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMinLength(1).annotate({
+																expected: 'a value with a length of at least 1',
+															})
+														).check(
+															Schema.isMaxCodePoints(21).annotate({
+																expected: 'a string with at most 21 code points',
+															})
+														)
+													),
+													name: Schema.optionalKey(
+														Schema.String.check(
+															Schema.isMinLength(1).annotate({
+																expected: 'a value with a length of at least 1',
+															})
+														).check(
+															Schema.isMaxCodePoints(256).annotate({
+																expected: 'a string with at most 256 code points',
+															})
+														)
+													),
+													description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+													type: Schema.optionalKey(
+														Schema.Literals([
+															'Native',
+															'SPA',
+															'Traditional',
+															'MachineToMachine',
+															'Protected',
+															'SAML',
+														])
+													),
+													oidcClientMetadata: Schema.optionalKey(
+														Schema.StructWithRest(
 															Schema.Struct({
-																domain: Schema.String,
-																status: Schema.Literals([
-																	'PendingVerification',
-																	'PendingSsl',
-																	'Active',
-																	'Error',
-																]),
-																errorMessage: Schema.Union([Schema.String, Schema.Null]),
-																dnsRecords: Schema.Array(
-																	Schema.Struct({
-																		name: Schema.String,
-																		type: Schema.String,
-																		value: Schema.String,
-																	})
+																redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+																postLogoutRedirectUris: Schema.Array(
+																	Schema.String.annotate({ format: 'uri' })
 																),
-																cloudflareData: Schema.Union([
-																	Schema.StructWithRest(
-																		Schema.Struct({
-																			id: Schema.String,
-																			status: Schema.String,
-																			ssl: Schema.Struct({
-																				status: Schema.String,
-																				validation_errors: Schema.optionalKey(
-																					Schema.Array(Schema.Struct({ message: Schema.String }))
-																				),
-																			}),
-																			verification_errors: Schema.optionalKey(
-																				Schema.Array(Schema.String)
-																			),
-																		}),
-																		[
+																backchannelLogoutUri: Schema.optionalKey(
+																	Schema.String.annotate({ format: 'url' })
+																),
+																backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+																logoUri: Schema.optionalKey(Schema.String),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													),
+													customClientMetadata: Schema.optionalKey(
+														Schema.StructWithRest(
+															Schema.Struct({
+																corsAllowedOrigins: Schema.optionalKey(
+																	Schema.Array(
+																		Schema.String.check(
+																			Schema.isMinLength(1).annotate({
+																				expected: 'a value with a length of at least 1',
+																			})
+																		)
+																	)
+																),
+																idTokenTtl: Schema.optionalKey(
+																	Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	)
+																),
+																refreshTokenTtl: Schema.optionalKey(
+																	Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	)
+																),
+																refreshTokenTtlInDays: Schema.optionalKey(
+																	Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	)
+																),
+																tenantId: Schema.optionalKey(Schema.String),
+																alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+																rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+																allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+																isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+																maxAllowedGrants: Schema.optionalKey(
+																	Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	)
+																),
+															}),
+															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+														)
+													),
+													protectedAppMetadata: Schema.optionalKey(
+														Schema.Union([
+															Schema.StructWithRest(
+																Schema.Struct({
+																	host: Schema.String,
+																	origin: Schema.String,
+																	sessionDuration: Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
+																	),
+																	pageRules: Schema.Array(
+																		Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
 																			Schema.Record(
 																				Schema.String,
 																				Schema.Json.annotate({ expected: 'JSON value' })
 																			),
-																		]
+																		])
 																	),
-																	Schema.Null,
-																]),
-															})
-														)
+																	additionalScopes: Schema.optionalKey(
+																		Schema.Array(
+																			Schema.Literals([
+																				'custom_data',
+																				'identities',
+																				'roles',
+																				'urn:logto:scope:organizations',
+																				'urn:logto:scope:organization_roles',
+																			])
+																		)
+																	),
+																	customDomains: Schema.optionalKey(
+																		Schema.Array(
+																			Schema.StructWithRest(
+																				Schema.Struct({
+																					domain: Schema.String,
+																					status: Schema.Literals([
+																						'PendingVerification',
+																						'PendingSsl',
+																						'Active',
+																						'Error',
+																					]),
+																					errorMessage: Schema.Union([
+																						Schema.String,
+																						Schema.Null,
+																					]),
+																					dnsRecords: Schema.Array(
+																						Schema.StructWithRest(
+																							Schema.Struct({
+																								name: Schema.String,
+																								type: Schema.String,
+																								value: Schema.String,
+																							}),
+																							[
+																								Schema.Record(
+																									Schema.String,
+																									Schema.Json.annotate({
+																										expected: 'JSON value',
+																									})
+																								),
+																							]
+																						)
+																					),
+																					cloudflareData: Schema.Union([
+																						Schema.StructWithRest(
+																							Schema.Struct({
+																								id: Schema.String,
+																								status: Schema.String,
+																								ssl: Schema.StructWithRest(
+																									Schema.Struct({
+																										status: Schema.String,
+																										validation_errors:
+																											Schema.optionalKey(
+																												Schema.Array(
+																													Schema.StructWithRest(
+																														Schema.Struct({
+																															message:
+																																Schema.String,
+																														}),
+																														[
+																															Schema.Record(
+																																Schema.String,
+																																Schema.Json.annotate(
+																																	{
+																																		expected:
+																																			'JSON value',
+																																	}
+																																)
+																															),
+																														]
+																													)
+																												)
+																											),
+																									}),
+																									[
+																										Schema.Record(
+																											Schema.String,
+																											Schema.Json.annotate({
+																												expected: 'JSON value',
+																											})
+																										),
+																									]
+																								),
+																								verification_errors: Schema.optionalKey(
+																									Schema.Array(Schema.String)
+																								),
+																							}),
+																							[
+																								Schema.Record(
+																									Schema.String,
+																									Schema.Json.annotate({
+																										expected: 'JSON value',
+																									})
+																								),
+																							]
+																						),
+																						Schema.Null,
+																					]),
+																				}),
+																				[
+																					Schema.Record(
+																						Schema.String,
+																						Schema.Json.annotate({ expected: 'JSON value' })
+																					),
+																				]
+																			)
+																		)
+																	),
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+															Schema.Null,
+														])
+													),
+													customData: Schema.optionalKey(
+														Schema.Record(
+															Schema.String,
+															Schema.Json.annotate({ expected: 'JSON value' })
+														).annotate({ description: 'arbitrary' })
+													),
+													isThirdParty: Schema.optionalKey(Schema.Boolean),
+													appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+													createdAt: Schema.optionalKey(
+														Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
 													),
 												}),
 												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-											),
-											Schema.Null,
-										])
-									),
-									customData: Schema.optionalKey(
-										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-											description: 'arbitrary',
-										})
-									),
-									isThirdParty: Schema.optionalKey(Schema.Boolean),
-									appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-									createdAt: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
+											)
+										),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-							organization: Schema.optionalKey(
-								Schema.Struct({
-									id: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-									),
-									name: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-									),
-									description: Schema.optionalKey(
-										Schema.Union([
-											Schema.String.check(
-												Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-											),
-											Schema.Null,
-										])
-									),
-									customData: Schema.optionalKey(
-										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-											description: 'arbitrary',
-										})
-									),
-								})
+							blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
+							tokenSample: Schema.optionalKey(
+								Schema.StructWithRest(
+									Schema.Struct({
+										jti: Schema.optionalKey(Schema.String),
+										aud: Schema.optionalKey(
+											Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })
+										),
+										scope: Schema.optionalKey(Schema.String),
+										clientId: Schema.optionalKey(Schema.String),
+										kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
 							),
-						})
-					),
-					blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-					tokenSample: Schema.optionalKey(
-						Schema.Struct({
-							jti: Schema.optionalKey(Schema.String),
-							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-							scope: Schema.optionalKey(Schema.String),
-							clientId: Schema.optionalKey(Schema.String),
-							accountId: Schema.optionalKey(Schema.String),
-							expiresWithSession: Schema.optionalKey(Schema.Boolean),
-							grantId: Schema.optionalKey(Schema.String),
-							gty: Schema.optionalKey(Schema.String),
-							sessionUid: Schema.optionalKey(Schema.String),
-							sid: Schema.optionalKey(Schema.String),
-							kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
-						})
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 					),
 				}),
-			}),
-			Schema.Struct({
-				key: Schema.String.annotate({ format: '"jwt.clientCredentials"' }),
-				value: Schema.Struct({
-					script: Schema.String,
-					environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-					contextSample: Schema.optionalKey(
-						Schema.Struct({
-							application: Schema.optionalKey(
-								Schema.Struct({
-									tenantId: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-										)
-									),
-									id: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-									),
-									name: Schema.optionalKey(
-										Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-									),
-									description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-									type: Schema.optionalKey(
-										Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-									),
-									oidcClientMetadata: Schema.optionalKey(
-										Schema.Struct({
-											redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-											postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-											backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-											backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-											logoUri: Schema.optionalKey(Schema.String),
-										})
-									),
-									customClientMetadata: Schema.optionalKey(
-										Schema.Struct({
-											corsAllowedOrigins: Schema.optionalKey(
-												Schema.Array(
-													Schema.String.check(
-														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-													)
-												)
-											),
-											idTokenTtl: Schema.optionalKey(
-												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-											),
-											refreshTokenTtl: Schema.optionalKey(
-												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-											),
-											refreshTokenTtlInDays: Schema.optionalKey(
-												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-											),
-											tenantId: Schema.optionalKey(Schema.String),
-											alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-											rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-											allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-											isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-											maxAllowedGrants: Schema.optionalKey(
-												Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-											),
-										})
-									),
-									protectedAppMetadata: Schema.optionalKey(
-										Schema.Union([
-											Schema.StructWithRest(
-												Schema.Struct({
-													host: Schema.String,
-													origin: Schema.String,
-													sessionDuration: Schema.Number.check(
-														Schema.isFinite().annotate({ expected: 'a finite number' })
-													),
-													pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-													additionalScopes: Schema.optionalKey(
-														Schema.Array(
-															Schema.Literals([
-																'custom_data',
-																'identities',
-																'roles',
-																'urn:logto:scope:organizations',
-																'urn:logto:scope:organization_roles',
-															])
-														)
-													),
-													customDomains: Schema.optionalKey(
-														Schema.Array(
-															Schema.Struct({
-																domain: Schema.String,
-																status: Schema.Literals([
-																	'PendingVerification',
-																	'PendingSsl',
-																	'Active',
-																	'Error',
-																]),
-																errorMessage: Schema.Union([Schema.String, Schema.Null]),
-																dnsRecords: Schema.Array(
-																	Schema.Struct({
-																		name: Schema.String,
-																		type: Schema.String,
-																		value: Schema.String,
-																	})
-																),
-																cloudflareData: Schema.Union([
-																	Schema.StructWithRest(
-																		Schema.Struct({
-																			id: Schema.String,
-																			status: Schema.String,
-																			ssl: Schema.Struct({
-																				status: Schema.String,
-																				validation_errors: Schema.optionalKey(
-																					Schema.Array(Schema.Struct({ message: Schema.String }))
-																				),
-																			}),
-																			verification_errors: Schema.optionalKey(
-																				Schema.Array(Schema.String)
-																			),
-																		}),
-																		[
-																			Schema.Record(
-																				Schema.String,
-																				Schema.Json.annotate({ expected: 'JSON value' })
-																			),
-																		]
-																	),
-																	Schema.Null,
-																]),
-															})
-														)
-													),
-												}),
-												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-											),
-											Schema.Null,
-										])
-									),
-									customData: Schema.optionalKey(
-										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-											description: 'arbitrary',
-										})
-									),
-									isThirdParty: Schema.optionalKey(Schema.Boolean),
-									appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-									createdAt: Schema.optionalKey(
-										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-									),
-								})
-							),
-						})
-					),
-					blockIssuanceOnError: Schema.optionalKey(Schema.Boolean),
-					tokenSample: Schema.optionalKey(
-						Schema.Struct({
-							jti: Schema.optionalKey(Schema.String),
-							aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-							scope: Schema.optionalKey(Schema.String),
-							clientId: Schema.optionalKey(Schema.String),
-							kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
-						})
-					),
-				}),
-			}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
 		],
 		{ mode: 'oneOf' }
 	)
 )
 
 export type TestJwtCustomizerPayload =
-	| {
+	| ({
 			readonly tokenType: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly script: string
@@ -5946,7 +8516,7 @@ export type TestJwtCustomizerPayload =
 				readonly sessionUid?: string
 				readonly sid?: string
 				readonly kind?: string
-			}
+			} & { readonly [x: string]: Schema.Json }
 			readonly context: {
 				readonly user: {
 					readonly id?: string
@@ -5957,7 +8527,9 @@ export type TestJwtCustomizerPayload =
 					readonly avatar?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly identities?: {
-						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } }
+						readonly [x: string]: { readonly userId: string; readonly details?: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
 					}
 					readonly lastSignInAt?: number | null
 					readonly createdAt?: number
@@ -5981,78 +8553,71 @@ export type TestJwtCustomizerPayload =
 							readonly region?: string
 							readonly postalCode?: string
 							readonly country?: string
-						}
-					}
+						} & { readonly [x: string]: Schema.Json }
+					} & { readonly [x: string]: Schema.Json }
 					readonly applicationId?: string | null
 					readonly cimdClientId?: string | null
 					readonly isSuspended?: boolean
 					readonly hasPassword?: boolean
-					readonly ssoIdentities?: ReadonlyArray<{
-						readonly issuer: string
-						readonly identityId: string
-						readonly detail: { readonly [x: string]: Schema.Json }
-					}>
+					readonly ssoIdentities?: ReadonlyArray<
+						{ readonly issuer: string; readonly identityId: string; readonly detail: { readonly [x: string]: Schema.Json } } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
 					readonly mfaVerificationFactors?: ReadonlyArray<
 						'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'
 					>
-					readonly roles?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string
-						readonly scopes: ReadonlyArray<{
+					readonly roles?: ReadonlyArray<
+						{
 							readonly id: string
 							readonly name: string
-							readonly description: string | null
-							readonly resourceId: string
-							readonly resource: {
-								readonly tenantId: string
-								readonly id: string
-								readonly name: string
-								readonly indicator: string
-								readonly isDefault: boolean
-								readonly accessTokenTtl: number
-							}
-						}>
-					}>
-					readonly organizations?: ReadonlyArray<{
-						readonly id: string
-						readonly name: string
-						readonly description: string | null
-					}>
-					readonly organizationRoles?: ReadonlyArray<{
-						readonly organizationId: string
-						readonly roleId: string
-						readonly roleName: string
-					}>
+							readonly description: string
+							readonly scopes: ReadonlyArray<
+								{
+									readonly id: string
+									readonly name: string
+									readonly description: string | null
+									readonly resourceId: string
+									readonly resource: {
+										readonly tenantId: string
+										readonly id: string
+										readonly name: string
+										readonly indicator: string
+										readonly isDefault: boolean
+										readonly accessTokenTtl: number
+									} & { readonly [x: string]: Schema.Json }
+								} & { readonly [x: string]: Schema.Json }
+							>
+						} & { readonly [x: string]: Schema.Json }
+					>
+					readonly organizations?: ReadonlyArray<
+						{ readonly id: string; readonly name: string; readonly description: string | null } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+					readonly organizationRoles?: ReadonlyArray<
+						{ readonly organizationId: string; readonly roleId: string; readonly roleName: string } & {
+							readonly [x: string]: Schema.Json
+						}
+					>
+				} & { readonly [x: string]: Schema.Json }
+				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } } & {
+					readonly [x: string]: Schema.Json
 				}
-				readonly grant?: { readonly type?: string; readonly subjectTokenContext?: { readonly [x: string]: Schema.Json } }
 				readonly interaction?: {
 					readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
 					readonly userId?: string
 					readonly verificationRecords?: ReadonlyArray<
-						| {
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone' | 'userId'; readonly value: string }
+								readonly identifier: {
+									readonly type: 'username' | 'email' | 'phone' | 'userId'
+									readonly value: string
+								} & { readonly [x: string]: Schema.Json }
 								readonly verified: boolean
-						  }
-						| {
-								readonly id: string
-								readonly templateType:
-									| 'SignIn'
-									| 'Register'
-									| 'ForgotPassword'
-									| 'OrganizationInvitation'
-									| 'Generic'
-									| 'UserPermissionValidation'
-									| 'BindNewIdentifier'
-									| 'MfaVerification'
-									| 'BindMfa'
-								readonly verified: boolean
-								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -6066,9 +8631,11 @@ export type TestJwtCustomizerPayload =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -6082,9 +8649,11 @@ export type TestJwtCustomizerPayload =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly templateType:
 									| 'SignIn'
@@ -6098,9 +8667,29 @@ export type TestJwtCustomizerPayload =
 									| 'BindMfa'
 								readonly verified: boolean
 								readonly type: string
-								readonly identifier: { readonly type: string; readonly value: string }
-						  }
-						| {
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
+								readonly id: string
+								readonly templateType:
+									| 'SignIn'
+									| 'Register'
+									| 'ForgotPassword'
+									| 'OrganizationInvitation'
+									| 'Generic'
+									| 'UserPermissionValidation'
+									| 'BindNewIdentifier'
+									| 'MfaVerification'
+									| 'BindMfa'
+								readonly verified: boolean
+								readonly type: string
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -6111,9 +8700,9 @@ export type TestJwtCustomizerPayload =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly connectorId: string
 								readonly type: string
@@ -6124,43 +8713,51 @@ export type TestJwtCustomizerPayload =
 									readonly name?: string
 									readonly avatar?: string
 									readonly rawData?: Schema.Json
-								}
+								} & { readonly [x: string]: Schema.Json }
 								readonly issuer?: string
-						  }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean }
-						| { readonly id: string; readonly type: string; readonly userId: string; readonly code?: string }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly verified: boolean } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({ readonly id: string; readonly type: string; readonly userId: string; readonly code?: string } & {
+								readonly [x: string]: Schema.Json
+						  })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly verified: boolean
 								readonly registrationRpId?: string
 								readonly type: string
 								readonly userId?: string
-						  }
-						| {
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
 								readonly verified: boolean
-								readonly identifier: { readonly type: string; readonly value: string }
+								readonly identifier: { readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
 								readonly oneTimeTokenContext?: {
 									readonly jitOrganizationIds?: ReadonlyArray<string>
 									readonly interactionEvent?: 'SignIn' | 'Register' | 'ForgotPassword'
-								}
-						  }
-						| {
+								} & { readonly [x: string]: Schema.Json }
+						  } & { readonly [x: string]: Schema.Json })
+						| ({
 								readonly id: string
 								readonly type: string
-								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string }
-						  }
+								readonly identifier: { readonly type: 'username' | 'email' | 'phone'; readonly value: string } & {
+									readonly [x: string]: Schema.Json
+								}
+						  } & { readonly [x: string]: Schema.Json })
 					>
 					readonly signInContext?: { readonly [x: string]: string }
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly application?: {
 					readonly tenantId?: string
 					readonly id?: string
@@ -6173,7 +8770,7 @@ export type TestJwtCustomizerPayload =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -6185,13 +8782,13 @@ export type TestJwtCustomizerPayload =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -6199,43 +8796,47 @@ export type TestJwtCustomizerPayload =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
+				} & { readonly [x: string]: Schema.Json }
 				readonly organization?: {
 					readonly id?: string
 					readonly name?: string
 					readonly description?: string | null
 					readonly customData?: { readonly [x: string]: Schema.Json }
-				}
-			}
-	  }
-	| {
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
+	| ({
 			readonly tokenType: string
 			readonly environmentVariables?: { readonly [x: string]: string }
 			readonly script: string
@@ -6245,7 +8846,7 @@ export type TestJwtCustomizerPayload =
 				readonly scope?: string
 				readonly clientId?: string
 				readonly kind?: string
-			}
+			} & { readonly [x: string]: Schema.Json }
 			readonly context: {
 				readonly application?: {
 					readonly tenantId?: string
@@ -6259,7 +8860,7 @@ export type TestJwtCustomizerPayload =
 						readonly backchannelLogoutUri?: string
 						readonly backchannelLogoutSessionRequired?: boolean
 						readonly logoUri?: string
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly customClientMetadata?: {
 						readonly corsAllowedOrigins?: ReadonlyArray<string>
 						readonly idTokenTtl?: number
@@ -6271,13 +8872,13 @@ export type TestJwtCustomizerPayload =
 						readonly allowTokenExchange?: boolean
 						readonly isDeviceFlow?: boolean
 						readonly maxAllowedGrants?: number
-					}
+					} & { readonly [x: string]: Schema.Json }
 					readonly protectedAppMetadata?:
 						| ({
 								readonly host: string
 								readonly origin: string
 								readonly sessionDuration: number
-								readonly pageRules: ReadonlyArray<{ readonly path: string }>
+								readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 								readonly additionalScopes?: ReadonlyArray<
 									| 'custom_data'
 									| 'identities'
@@ -6285,722 +8886,1164 @@ export type TestJwtCustomizerPayload =
 									| 'urn:logto:scope:organizations'
 									| 'urn:logto:scope:organization_roles'
 								>
-								readonly customDomains?: ReadonlyArray<{
-									readonly domain: string
-									readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-									readonly errorMessage: string | null
-									readonly dnsRecords: ReadonlyArray<{
-										readonly name: string
-										readonly type: string
-										readonly value: string
-									}>
-									readonly cloudflareData:
-										| ({
-												readonly id: string
-												readonly status: string
-												readonly ssl: {
+								readonly customDomains?: ReadonlyArray<
+									{
+										readonly domain: string
+										readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+										readonly errorMessage: string | null
+										readonly dnsRecords: ReadonlyArray<
+											{ readonly name: string; readonly type: string; readonly value: string } & {
+												readonly [x: string]: Schema.Json
+											}
+										>
+										readonly cloudflareData:
+											| ({
+													readonly id: string
 													readonly status: string
-													readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-												}
-												readonly verification_errors?: ReadonlyArray<string>
-										  } & { readonly [x: string]: Schema.Json })
-										| null
-								}>
+													readonly ssl: {
+														readonly status: string
+														readonly validation_errors?: ReadonlyArray<
+															{ readonly message: string } & { readonly [x: string]: Schema.Json }
+														>
+													} & { readonly [x: string]: Schema.Json }
+													readonly verification_errors?: ReadonlyArray<string>
+											  } & { readonly [x: string]: Schema.Json })
+											| null
+									} & { readonly [x: string]: Schema.Json }
+								>
 						  } & { readonly [x: string]: Schema.Json })
 						| null
 					readonly customData?: { readonly [x: string]: Schema.Json }
 					readonly isThirdParty?: boolean
 					readonly appLevelAccessControlEnabled?: boolean
 					readonly createdAt?: number
-				}
-			}
-	  }
+				} & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+	  } & { readonly [x: string]: Schema.Json })
 export const TestJwtCustomizerPayload = Schema.Union(
 	[
-		Schema.Struct({
-			tokenType: Schema.String.annotate({ format: '"access-token"' }),
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			script: Schema.String,
-			token: Schema.Struct({
-				jti: Schema.optionalKey(Schema.String),
-				aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-				scope: Schema.optionalKey(Schema.String),
-				clientId: Schema.optionalKey(Schema.String),
-				accountId: Schema.optionalKey(Schema.String),
-				expiresWithSession: Schema.optionalKey(Schema.Boolean),
-				grantId: Schema.optionalKey(Schema.String),
-				gty: Schema.optionalKey(Schema.String),
-				sessionUid: Schema.optionalKey(Schema.String),
-				sid: Schema.optionalKey(Schema.String),
-				kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
-			}),
-			context: Schema.Struct({
-				user: Schema.Struct({
-					id: Schema.optionalKey(
-						Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-							Schema.isMaxLength(12).annotate({ expected: 'a value with a length of at most 12' })
-						)
-					),
-					username: Schema.optionalKey(
-						Schema.Union([
-							Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-							Schema.Null,
-						])
-					),
-					primaryEmail: Schema.optionalKey(
-						Schema.Union([
-							Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-							Schema.Null,
-						])
-					),
-					primaryPhone: Schema.optionalKey(
-						Schema.Union([
-							Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-							Schema.Null,
-						])
-					),
-					name: Schema.optionalKey(
-						Schema.Union([
-							Schema.String.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-							Schema.Null,
-						])
-					),
-					avatar: Schema.optionalKey(
-						Schema.Union([
-							Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-							Schema.Null,
-						])
-					),
-					customData: Schema.optionalKey(
-						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-							description: 'arbitrary',
-						})
-					),
-					identities: Schema.optionalKey(
-						Schema.Record(
-							Schema.String,
+		Schema.StructWithRest(
+			Schema.Struct({
+				tokenType: Schema.String.annotate({ format: '"access-token"' }),
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				script: Schema.String,
+				token: Schema.StructWithRest(
+					Schema.Struct({
+						jti: Schema.optionalKey(Schema.String),
+						aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+						scope: Schema.optionalKey(Schema.String),
+						clientId: Schema.optionalKey(Schema.String),
+						accountId: Schema.optionalKey(Schema.String),
+						expiresWithSession: Schema.optionalKey(Schema.Boolean),
+						grantId: Schema.optionalKey(Schema.String),
+						gty: Schema.optionalKey(Schema.String),
+						sessionUid: Schema.optionalKey(Schema.String),
+						sid: Schema.optionalKey(Schema.String),
+						kind: Schema.optionalKey(Schema.String.annotate({ format: '"AccessToken"' })),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				context: Schema.StructWithRest(
+					Schema.Struct({
+						user: Schema.StructWithRest(
 							Schema.Struct({
-								userId: Schema.String,
-								details: Schema.optionalKey(
+								id: Schema.optionalKey(
+									Schema.String.check(
+										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+									).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+								),
+								username: Schema.optionalKey(
+									Schema.Union([
+										Schema.String.check(
+											Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+										),
+										Schema.Null,
+									])
+								),
+								primaryEmail: Schema.optionalKey(
+									Schema.Union([
+										Schema.String.check(
+											Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+										),
+										Schema.Null,
+									])
+								),
+								primaryPhone: Schema.optionalKey(
+									Schema.Union([
+										Schema.String.check(
+											Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+										),
+										Schema.Null,
+									])
+								),
+								name: Schema.optionalKey(
+									Schema.Union([
+										Schema.String.check(
+											Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+										),
+										Schema.Null,
+									])
+								),
+								avatar: Schema.optionalKey(
+									Schema.Union([
+										Schema.String.check(
+											Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })
+										),
+										Schema.Null,
+									])
+								),
+								customData: Schema.optionalKey(
 									Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 										description: 'arbitrary',
 									})
 								),
-							})
-						)
-					),
-					lastSignInAt: Schema.optionalKey(
-						Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null])
-					),
-					createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					updatedAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					profile: Schema.optionalKey(
-						Schema.Struct({
-							familyName: Schema.optionalKey(Schema.String),
-							givenName: Schema.optionalKey(Schema.String),
-							middleName: Schema.optionalKey(Schema.String),
-							nickname: Schema.optionalKey(Schema.String),
-							preferredUsername: Schema.optionalKey(Schema.String),
-							profile: Schema.optionalKey(Schema.String),
-							website: Schema.optionalKey(Schema.String),
-							gender: Schema.optionalKey(Schema.String),
-							birthdate: Schema.optionalKey(Schema.String),
-							zoneinfo: Schema.optionalKey(Schema.String),
-							locale: Schema.optionalKey(Schema.String),
-							address: Schema.optionalKey(
-								Schema.Struct({
-									formatted: Schema.optionalKey(Schema.String),
-									streetAddress: Schema.optionalKey(Schema.String),
-									locality: Schema.optionalKey(Schema.String),
-									region: Schema.optionalKey(Schema.String),
-									postalCode: Schema.optionalKey(Schema.String),
-									country: Schema.optionalKey(Schema.String),
-								})
-							),
-						})
-					),
-					applicationId: Schema.optionalKey(
-						Schema.Union([
-							Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-							Schema.Null,
-						])
-					),
-					cimdClientId: Schema.optionalKey(
-						Schema.Union([
-							Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-							Schema.Null,
-						])
-					),
-					isSuspended: Schema.optionalKey(Schema.Boolean),
-					hasPassword: Schema.optionalKey(Schema.Boolean),
-					ssoIdentities: Schema.optionalKey(
-						Schema.Array(
-							Schema.Struct({
-								issuer: Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-								identityId: Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								detail: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-									description: 'arbitrary',
-								}),
-							})
-						)
-					),
-					mfaVerificationFactors: Schema.optionalKey(
-						Schema.Array(Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode']))
-					),
-					roles: Schema.optionalKey(
-						Schema.Array(
-							Schema.Struct({
-								id: Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-								name: Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								description: Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								scopes: Schema.Array(
-									Schema.Struct({
-										id: Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-										name: Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-										description: Schema.Union([Schema.String, Schema.Null]),
-										resourceId: Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-										resource: Schema.Struct({
-											tenantId: Schema.String.check(
-												Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-											),
-											id: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-											name: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											),
-											indicator: Schema.String.check(
-												Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-											),
-											isDefault: Schema.Boolean,
-											accessTokenTtl: Schema.Number.check(
-												Schema.isFinite().annotate({ expected: 'a finite number' })
-											),
-										}),
-									})
-								),
-							})
-						)
-					),
-					organizations: Schema.optionalKey(
-						Schema.Array(
-							Schema.Struct({
-								id: Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-								name: Schema.String.check(
-									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-								).check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-								description: Schema.Union([
-									Schema.String.check(
-										Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-									),
-									Schema.Null,
-								]),
-							})
-						)
-					),
-					organizationRoles: Schema.optionalKey(
-						Schema.Array(Schema.Struct({ organizationId: Schema.String, roleId: Schema.String, roleName: Schema.String }))
-					),
-				}),
-				grant: Schema.optionalKey(
-					Schema.Struct({
-						type: Schema.optionalKey(Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })),
-						subjectTokenContext: Schema.optionalKey(
-							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-								description: 'arbitrary',
-							})
-						),
-					})
-				),
-				interaction: Schema.optionalKey(
-					Schema.Struct({
-						interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
-						userId: Schema.optionalKey(Schema.String),
-						verificationRecords: Schema.optionalKey(
-							Schema.Array(
-								Schema.Union(
-									[
-										Schema.Struct({
-											id: Schema.String,
-											type: Schema.String.annotate({ format: '"Password"' }),
-											identifier: Schema.Struct({
-												type: Schema.Union(
-													[Schema.Literals(['username', 'email', 'phone']), Schema.Literal('userId')],
-													{ mode: 'oneOf' }
+								identities: Schema.optionalKey(
+									Schema.Record(
+										Schema.String,
+										Schema.StructWithRest(
+											Schema.Struct({
+												userId: Schema.String,
+												details: Schema.optionalKey(
+													Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate(
+														{ description: 'arbitrary' }
+													)
 												),
-												value: Schema.String,
 											}),
-											verified: Schema.Boolean,
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											templateType: Schema.Literals([
-												'SignIn',
-												'Register',
-												'ForgotPassword',
-												'OrganizationInvitation',
-												'Generic',
-												'UserPermissionValidation',
-												'BindNewIdentifier',
-												'MfaVerification',
-												'BindMfa',
-											]),
-											verified: Schema.Boolean,
-											type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
-											identifier: Schema.Struct({
-												type: Schema.String.annotate({ format: '"email"' }),
-												value: Schema.String,
-											}),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											templateType: Schema.Literals([
-												'SignIn',
-												'Register',
-												'ForgotPassword',
-												'OrganizationInvitation',
-												'Generic',
-												'UserPermissionValidation',
-												'BindNewIdentifier',
-												'MfaVerification',
-												'BindMfa',
-											]),
-											verified: Schema.Boolean,
-											type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
-											identifier: Schema.Struct({
-												type: Schema.String.annotate({ format: '"phone"' }),
-												value: Schema.String,
-											}),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											templateType: Schema.Literals([
-												'SignIn',
-												'Register',
-												'ForgotPassword',
-												'OrganizationInvitation',
-												'Generic',
-												'UserPermissionValidation',
-												'BindNewIdentifier',
-												'MfaVerification',
-												'BindMfa',
-											]),
-											verified: Schema.Boolean,
-											type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
-											identifier: Schema.Struct({
-												type: Schema.String.annotate({ format: '"email"' }),
-												value: Schema.String,
-											}),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											templateType: Schema.Literals([
-												'SignIn',
-												'Register',
-												'ForgotPassword',
-												'OrganizationInvitation',
-												'Generic',
-												'UserPermissionValidation',
-												'BindNewIdentifier',
-												'MfaVerification',
-												'BindMfa',
-											]),
-											verified: Schema.Boolean,
-											type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
-											identifier: Schema.Struct({
-												type: Schema.String.annotate({ format: '"phone"' }),
-												value: Schema.String,
-											}),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											connectorId: Schema.String,
-											type: Schema.String.annotate({ format: '"Social"' }),
-											socialUserInfo: Schema.optionalKey(
-												Schema.Struct({
-													id: Schema.String,
-													email: Schema.optionalKey(Schema.String),
-													phone: Schema.optionalKey(Schema.String),
-													name: Schema.optionalKey(Schema.String),
-													avatar: Schema.optionalKey(Schema.String),
-													rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-												})
-											),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											connectorId: Schema.String,
-											type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
-											enterpriseSsoUserInfo: Schema.optionalKey(
-												Schema.Struct({
-													id: Schema.String,
-													email: Schema.optionalKey(Schema.String),
-													phone: Schema.optionalKey(Schema.String),
-													name: Schema.optionalKey(Schema.String),
-													avatar: Schema.optionalKey(Schema.String),
-													rawData: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-												})
-											),
-											issuer: Schema.optionalKey(Schema.String),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											type: Schema.String.annotate({ format: '"Totp"' }),
-											userId: Schema.String,
-											verified: Schema.Boolean,
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											type: Schema.String.annotate({ format: '"BackupCode"' }),
-											userId: Schema.String,
-											code: Schema.optionalKey(Schema.String),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											verified: Schema.Boolean,
-											registrationRpId: Schema.optionalKey(Schema.String),
-											type: Schema.String.annotate({ format: '"WebAuthn"' }),
-											userId: Schema.String,
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											verified: Schema.Boolean,
-											registrationRpId: Schema.optionalKey(Schema.String),
-											type: Schema.String.annotate({ format: '"SignInPasskey"' }),
-											userId: Schema.optionalKey(Schema.String),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											type: Schema.String.annotate({ format: '"OneTimeToken"' }),
-											verified: Schema.Boolean,
-											identifier: Schema.Struct({
-												type: Schema.String.annotate({ format: '"email"' }),
-												value: Schema.String,
-											}),
-											oneTimeTokenContext: Schema.optionalKey(
-												Schema.Struct({
-													jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
-													interactionEvent: Schema.optionalKey(
-														Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
-													),
-												})
-											),
-										}),
-										Schema.Struct({
-											id: Schema.String,
-											type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
-											identifier: Schema.Struct({
-												type: Schema.Literals(['username', 'email', 'phone']),
-												value: Schema.String,
-											}),
-										}),
-									],
-									{ mode: 'oneOf' }
-								)
-							)
-						),
-						signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-					})
-				),
-				application: Schema.optionalKey(
-					Schema.Struct({
-						tenantId: Schema.optionalKey(
-							Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-						),
-						id: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-							)
-						),
-						name: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-							)
-						),
-						description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-						type: Schema.optionalKey(
-							Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-						),
-						oidcClientMetadata: Schema.optionalKey(
-							Schema.Struct({
-								redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-								postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-								backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-								backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-								logoUri: Schema.optionalKey(Schema.String),
-							})
-						),
-						customClientMetadata: Schema.optionalKey(
-							Schema.Struct({
-								corsAllowedOrigins: Schema.optionalKey(
-									Schema.Array(
-										Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 										)
 									)
 								),
-								idTokenTtl: Schema.optionalKey(
+								lastSignInAt: Schema.optionalKey(
+									Schema.Union([
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+										Schema.Null,
+									])
+								),
+								createdAt: Schema.optionalKey(
 									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
 								),
-								refreshTokenTtl: Schema.optionalKey(
+								updatedAt: Schema.optionalKey(
 									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
 								),
-								refreshTokenTtlInDays: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								profile: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											familyName: Schema.optionalKey(Schema.String),
+											givenName: Schema.optionalKey(Schema.String),
+											middleName: Schema.optionalKey(Schema.String),
+											nickname: Schema.optionalKey(Schema.String),
+											preferredUsername: Schema.optionalKey(Schema.String),
+											profile: Schema.optionalKey(Schema.String),
+											website: Schema.optionalKey(Schema.String),
+											gender: Schema.optionalKey(Schema.String),
+											birthdate: Schema.optionalKey(Schema.String),
+											zoneinfo: Schema.optionalKey(Schema.String),
+											locale: Schema.optionalKey(Schema.String),
+											address: Schema.optionalKey(
+												Schema.StructWithRest(
+													Schema.Struct({
+														formatted: Schema.optionalKey(Schema.String),
+														streetAddress: Schema.optionalKey(Schema.String),
+														locality: Schema.optionalKey(Schema.String),
+														region: Schema.optionalKey(Schema.String),
+														postalCode: Schema.optionalKey(Schema.String),
+														country: Schema.optionalKey(Schema.String),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												)
+											),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
 								),
-								tenantId: Schema.optionalKey(Schema.String),
-								alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-								rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-								allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-								isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-								maxAllowedGrants: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-							})
-						),
-						protectedAppMetadata: Schema.optionalKey(
-							Schema.Union([
-								Schema.StructWithRest(
-									Schema.Struct({
-										host: Schema.String,
-										origin: Schema.String,
-										sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-										pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-										additionalScopes: Schema.optionalKey(
-											Schema.Array(
-												Schema.Literals([
-													'custom_data',
-													'identities',
-													'roles',
-													'urn:logto:scope:organizations',
-													'urn:logto:scope:organization_roles',
-												])
-											)
-										),
-										customDomains: Schema.optionalKey(
-											Schema.Array(
-												Schema.Struct({
-													domain: Schema.String,
-													status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-													errorMessage: Schema.Union([Schema.String, Schema.Null]),
-													dnsRecords: Schema.Array(
-														Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })
-													),
-													cloudflareData: Schema.Union([
-														Schema.StructWithRest(
-															Schema.Struct({
-																id: Schema.String,
-																status: Schema.String,
-																ssl: Schema.Struct({
-																	status: Schema.String,
-																	validation_errors: Schema.optionalKey(
-																		Schema.Array(Schema.Struct({ message: Schema.String }))
-																	),
-																}),
-																verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-															}),
-															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-														),
-														Schema.Null,
-													]),
-												})
-											)
-										),
-									}),
-									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-								),
-								Schema.Null,
-							])
-						),
-						customData: Schema.optionalKey(
-							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-								description: 'arbitrary',
-							})
-						),
-						isThirdParty: Schema.optionalKey(Schema.Boolean),
-						appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-						createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					})
-				),
-				organization: Schema.optionalKey(
-					Schema.Struct({
-						id: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-							)
-						),
-						name: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-							)
-						),
-						description: Schema.optionalKey(
-							Schema.Union([
-								Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-								Schema.Null,
-							])
-						),
-						customData: Schema.optionalKey(
-							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-								description: 'arbitrary',
-							})
-						),
-					})
-				),
-			}),
-		}),
-		Schema.Struct({
-			tokenType: Schema.String.annotate({ format: '"client-credentials"' }),
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			script: Schema.String,
-			token: Schema.Struct({
-				jti: Schema.optionalKey(Schema.String),
-				aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
-				scope: Schema.optionalKey(Schema.String),
-				clientId: Schema.optionalKey(Schema.String),
-				kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
-			}),
-			context: Schema.Struct({
-				application: Schema.optionalKey(
-					Schema.Struct({
-						tenantId: Schema.optionalKey(
-							Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))
-						),
-						id: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-							)
-						),
-						name: Schema.optionalKey(
-							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-								Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-							)
-						),
-						description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-						type: Schema.optionalKey(
-							Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
-						),
-						oidcClientMetadata: Schema.optionalKey(
-							Schema.Struct({
-								redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-								postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-								backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-								backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-								logoUri: Schema.optionalKey(Schema.String),
-							})
-						),
-						customClientMetadata: Schema.optionalKey(
-							Schema.Struct({
-								corsAllowedOrigins: Schema.optionalKey(
-									Schema.Array(
+								applicationId: Schema.optionalKey(
+									Schema.Union([
 										Schema.String.check(
-											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+											Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+										),
+										Schema.Null,
+									])
+								),
+								cimdClientId: Schema.optionalKey(
+									Schema.Union([
+										Schema.String.check(
+											Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })
+										),
+										Schema.Null,
+									])
+								),
+								isSuspended: Schema.optionalKey(Schema.Boolean),
+								hasPassword: Schema.optionalKey(Schema.Boolean),
+								ssoIdentities: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												issuer: Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												).check(
+													Schema.isMaxCodePoints(256).annotate({
+														expected: 'a string with at most 256 code points',
+													})
+												),
+												identityId: Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												).check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												),
+												detail: Schema.Record(
+													Schema.String,
+													Schema.Json.annotate({ expected: 'JSON value' })
+												).annotate({ description: 'arbitrary' }),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 										)
 									)
 								),
-								idTokenTtl: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+								mfaVerificationFactors: Schema.optionalKey(
+									Schema.Array(
+										Schema.Literals([
+											'Totp',
+											'WebAuthn',
+											'BackupCode',
+											'EmailVerificationCode',
+											'PhoneVerificationCode',
+										])
+									)
 								),
-								refreshTokenTtl: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								refreshTokenTtlInDays: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-								tenantId: Schema.optionalKey(Schema.String),
-								alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-								rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-								allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-								isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-								maxAllowedGrants: Schema.optionalKey(
-									Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
-								),
-							})
-						),
-						protectedAppMetadata: Schema.optionalKey(
-							Schema.Union([
-								Schema.StructWithRest(
-									Schema.Struct({
-										host: Schema.String,
-										origin: Schema.String,
-										sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-										pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-										additionalScopes: Schema.optionalKey(
-											Schema.Array(
-												Schema.Literals([
-													'custom_data',
-													'identities',
-													'roles',
-													'urn:logto:scope:organizations',
-													'urn:logto:scope:organization_roles',
-												])
-											)
-										),
-										customDomains: Schema.optionalKey(
-											Schema.Array(
-												Schema.Struct({
-													domain: Schema.String,
-													status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-													errorMessage: Schema.Union([Schema.String, Schema.Null]),
-													dnsRecords: Schema.Array(
-														Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })
-													),
-													cloudflareData: Schema.Union([
-														Schema.StructWithRest(
-															Schema.Struct({
-																id: Schema.String,
-																status: Schema.String,
-																ssl: Schema.Struct({
-																	status: Schema.String,
-																	validation_errors: Schema.optionalKey(
-																		Schema.Array(Schema.Struct({ message: Schema.String }))
+								roles: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												id: Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												).check(
+													Schema.isMaxCodePoints(21).annotate({
+														expected: 'a string with at most 21 code points',
+													})
+												),
+												name: Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												).check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												),
+												description: Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												).check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												),
+												scopes: Schema.Array(
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															).check(
+																Schema.isMaxCodePoints(21).annotate({
+																	expected: 'a string with at most 21 code points',
+																})
+															),
+															name: Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															).check(
+																Schema.isMaxCodePoints(256).annotate({
+																	expected: 'a string with at most 256 code points',
+																})
+															),
+															description: Schema.Union([Schema.String, Schema.Null]),
+															resourceId: Schema.String.check(
+																Schema.isMinLength(1).annotate({
+																	expected: 'a value with a length of at least 1',
+																})
+															).check(
+																Schema.isMaxCodePoints(21).annotate({
+																	expected: 'a string with at most 21 code points',
+																})
+															),
+															resource: Schema.StructWithRest(
+																Schema.Struct({
+																	tenantId: Schema.String.check(
+																		Schema.isMaxCodePoints(21).annotate({
+																			expected: 'a string with at most 21 code points',
+																		})
+																	),
+																	id: Schema.String.check(
+																		Schema.isMinLength(1).annotate({
+																			expected: 'a value with a length of at least 1',
+																		})
+																	).check(
+																		Schema.isMaxCodePoints(21).annotate({
+																			expected: 'a string with at most 21 code points',
+																		})
+																	),
+																	name: Schema.String.check(
+																		Schema.isMinLength(1).annotate({
+																			expected: 'a value with a length of at least 1',
+																		})
+																	),
+																	indicator: Schema.String.check(
+																		Schema.isMinLength(1).annotate({
+																			expected: 'a value with a length of at least 1',
+																		})
+																	),
+																	isDefault: Schema.Boolean,
+																	accessTokenTtl: Schema.Number.check(
+																		Schema.isFinite().annotate({ expected: 'a finite number' })
 																	),
 																}),
-																verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-															}),
-															[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-														),
-														Schema.Null,
-													]),
-												})
-											)
-										),
-									}),
-									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													)
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
 								),
-								Schema.Null,
-							])
+								organizations: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												id: Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												).check(
+													Schema.isMaxCodePoints(21).annotate({
+														expected: 'a string with at most 21 code points',
+													})
+												),
+												name: Schema.String.check(
+													Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+												).check(
+													Schema.isMaxCodePoints(128).annotate({
+														expected: 'a string with at most 128 code points',
+													})
+												),
+												description: Schema.Union([
+													Schema.String.check(
+														Schema.isMaxCodePoints(256).annotate({
+															expected: 'a string with at most 256 code points',
+														})
+													),
+													Schema.Null,
+												]),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								organizationRoles: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												organizationId: Schema.String,
+												roleId: Schema.String,
+												roleName: Schema.String,
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-						customData: Schema.optionalKey(
-							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-								description: 'arbitrary',
-							})
+						grant: Schema.optionalKey(
+							Schema.StructWithRest(
+								Schema.Struct({
+									type: Schema.optionalKey(
+										Schema.String.annotate({ format: '"urn:ietf:params:oauth:grant-type:token-exchange"' })
+									),
+									subjectTokenContext: Schema.optionalKey(
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+											description: 'arbitrary',
+										})
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
 						),
-						isThirdParty: Schema.optionalKey(Schema.Boolean),
-						appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
-						createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					})
+						interaction: Schema.optionalKey(
+							Schema.StructWithRest(
+								Schema.Struct({
+									interactionEvent: Schema.optionalKey(Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])),
+									userId: Schema.optionalKey(Schema.String),
+									verificationRecords: Schema.optionalKey(
+										Schema.Array(
+											Schema.Union(
+												[
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															type: Schema.String.annotate({ format: '"Password"' }),
+															identifier: Schema.StructWithRest(
+																Schema.Struct({
+																	type: Schema.Union(
+																		[
+																			Schema.Literals(['username', 'email', 'phone']),
+																			Schema.Literal('userId'),
+																		],
+																		{ mode: 'oneOf' }
+																	),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+															verified: Schema.Boolean,
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															templateType: Schema.Literals([
+																'SignIn',
+																'Register',
+																'ForgotPassword',
+																'OrganizationInvitation',
+																'Generic',
+																'UserPermissionValidation',
+																'BindNewIdentifier',
+																'MfaVerification',
+																'BindMfa',
+															]),
+															verified: Schema.Boolean,
+															type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
+															identifier: Schema.StructWithRest(
+																Schema.Struct({
+																	type: Schema.String.annotate({ format: '"email"' }),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															templateType: Schema.Literals([
+																'SignIn',
+																'Register',
+																'ForgotPassword',
+																'OrganizationInvitation',
+																'Generic',
+																'UserPermissionValidation',
+																'BindNewIdentifier',
+																'MfaVerification',
+																'BindMfa',
+															]),
+															verified: Schema.Boolean,
+															type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
+															identifier: Schema.StructWithRest(
+																Schema.Struct({
+																	type: Schema.String.annotate({ format: '"phone"' }),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															templateType: Schema.Literals([
+																'SignIn',
+																'Register',
+																'ForgotPassword',
+																'OrganizationInvitation',
+																'Generic',
+																'UserPermissionValidation',
+																'BindNewIdentifier',
+																'MfaVerification',
+																'BindMfa',
+															]),
+															verified: Schema.Boolean,
+															type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
+															identifier: Schema.StructWithRest(
+																Schema.Struct({
+																	type: Schema.String.annotate({ format: '"email"' }),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															templateType: Schema.Literals([
+																'SignIn',
+																'Register',
+																'ForgotPassword',
+																'OrganizationInvitation',
+																'Generic',
+																'UserPermissionValidation',
+																'BindNewIdentifier',
+																'MfaVerification',
+																'BindMfa',
+															]),
+															verified: Schema.Boolean,
+															type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
+															identifier: Schema.StructWithRest(
+																Schema.Struct({
+																	type: Schema.String.annotate({ format: '"phone"' }),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															connectorId: Schema.String,
+															type: Schema.String.annotate({ format: '"Social"' }),
+															socialUserInfo: Schema.optionalKey(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		id: Schema.String,
+																		email: Schema.optionalKey(Schema.String),
+																		phone: Schema.optionalKey(Schema.String),
+																		name: Schema.optionalKey(Schema.String),
+																		avatar: Schema.optionalKey(Schema.String),
+																		rawData: Schema.optionalKey(
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															connectorId: Schema.String,
+															type: Schema.String.annotate({ format: '"EnterpriseSso"' }),
+															enterpriseSsoUserInfo: Schema.optionalKey(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		id: Schema.String,
+																		email: Schema.optionalKey(Schema.String),
+																		phone: Schema.optionalKey(Schema.String),
+																		name: Schema.optionalKey(Schema.String),
+																		avatar: Schema.optionalKey(Schema.String),
+																		rawData: Schema.optionalKey(
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															),
+															issuer: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															type: Schema.String.annotate({ format: '"Totp"' }),
+															userId: Schema.String,
+															verified: Schema.Boolean,
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															type: Schema.String.annotate({ format: '"BackupCode"' }),
+															userId: Schema.String,
+															code: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															verified: Schema.Boolean,
+															registrationRpId: Schema.optionalKey(Schema.String),
+															type: Schema.String.annotate({ format: '"WebAuthn"' }),
+															userId: Schema.String,
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															verified: Schema.Boolean,
+															registrationRpId: Schema.optionalKey(Schema.String),
+															type: Schema.String.annotate({ format: '"SignInPasskey"' }),
+															userId: Schema.optionalKey(Schema.String),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															type: Schema.String.annotate({ format: '"OneTimeToken"' }),
+															verified: Schema.Boolean,
+															identifier: Schema.StructWithRest(
+																Schema.Struct({
+																	type: Schema.String.annotate({ format: '"email"' }),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+															oneTimeTokenContext: Schema.optionalKey(
+																Schema.StructWithRest(
+																	Schema.Struct({
+																		jitOrganizationIds: Schema.optionalKey(Schema.Array(Schema.String)),
+																		interactionEvent: Schema.optionalKey(
+																			Schema.Literals(['SignIn', 'Register', 'ForgotPassword'])
+																		),
+																	}),
+																	[
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	]
+																)
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													Schema.StructWithRest(
+														Schema.Struct({
+															id: Schema.String,
+															type: Schema.String.annotate({ format: '"NewPasswordIdentity"' }),
+															identifier: Schema.StructWithRest(
+																Schema.Struct({
+																	type: Schema.Literals(['username', 'email', 'phone']),
+																	value: Schema.String,
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+												],
+												{ mode: 'oneOf' }
+											)
+										)
+									),
+									signInContext: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						),
+						application: Schema.optionalKey(
+							Schema.StructWithRest(
+								Schema.Struct({
+									tenantId: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+										)
+									),
+									id: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' }))
+									),
+									name: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+									),
+									description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+									type: Schema.optionalKey(
+										Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+									),
+									oidcClientMetadata: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+												postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+												backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+												backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+												logoUri: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									customClientMetadata: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												corsAllowedOrigins: Schema.optionalKey(
+													Schema.Array(
+														Schema.String.check(
+															Schema.isMinLength(1).annotate({
+																expected: 'a value with a length of at least 1',
+															})
+														)
+													)
+												),
+												idTokenTtl: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												refreshTokenTtl: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												refreshTokenTtlInDays: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												tenantId: Schema.optionalKey(Schema.String),
+												alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+												rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+												allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+												isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+												maxAllowedGrants: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									protectedAppMetadata: Schema.optionalKey(
+										Schema.Union([
+											Schema.StructWithRest(
+												Schema.Struct({
+													host: Schema.String,
+													origin: Schema.String,
+													sessionDuration: Schema.Number.check(
+														Schema.isFinite().annotate({ expected: 'a finite number' })
+													),
+													pageRules: Schema.Array(
+														Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+															Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+														])
+													),
+													additionalScopes: Schema.optionalKey(
+														Schema.Array(
+															Schema.Literals([
+																'custom_data',
+																'identities',
+																'roles',
+																'urn:logto:scope:organizations',
+																'urn:logto:scope:organization_roles',
+															])
+														)
+													),
+													customDomains: Schema.optionalKey(
+														Schema.Array(
+															Schema.StructWithRest(
+																Schema.Struct({
+																	domain: Schema.String,
+																	status: Schema.Literals([
+																		'PendingVerification',
+																		'PendingSsl',
+																		'Active',
+																		'Error',
+																	]),
+																	errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																	dnsRecords: Schema.Array(
+																		Schema.StructWithRest(
+																			Schema.Struct({
+																				name: Schema.String,
+																				type: Schema.String,
+																				value: Schema.String,
+																			}),
+																			[
+																				Schema.Record(
+																					Schema.String,
+																					Schema.Json.annotate({ expected: 'JSON value' })
+																				),
+																			]
+																		)
+																	),
+																	cloudflareData: Schema.Union([
+																		Schema.StructWithRest(
+																			Schema.Struct({
+																				id: Schema.String,
+																				status: Schema.String,
+																				ssl: Schema.StructWithRest(
+																					Schema.Struct({
+																						status: Schema.String,
+																						validation_errors: Schema.optionalKey(
+																							Schema.Array(
+																								Schema.StructWithRest(
+																									Schema.Struct({
+																										message: Schema.String,
+																									}),
+																									[
+																										Schema.Record(
+																											Schema.String,
+																											Schema.Json.annotate({
+																												expected: 'JSON value',
+																											})
+																										),
+																									]
+																								)
+																							)
+																						),
+																					}),
+																					[
+																						Schema.Record(
+																							Schema.String,
+																							Schema.Json.annotate({ expected: 'JSON value' })
+																						),
+																					]
+																				),
+																				verification_errors: Schema.optionalKey(
+																					Schema.Array(Schema.String)
+																				),
+																			}),
+																			[
+																				Schema.Record(
+																					Schema.String,
+																					Schema.Json.annotate({ expected: 'JSON value' })
+																				),
+																			]
+																		),
+																		Schema.Null,
+																	]),
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															)
+														)
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											),
+											Schema.Null,
+										])
+									),
+									customData: Schema.optionalKey(
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+											description: 'arbitrary',
+										})
+									),
+									isThirdParty: Schema.optionalKey(Schema.Boolean),
+									appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+									createdAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						),
+						organization: Schema.optionalKey(
+							Schema.StructWithRest(
+								Schema.Struct({
+									id: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' }))
+									),
+									name: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+									),
+									description: Schema.optionalKey(
+										Schema.Union([
+											Schema.String.check(
+												Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+											),
+											Schema.Null,
+										])
+									),
+									customData: Schema.optionalKey(
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+											description: 'arbitrary',
+										})
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 				),
 			}),
-		}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		Schema.StructWithRest(
+			Schema.Struct({
+				tokenType: Schema.String.annotate({ format: '"client-credentials"' }),
+				environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				script: Schema.String,
+				token: Schema.StructWithRest(
+					Schema.Struct({
+						jti: Schema.optionalKey(Schema.String),
+						aud: Schema.optionalKey(Schema.Union([Schema.String, Schema.Array(Schema.String)], { mode: 'oneOf' })),
+						scope: Schema.optionalKey(Schema.String),
+						clientId: Schema.optionalKey(Schema.String),
+						kind: Schema.optionalKey(Schema.String.annotate({ format: '"ClientCredentials"' })),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				context: Schema.StructWithRest(
+					Schema.Struct({
+						application: Schema.optionalKey(
+							Schema.StructWithRest(
+								Schema.Struct({
+									tenantId: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+										)
+									),
+									id: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' }))
+									),
+									name: Schema.optionalKey(
+										Schema.String.check(
+											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+										).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+									),
+									description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+									type: Schema.optionalKey(
+										Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML'])
+									),
+									oidcClientMetadata: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+												postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+												backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+												backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+												logoUri: Schema.optionalKey(Schema.String),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									customClientMetadata: Schema.optionalKey(
+										Schema.StructWithRest(
+											Schema.Struct({
+												corsAllowedOrigins: Schema.optionalKey(
+													Schema.Array(
+														Schema.String.check(
+															Schema.isMinLength(1).annotate({
+																expected: 'a value with a length of at least 1',
+															})
+														)
+													)
+												),
+												idTokenTtl: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												refreshTokenTtl: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												refreshTokenTtlInDays: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+												tenantId: Schema.optionalKey(Schema.String),
+												alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+												rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+												allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+												isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+												maxAllowedGrants: Schema.optionalKey(
+													Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									protectedAppMetadata: Schema.optionalKey(
+										Schema.Union([
+											Schema.StructWithRest(
+												Schema.Struct({
+													host: Schema.String,
+													origin: Schema.String,
+													sessionDuration: Schema.Number.check(
+														Schema.isFinite().annotate({ expected: 'a finite number' })
+													),
+													pageRules: Schema.Array(
+														Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+															Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+														])
+													),
+													additionalScopes: Schema.optionalKey(
+														Schema.Array(
+															Schema.Literals([
+																'custom_data',
+																'identities',
+																'roles',
+																'urn:logto:scope:organizations',
+																'urn:logto:scope:organization_roles',
+															])
+														)
+													),
+													customDomains: Schema.optionalKey(
+														Schema.Array(
+															Schema.StructWithRest(
+																Schema.Struct({
+																	domain: Schema.String,
+																	status: Schema.Literals([
+																		'PendingVerification',
+																		'PendingSsl',
+																		'Active',
+																		'Error',
+																	]),
+																	errorMessage: Schema.Union([Schema.String, Schema.Null]),
+																	dnsRecords: Schema.Array(
+																		Schema.StructWithRest(
+																			Schema.Struct({
+																				name: Schema.String,
+																				type: Schema.String,
+																				value: Schema.String,
+																			}),
+																			[
+																				Schema.Record(
+																					Schema.String,
+																					Schema.Json.annotate({ expected: 'JSON value' })
+																				),
+																			]
+																		)
+																	),
+																	cloudflareData: Schema.Union([
+																		Schema.StructWithRest(
+																			Schema.Struct({
+																				id: Schema.String,
+																				status: Schema.String,
+																				ssl: Schema.StructWithRest(
+																					Schema.Struct({
+																						status: Schema.String,
+																						validation_errors: Schema.optionalKey(
+																							Schema.Array(
+																								Schema.StructWithRest(
+																									Schema.Struct({
+																										message: Schema.String,
+																									}),
+																									[
+																										Schema.Record(
+																											Schema.String,
+																											Schema.Json.annotate({
+																												expected: 'JSON value',
+																											})
+																										),
+																									]
+																								)
+																							)
+																						),
+																					}),
+																					[
+																						Schema.Record(
+																							Schema.String,
+																							Schema.Json.annotate({ expected: 'JSON value' })
+																						),
+																					]
+																				),
+																				verification_errors: Schema.optionalKey(
+																					Schema.Array(Schema.String)
+																				),
+																			}),
+																			[
+																				Schema.Record(
+																					Schema.String,
+																					Schema.Json.annotate({ expected: 'JSON value' })
+																				),
+																			]
+																		),
+																		Schema.Null,
+																	]),
+																}),
+																[
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																]
+															)
+														)
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											),
+											Schema.Null,
+										])
+									),
+									customData: Schema.optionalKey(
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+											description: 'arbitrary',
+										})
+									),
+									isThirdParty: Schema.optionalKey(Schema.Boolean),
+									appLevelAccessControlEnabled: Schema.optionalKey(Schema.Boolean),
+									createdAt: Schema.optionalKey(
+										Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+									),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 	],
 	{ mode: 'oneOf' }
 )
@@ -7014,89 +10057,106 @@ export type GetIdTokenConfigResponse = {
 	readonly enabledExtendedClaims?: ReadonlyArray<
 		'custom_data' | 'identities' | 'sso_identities' | 'roles' | 'organizations' | 'organization_data' | 'organization_roles'
 	>
-}
-export const GetIdTokenConfigResponse = Schema.Struct({
-	enabledExtendedClaims: Schema.optionalKey(
-		Schema.Array(
-			Schema.Literals([
-				'custom_data',
-				'identities',
-				'sso_identities',
-				'roles',
-				'organizations',
-				'organization_data',
-				'organization_roles',
-			])
-		)
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const GetIdTokenConfigResponse = Schema.StructWithRest(
+	Schema.Struct({
+		enabledExtendedClaims: Schema.optionalKey(
+			Schema.Array(
+				Schema.Literals([
+					'custom_data',
+					'identities',
+					'sso_identities',
+					'roles',
+					'organizations',
+					'organization_data',
+					'organization_roles',
+				])
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpsertIdTokenConfigPayload = {
 	readonly enabledExtendedClaims?: ReadonlyArray<
 		'custom_data' | 'identities' | 'sso_identities' | 'roles' | 'organizations' | 'organization_data' | 'organization_roles'
 	>
-}
-export const UpsertIdTokenConfigPayload = Schema.Struct({
-	enabledExtendedClaims: Schema.optionalKey(
-		Schema.Array(
-			Schema.Literals([
-				'custom_data',
-				'identities',
-				'sso_identities',
-				'roles',
-				'organizations',
-				'organization_data',
-				'organization_roles',
-			])
-		).annotate({
-			description:
-				'An array of extended claims to include in ID tokens. Possible values: `custom_data`, `identities`, `sso_identities`, `roles`, `organizations`, `organization_data`, `organization_roles`.',
-		})
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpsertIdTokenConfigPayload = Schema.StructWithRest(
+	Schema.Struct({
+		enabledExtendedClaims: Schema.optionalKey(
+			Schema.Array(
+				Schema.Literals([
+					'custom_data',
+					'identities',
+					'sso_identities',
+					'roles',
+					'organizations',
+					'organization_data',
+					'organization_roles',
+				])
+			).annotate({
+				description:
+					'An array of extended claims to include in ID tokens. Possible values: `custom_data`, `identities`, `sso_identities`, `roles`, `organizations`, `organization_data`, `organization_roles`.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpsertIdTokenConfigResponse = {
 	readonly enabledExtendedClaims?: ReadonlyArray<
 		'custom_data' | 'identities' | 'sso_identities' | 'roles' | 'organizations' | 'organization_data' | 'organization_roles'
 	>
-}
-export const UpsertIdTokenConfigResponse = Schema.Struct({
-	enabledExtendedClaims: Schema.optionalKey(
-		Schema.Array(
-			Schema.Literals([
-				'custom_data',
-				'identities',
-				'sso_identities',
-				'roles',
-				'organizations',
-				'organization_data',
-				'organization_roles',
-			])
-		)
-	),
-})
-
-export type ListActionsResponse = ReadonlyArray<{
-	readonly key: 'action.postFirstFactorVerification' | 'action.postSignIn'
-	readonly value: {
-		readonly script: string
-		readonly environmentVariables?: { readonly [x: string]: string }
-		readonly contextSample?: Schema.Json
-		readonly enabled?: boolean
-		readonly onExecutionError?: 'block' | 'allow'
-	}
-}>
-export const ListActionsResponse = Schema.Array(
+} & { readonly [x: string]: Schema.Json }
+export const UpsertIdTokenConfigResponse = Schema.StructWithRest(
 	Schema.Struct({
-		key: Schema.Literals(['action.postFirstFactorVerification', 'action.postSignIn']),
-		value: Schema.Struct({
-			script: Schema.String,
-			environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-			enabled: Schema.optionalKey(Schema.Boolean),
-			onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
+		enabledExtendedClaims: Schema.optionalKey(
+			Schema.Array(
+				Schema.Literals([
+					'custom_data',
+					'identities',
+					'sso_identities',
+					'roles',
+					'organizations',
+					'organization_data',
+					'organization_roles',
+				])
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type ListActionsResponse = ReadonlyArray<
+	{
+		readonly key: 'action.postFirstFactorVerification' | 'action.postSignIn'
+		readonly value: {
+			readonly script: string
+			readonly environmentVariables?: { readonly [x: string]: string }
+			readonly contextSample?: Schema.Json
+			readonly enabled?: boolean
+			readonly onExecutionError?: 'block' | 'allow'
+		} & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ListActionsResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			key: Schema.Literals(['action.postFirstFactorVerification', 'action.postSignIn']),
+			value: Schema.StructWithRest(
+				Schema.Struct({
+					script: Schema.String,
+					environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+					contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
+					enabled: Schema.optionalKey(Schema.Boolean),
+					onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
 		}),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type TestActionPayload = {
@@ -7104,17 +10164,20 @@ export type TestActionPayload = {
 	readonly actionType: 'action.postFirstFactorVerification' | 'action.postSignIn'
 	readonly event: Schema.Json
 	readonly environmentVariables?: { readonly [x: string]: string }
-}
-export const TestActionPayload = Schema.Struct({
-	script: Schema.String.annotate({ description: 'The action script to test.' }),
-	actionType: Schema.Literals(['action.postFirstFactorVerification', 'action.postSignIn']).annotate({
-		description: 'The action type to test.',
+} & { readonly [x: string]: Schema.Json }
+export const TestActionPayload = Schema.StructWithRest(
+	Schema.Struct({
+		script: Schema.String.annotate({ description: 'The action script to test.' }),
+		actionType: Schema.Literals(['action.postFirstFactorVerification', 'action.postSignIn']).annotate({
+			description: 'The action type to test.',
+		}),
+		event: Schema.Json.annotate({ expected: 'JSON value', description: 'The sample event for action script testing.' }),
+		environmentVariables: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.String).annotate({ description: 'The environment variables for the action script.' })
+		),
 	}),
-	event: Schema.Json.annotate({ expected: 'JSON value', description: 'The sample event for action script testing.' }),
-	environmentVariables: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.String).annotate({ description: 'The environment variables for the action script.' })
-	),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type TestActionResponse = Schema.Json
 export const TestActionResponse = Schema.Json.annotate({ expected: 'JSON value' })
@@ -7125,14 +10188,17 @@ export type GetActionResponse = {
 	readonly contextSample?: Schema.Json
 	readonly enabled?: boolean
 	readonly onExecutionError?: 'block' | 'allow'
-}
-export const GetActionResponse = Schema.Struct({
-	script: Schema.String,
-	environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-	contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-	enabled: Schema.optionalKey(Schema.Boolean),
-	onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
-})
+} & { readonly [x: string]: Schema.Json }
+export const GetActionResponse = Schema.StructWithRest(
+	Schema.Struct({
+		script: Schema.String,
+		environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+		contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
+		enabled: Schema.optionalKey(Schema.Boolean),
+		onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpsertActionPayload = {
 	readonly script: string
@@ -7140,20 +10206,23 @@ export type UpsertActionPayload = {
 	readonly contextSample?: Schema.Json
 	readonly enabled?: boolean
 	readonly onExecutionError?: 'block' | 'allow'
-}
-export const UpsertActionPayload = Schema.Struct({
-	script: Schema.String.annotate({ description: 'The action script.' }),
-	environmentVariables: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.String).annotate({ description: 'The environment variables for the action script.' })
-	),
-	contextSample: Schema.optionalKey(
-		Schema.Json.annotate({ expected: 'JSON value', description: 'The sample context for action script testing.' })
-	),
-	enabled: Schema.optionalKey(Schema.Boolean.annotate({ description: 'Whether the action is enabled.' })),
-	onExecutionError: Schema.optionalKey(
-		Schema.Literals(['block', 'allow']).annotate({ description: 'The action execution error handling policy.' })
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpsertActionPayload = Schema.StructWithRest(
+	Schema.Struct({
+		script: Schema.String.annotate({ description: 'The action script.' }),
+		environmentVariables: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.String).annotate({ description: 'The environment variables for the action script.' })
+		),
+		contextSample: Schema.optionalKey(
+			Schema.Json.annotate({ expected: 'JSON value', description: 'The sample context for action script testing.' })
+		),
+		enabled: Schema.optionalKey(Schema.Boolean.annotate({ description: 'Whether the action is enabled.' })),
+		onExecutionError: Schema.optionalKey(
+			Schema.Literals(['block', 'allow']).annotate({ description: 'The action execution error handling policy.' })
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpsertActionResponse200 = {
 	readonly script: string
@@ -7161,14 +10230,17 @@ export type UpsertActionResponse200 = {
 	readonly contextSample?: Schema.Json
 	readonly enabled?: boolean
 	readonly onExecutionError?: 'block' | 'allow'
-}
-export const UpsertActionResponse200 = Schema.Struct({
-	script: Schema.String,
-	environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-	contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-	enabled: Schema.optionalKey(Schema.Boolean),
-	onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpsertActionResponse200 = Schema.StructWithRest(
+	Schema.Struct({
+		script: Schema.String,
+		environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+		contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
+		enabled: Schema.optionalKey(Schema.Boolean),
+		onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpsertActionResponse201 = {
 	readonly script: string
@@ -7176,14 +10248,17 @@ export type UpsertActionResponse201 = {
 	readonly contextSample?: Schema.Json
 	readonly enabled?: boolean
 	readonly onExecutionError?: 'block' | 'allow'
-}
-export const UpsertActionResponse201 = Schema.Struct({
-	script: Schema.String,
-	environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-	contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-	enabled: Schema.optionalKey(Schema.Boolean),
-	onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpsertActionResponse201 = Schema.StructWithRest(
+	Schema.Struct({
+		script: Schema.String,
+		environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+		contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
+		enabled: Schema.optionalKey(Schema.Boolean),
+		onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateActionPayload = {
 	readonly script?: string
@@ -7191,20 +10266,23 @@ export type UpdateActionPayload = {
 	readonly contextSample?: Schema.Json
 	readonly enabled?: boolean
 	readonly onExecutionError?: 'block' | 'allow'
-}
-export const UpdateActionPayload = Schema.Struct({
-	script: Schema.optionalKey(Schema.String.annotate({ description: 'The action script.' })),
-	environmentVariables: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.String).annotate({ description: 'The environment variables for the action script.' })
-	),
-	contextSample: Schema.optionalKey(
-		Schema.Json.annotate({ expected: 'JSON value', description: 'The sample context for action script testing.' })
-	),
-	enabled: Schema.optionalKey(Schema.Boolean.annotate({ description: 'Whether the action is enabled.' })),
-	onExecutionError: Schema.optionalKey(
-		Schema.Literals(['block', 'allow']).annotate({ description: 'The action execution error handling policy.' })
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpdateActionPayload = Schema.StructWithRest(
+	Schema.Struct({
+		script: Schema.optionalKey(Schema.String.annotate({ description: 'The action script.' })),
+		environmentVariables: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.String).annotate({ description: 'The environment variables for the action script.' })
+		),
+		contextSample: Schema.optionalKey(
+			Schema.Json.annotate({ expected: 'JSON value', description: 'The sample context for action script testing.' })
+		),
+		enabled: Schema.optionalKey(Schema.Boolean.annotate({ description: 'Whether the action is enabled.' })),
+		onExecutionError: Schema.optionalKey(
+			Schema.Literals(['block', 'allow']).annotate({ description: 'The action execution error handling policy.' })
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateActionResponse = {
 	readonly script: string
@@ -7212,20 +10290,29 @@ export type UpdateActionResponse = {
 	readonly contextSample?: Schema.Json
 	readonly enabled?: boolean
 	readonly onExecutionError?: 'block' | 'allow'
-}
-export const UpdateActionResponse = Schema.Struct({
-	script: Schema.String,
-	environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-	contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
-	enabled: Schema.optionalKey(Schema.Boolean),
-	onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpdateActionResponse = Schema.StructWithRest(
+	Schema.Struct({
+		script: Schema.String,
+		environmentVariables: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+		contextSample: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value' })),
+		enabled: Schema.optionalKey(Schema.Boolean),
+		onExecutionError: Schema.optionalKey(Schema.Literals(['block', 'allow'])),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type GetCimdConfigResponse = { readonly enabled: boolean }
-export const GetCimdConfigResponse = Schema.Struct({ enabled: Schema.Boolean })
+export type GetCimdConfigResponse = { readonly enabled: boolean } & { readonly [x: string]: Schema.Json }
+export const GetCimdConfigResponse = Schema.StructWithRest(Schema.Struct({ enabled: Schema.Boolean }), [
+	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+])
 
-export type UpdateCimdConfigPayload = { readonly enabled?: boolean }
-export const UpdateCimdConfigPayload = Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) })
+export type UpdateCimdConfigPayload = { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
+export const UpdateCimdConfigPayload = Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
+	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+])
 
-export type UpdateCimdConfigResponse = { readonly enabled: boolean }
-export const UpdateCimdConfigResponse = Schema.Struct({ enabled: Schema.Boolean })
+export type UpdateCimdConfigResponse = { readonly enabled: boolean } & { readonly [x: string]: Schema.Json }
+export const UpdateCimdConfigResponse = Schema.StructWithRest(Schema.Struct({ enabled: Schema.Boolean }), [
+	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+])

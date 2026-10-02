@@ -20,9 +20,11 @@ export const makeEmailTemplates = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): EmailTemplatesOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/email-templates`).pipe(
+		HttpClientRequest.get('/api/email-templates').pipe(
 			HttpClientRequest.setUrlParams({
 				languageTag: options?.params?.['languageTag'] as any,
 				templateType: options?.params?.['templateType'] as any,
@@ -30,14 +32,14 @@ export const makeEmailTemplates = ({
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	replace: options =>
-		HttpClientRequest.put(`/api/email-templates`).pipe(
+		HttpClientRequest.put('/api/email-templates').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceResponse), orElse: unexpectedStatus })
 			)
 		),
 	deleteMany: options =>
-		HttpClientRequest.delete(`/api/email-templates`).pipe(
+		HttpClientRequest.delete('/api/email-templates').pipe(
 			HttpClientRequest.setUrlParams({
 				languageTag: options?.params?.['languageTag'] as any,
 				templateType: options?.params?.['templateType'] as any,
@@ -47,18 +49,32 @@ export const makeEmailTemplates = ({
 			)
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/email-templates/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/email-templates/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/email-templates/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/email-templates/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updateDetails: (id, options) =>
-		HttpClientRequest.patch(`/api/email-templates/${encodeURIComponent(id)}/details`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateDetailsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/email-templates/' + __encodePathParam(id) + '/details').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateDetailsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 })

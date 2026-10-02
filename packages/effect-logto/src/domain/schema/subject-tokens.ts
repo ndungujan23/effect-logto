@@ -3,18 +3,26 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type CreatePayload = { readonly userId: string; readonly context?: { readonly [x: string]: Schema.Json } }
-export const CreatePayload = Schema.Struct({
-	userId: Schema.String.annotate({ description: 'The ID of the user to impersonate.' }),
-	context: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-			description: 'The additional context to be included in the token, this can be used in custom JWT.',
-		})
-	),
-})
+export type CreatePayload = { readonly userId: string; readonly context?: { readonly [x: string]: Schema.Json } } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		userId: Schema.String.annotate({ description: 'The ID of the user to impersonate.' }),
+		context: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'The additional context to be included in the token, this can be used in custom JWT.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreateResponse = { readonly subjectToken: string; readonly expiresIn: number }
-export const CreateResponse = Schema.Struct({
-	subjectToken: Schema.String,
-	expiresIn: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+export type CreateResponse = { readonly subjectToken: string; readonly expiresIn: number } & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		subjectToken: Schema.String,
+		expiresIn: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

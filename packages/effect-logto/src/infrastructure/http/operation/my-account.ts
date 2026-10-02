@@ -24,177 +24,243 @@ import {
 } from '../../../domain/schema/my-account.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeMyAccount = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): MyAccountOperations => ({
+export const makeMyAccount = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): MyAccountOperations => ({
 	getProfile: options =>
-		HttpClientRequest.get(`/api/my-account`).pipe(
+		HttpClientRequest.get('/api/my-account').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetProfileResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateProfile: options =>
-		HttpClientRequest.patch(`/api/my-account`).pipe(
+		HttpClientRequest.patch('/api/my-account').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateProfileResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateOtherProfile: options =>
-		HttpClientRequest.patch(`/api/my-account/profile`).pipe(
+		HttpClientRequest.patch('/api/my-account/profile').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateOtherProfileResponse), orElse: unexpectedStatus })
 			)
 		),
 	updatePassword: options =>
-		HttpClientRequest.post(`/api/my-account/password`).pipe(
+		HttpClientRequest.post('/api/my-account/password').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	getMfaSettings: options =>
-		HttpClientRequest.get(`/api/my-account/mfa-settings`).pipe(
+		HttpClientRequest.get('/api/my-account/mfa-settings').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetMfaSettingsResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateMfaSettings: options =>
-		HttpClientRequest.patch(`/api/my-account/mfa-settings`).pipe(
+		HttpClientRequest.patch('/api/my-account/mfa-settings').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateMfaSettingsResponse), orElse: unexpectedStatus })
 			)
 		),
 	getLogtoConfig: options =>
-		HttpClientRequest.get(`/api/my-account/logto-configs`).pipe(
+		HttpClientRequest.get('/api/my-account/logto-configs').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetLogtoConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateLogtoConfig: options =>
-		HttpClientRequest.patch(`/api/my-account/logto-configs`).pipe(
+		HttpClientRequest.patch('/api/my-account/logto-configs').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateLogtoConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	getSocialIdentityAccessToken: (target, options) =>
-		HttpClientRequest.get(`/api/my-account/identities/${encodeURIComponent(target)}/access-token`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSocialIdentityAccessTokenResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[target],
+			() => '/api/my-account/identities/' + __encodePathParam(target) + '/access-token'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(GetSocialIdentityAccessTokenResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	updateSocialIdentityAccessTokenByVerificationId: (target, options) =>
-		HttpClientRequest.put(`/api/my-account/identities/${encodeURIComponent(target)}/access-token`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({
-					'2xx': decodeSuccess(UpdateSocialIdentityAccessTokenByVerificationIdResponse),
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(
+			HttpClientRequest.put,
+			[target],
+			() => '/api/my-account/identities/' + __encodePathParam(target) + '/access-token'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(UpdateSocialIdentityAccessTokenByVerificationIdResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	getEnterpriseSsoIdentityAccessToken: (connectorId, options) =>
-		HttpClientRequest.get(`/api/my-account/sso-identities/${encodeURIComponent(connectorId)}/access-token`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({
-					'2xx': decodeSuccess(GetEnterpriseSsoIdentityAccessTokenResponse),
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(
+			HttpClientRequest.get,
+			[connectorId],
+			() => '/api/my-account/sso-identities/' + __encodePathParam(connectorId) + '/access-token'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(GetEnterpriseSsoIdentityAccessTokenResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	updatePrimaryEmail: options =>
-		HttpClientRequest.post(`/api/my-account/primary-email`).pipe(
+		HttpClientRequest.post('/api/my-account/primary-email').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	deletePrimaryEmail: options =>
-		HttpClientRequest.delete(`/api/my-account/primary-email`).pipe(
+		HttpClientRequest.delete('/api/my-account/primary-email').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	updatePrimaryPhone: options =>
-		HttpClientRequest.post(`/api/my-account/primary-phone`).pipe(
+		HttpClientRequest.post('/api/my-account/primary-phone').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	deletePrimaryPhone: options =>
-		HttpClientRequest.delete(`/api/my-account/primary-phone`).pipe(
+		HttpClientRequest.delete('/api/my-account/primary-phone').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	replaceIdentity: options =>
-		HttpClientRequest.put(`/api/my-account/identities`).pipe(
+		HttpClientRequest.put('/api/my-account/identities').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	addUserIdentities: options =>
-		HttpClientRequest.post(`/api/my-account/identities`).pipe(
+		HttpClientRequest.post('/api/my-account/identities').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	deleteIdentity: (target, options) =>
-		HttpClientRequest.delete(`/api/my-account/identities/${encodeURIComponent(target)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [target], () => '/api/my-account/identities/' + __encodePathParam(target) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	getMfaVerifications: options =>
-		HttpClientRequest.get(`/api/my-account/mfa-verifications`).pipe(
+		HttpClientRequest.get('/api/my-account/mfa-verifications').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetMfaVerificationsResponse), orElse: unexpectedStatus })
 			)
 		),
 	addMfaVerification: options =>
-		HttpClientRequest.post(`/api/my-account/mfa-verifications`).pipe(
+		HttpClientRequest.post('/api/my-account/mfa-verifications').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	createOrReplaceTotpMfaVerification: options =>
-		HttpClientRequest.put(`/api/my-account/mfa-verifications/totp`).pipe(
+		HttpClientRequest.put('/api/my-account/mfa-verifications/totp').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	generateTotpSecret: options =>
-		HttpClientRequest.post(`/api/my-account/mfa-verifications/totp-secret/generate`).pipe(
+		HttpClientRequest.post('/api/my-account/mfa-verifications/totp-secret/generate').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
 		),
 	generateBackupCodes: options =>
-		HttpClientRequest.post(`/api/my-account/mfa-verifications/backup-codes/generate`).pipe(
+		HttpClientRequest.post('/api/my-account/mfa-verifications/backup-codes/generate').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
 		),
 	getBackupCodes: options =>
-		HttpClientRequest.get(`/api/my-account/mfa-verifications/backup-codes`).pipe(
+		HttpClientRequest.get('/api/my-account/mfa-verifications/backup-codes').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
 		),
 	updateMfaVerificationName: (verificationId, options) =>
-		HttpClientRequest.patch(`/api/my-account/mfa-verifications/${encodeURIComponent(verificationId)}/name`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[verificationId],
+			() => '/api/my-account/mfa-verifications/' + __encodePathParam(verificationId) + '/name'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 	deleteMfaVerification: (verificationId, options) =>
-		HttpClientRequest.delete(`/api/my-account/mfa-verifications/${encodeURIComponent(verificationId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[verificationId],
+			() => '/api/my-account/mfa-verifications/' + __encodePathParam(verificationId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	getSessions: options =>
-		HttpClientRequest.get(`/api/my-account/sessions`).pipe(
+		HttpClientRequest.get('/api/my-account/sessions').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSessionsResponse), orElse: unexpectedStatus })
 			)
 		),
 	deleteSessionById: (sessionId, options) =>
-		HttpClientRequest.delete(`/api/my-account/sessions/${encodeURIComponent(sessionId)}`).pipe(
-			HttpClientRequest.setUrlParams({ revokeGrantsTarget: options?.params?.['revokeGrantsTarget'] as any }),
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[sessionId],
+			() => '/api/my-account/sessions/' + __encodePathParam(sessionId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({ revokeGrantsTarget: options?.params?.['revokeGrantsTarget'] as any }),
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	getGrants: options =>
-		HttpClientRequest.get(`/api/my-account/grants`).pipe(
+		HttpClientRequest.get('/api/my-account/grants').pipe(
 			HttpClientRequest.setUrlParams({ appType: options?.params?.['appType'] as any }),
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetGrantsResponse), orElse: unexpectedStatus })
 			)
 		),
 	deleteGrantById: (grantId, options) =>
-		HttpClientRequest.delete(`/api/my-account/grants/${encodeURIComponent(grantId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [grantId], () => '/api/my-account/grants/' + __encodePathParam(grantId) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	uploadAvatar: options =>
-		HttpClientRequest.post(`/api/my-account/user-assets/avatar`).pipe(
-			HttpClientRequest.bodyFormData(options.payload as any),
+		HttpClientRequest.post('/api/my-account/user-assets/avatar').pipe(
+			HttpClientRequest.bodyFormDataRecord(options.payload as any),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UploadAvatarResponse), orElse: unexpectedStatus })
 			)

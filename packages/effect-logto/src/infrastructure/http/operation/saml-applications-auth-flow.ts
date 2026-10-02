@@ -13,20 +13,30 @@ export const makeSamlApplicationsAuthFlow = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): SamlApplicationsAuthFlowOperations => ({
 	getSamlAuthn: (id, options) =>
-		HttpClientRequest.get(`/api/saml/${encodeURIComponent(id)}/authn`).pipe(
-			HttpClientRequest.setUrlParams({
-				SAMLRequest: options.params['SAMLRequest'] as any,
-				Signature: options.params['Signature'] as any,
-				SigAlg: options.params['SigAlg'] as any,
-				RelayState: options.params['RelayState'] as any,
-			}),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '302': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/saml/' + __encodePathParam(id) + '/authn').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						SAMLRequest: options.params['SAMLRequest'] as any,
+						Signature: options.params['Signature'] as any,
+						SigAlg: options.params['SigAlg'] as any,
+						RelayState: options.params['RelayState'] as any,
+					}),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '302': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	createSamlAuthn: (id, options) =>
-		HttpClientRequest.post(`/api/saml/${encodeURIComponent(id)}/authn`).pipe(
-			HttpClientRequest.bodyUrlParams(options.payload as any),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '302': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/saml/' + __encodePathParam(id) + '/authn').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyUrlParams(options.payload as any),
+					withResponse(options.config)(HttpClientResponse.matchStatus({ '302': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 })

@@ -6,7 +6,295 @@ import * as Schema from 'effect/Schema'
 export type ListParams = { readonly target?: string }
 export const ListParams = Schema.Struct({ target: Schema.optionalKey(Schema.String) })
 
-export type ListResponse = ReadonlyArray<{
+export type ListResponse = ReadonlyArray<
+	{
+		readonly id: string
+		readonly syncProfile: boolean
+		readonly enableTokenStorage: boolean
+		readonly config: { readonly [x: string]: Schema.Json }
+		readonly metadata: {
+			readonly target?: string
+			readonly name?: { readonly [x: string]: Schema.Json }
+			readonly logo?: string
+			readonly logoDark?: string | null
+		} & { readonly [x: string]: Schema.Json }
+		readonly connectorId: string
+		readonly target: string
+		readonly name: { readonly [x: string]: Schema.Json }
+		readonly description: { readonly [x: string]: Schema.Json }
+		readonly logo: string
+		readonly logoDark: string | null
+		readonly readme: string
+		readonly configTemplate?: string
+		readonly formItems?: ReadonlyArray<
+			| ({
+					readonly type: string
+					readonly selectItems: ReadonlyArray<
+						{ readonly value: string; readonly title: string } & { readonly [x: string]: Schema.Json }
+					>
+					readonly key: string
+					readonly label: string
+					readonly placeholder?: string
+					readonly required?: boolean
+					readonly defaultValue?: Schema.Json
+					readonly showConditions?: ReadonlyArray<
+						{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+					>
+					readonly description?: string
+					readonly tooltip?: string
+					readonly isConfidential?: boolean
+					readonly isDevFeature?: boolean
+			  } & { readonly [x: string]: Schema.Json })
+			| ({
+					readonly type: string
+					readonly selectItems: ReadonlyArray<{ readonly value: string } & { readonly [x: string]: Schema.Json }>
+					readonly key: string
+					readonly label: string
+					readonly placeholder?: string
+					readonly required?: boolean
+					readonly defaultValue?: Schema.Json
+					readonly showConditions?: ReadonlyArray<
+						{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+					>
+					readonly description?: string
+					readonly tooltip?: string
+					readonly isConfidential?: boolean
+					readonly isDevFeature?: boolean
+			  } & { readonly [x: string]: Schema.Json })
+			| ({
+					readonly type: 'Text' | 'Number' | 'MultilineText' | 'Switch' | 'Json'
+					readonly key: string
+					readonly label: string
+					readonly placeholder?: string
+					readonly required?: boolean
+					readonly defaultValue?: Schema.Json
+					readonly showConditions?: ReadonlyArray<
+						{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+					>
+					readonly description?: string
+					readonly tooltip?: string
+					readonly isConfidential?: boolean
+					readonly isDevFeature?: boolean
+			  } & { readonly [x: string]: Schema.Json })
+		>
+		readonly customData?: { readonly [x: string]: Schema.Json }
+		readonly fromEmail?: string
+		readonly platform: 'Native' | 'Universal' | 'Web' | null
+		readonly isStandard?: boolean
+		readonly isTokenStorageSupported?: boolean
+		readonly type: 'Email' | 'Sms' | 'Social'
+		readonly isDemo?: boolean
+		readonly extraInfo?: { readonly [x: string]: Schema.Json }
+		readonly usage?: number
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ListResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			id: Schema.String,
+			syncProfile: Schema.Boolean,
+			enableTokenStorage: Schema.Boolean,
+			config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+			metadata: Schema.StructWithRest(
+				Schema.Struct({
+					target: Schema.optionalKey(Schema.String),
+					name: Schema.optionalKey(
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+							description: 'Validator function',
+						})
+					),
+					logo: Schema.optionalKey(Schema.String),
+					logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			connectorId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			target: Schema.String,
+			name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'Validator function',
+			}),
+			description: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'Validator function',
+			}),
+			logo: Schema.String,
+			logoDark: Schema.Union([Schema.String, Schema.Null]),
+			readme: Schema.String,
+			configTemplate: Schema.optionalKey(Schema.String),
+			formItems: Schema.optionalKey(
+				Schema.Array(
+					Schema.Union(
+						[
+							Schema.StructWithRest(
+								Schema.Struct({
+									type: Schema.String.annotate({ format: '"Select"' }),
+									selectItems: Schema.Array(
+										Schema.StructWithRest(Schema.Struct({ value: Schema.String, title: Schema.String }), [
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+										])
+									),
+									key: Schema.String,
+									label: Schema.String,
+									placeholder: Schema.optionalKey(Schema.String),
+									required: Schema.optionalKey(Schema.Boolean),
+									defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+									showConditions: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													targetKey: Schema.String,
+													expectValue: Schema.optionalKey(
+														Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									tooltip: Schema.optionalKey(Schema.String),
+									isConfidential: Schema.optionalKey(Schema.Boolean),
+									isDevFeature: Schema.optionalKey(Schema.Boolean),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+							Schema.StructWithRest(
+								Schema.Struct({
+									type: Schema.String.annotate({ format: '"MultiSelect"' }),
+									selectItems: Schema.Array(
+										Schema.StructWithRest(Schema.Struct({ value: Schema.String }), [
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+										])
+									),
+									key: Schema.String,
+									label: Schema.String,
+									placeholder: Schema.optionalKey(Schema.String),
+									required: Schema.optionalKey(Schema.Boolean),
+									defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+									showConditions: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													targetKey: Schema.String,
+													expectValue: Schema.optionalKey(
+														Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									tooltip: Schema.optionalKey(Schema.String),
+									isConfidential: Schema.optionalKey(Schema.Boolean),
+									isDevFeature: Schema.optionalKey(Schema.Boolean),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+							Schema.StructWithRest(
+								Schema.Struct({
+									type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
+									key: Schema.String,
+									label: Schema.String,
+									placeholder: Schema.optionalKey(Schema.String),
+									required: Schema.optionalKey(Schema.Boolean),
+									defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+									showConditions: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													targetKey: Schema.String,
+													expectValue: Schema.optionalKey(
+														Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									tooltip: Schema.optionalKey(Schema.String),
+									isConfidential: Schema.optionalKey(Schema.Boolean),
+									isDevFeature: Schema.optionalKey(Schema.Boolean),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+						],
+						{ mode: 'oneOf' }
+					)
+				)
+			),
+			customData: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+			fromEmail: Schema.optionalKey(Schema.String),
+			platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
+			isStandard: Schema.optionalKey(Schema.Boolean),
+			isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
+			type: Schema.Literals(['Email', 'Sms', 'Social']),
+			isDemo: Schema.optionalKey(Schema.Boolean),
+			extraInfo: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+			usage: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
+
+export type CreatePayload = {
+	readonly config?: { readonly [x: string]: Schema.Json }
+	readonly connectorId: string
+	readonly metadata?: {
+		readonly target?: string
+		readonly name?: { readonly [x: string]: Schema.Json }
+		readonly logo?: string
+		readonly logoDark?: string | null
+	} & { readonly [x: string]: Schema.Json }
+	readonly syncProfile?: boolean
+	readonly enableTokenStorage?: boolean
+	readonly id?: string
+} & { readonly [x: string]: Schema.Json }
+export const CreatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		config: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description:
+					'The connector config object that will be passed to the connector. The config object should be compatible with the connector factory.',
+			})
+		),
+		connectorId: Schema.String.annotate({ description: 'The connector factory ID for creating the connector.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
+		metadata: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					target: Schema.optionalKey(Schema.String),
+					name: Schema.optionalKey(
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+							description: 'Validator function',
+						})
+					),
+					logo: Schema.optionalKey(Schema.String),
+					logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			).annotate({ description: 'Custom connector metadata, will be used to overwrite the default connector factory metadata.' })
+		),
+		syncProfile: Schema.optionalKey(
+			Schema.Boolean.annotate({
+				description:
+					'Whether to sync user profile from the identity provider to Logto at each sign-in. If `false`, the user profile will only be synced when the user is created.',
+			})
+		),
+		enableTokenStorage: Schema.optionalKey(Schema.Boolean),
+		id: Schema.optionalKey(
+			Schema.String.annotate({ description: 'The unique ID for the connector. If not provided, a random ID will be generated.' })
+				.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateResponse = {
 	readonly id: string
 	readonly syncProfile: boolean
 	readonly enableTokenStorage: boolean
@@ -16,7 +304,7 @@ export type ListResponse = ReadonlyArray<{
 		readonly name?: { readonly [x: string]: Schema.Json }
 		readonly logo?: string
 		readonly logoDark?: string | null
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly connectorId: string
 	readonly target: string
 	readonly name: { readonly [x: string]: Schema.Json }
@@ -26,47 +314,55 @@ export type ListResponse = ReadonlyArray<{
 	readonly readme: string
 	readonly configTemplate?: string
 	readonly formItems?: ReadonlyArray<
-		| {
+		| ({
 				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string; readonly title: string }>
+				readonly selectItems: ReadonlyArray<
+					{ readonly value: string; readonly title: string } & { readonly [x: string]: Schema.Json }
+				>
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string }>
+				readonly selectItems: ReadonlyArray<{ readonly value: string } & { readonly [x: string]: Schema.Json }>
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: 'Text' | 'Number' | 'MultilineText' | 'Switch' | 'Json'
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
+		  } & { readonly [x: string]: Schema.Json })
 	>
 	readonly customData?: { readonly [x: string]: Schema.Json }
 	readonly fromEmail?: string
@@ -77,25 +373,28 @@ export type ListResponse = ReadonlyArray<{
 	readonly isDemo?: boolean
 	readonly extraInfo?: { readonly [x: string]: Schema.Json }
 	readonly usage?: number
-}>
-export const ListResponse = Schema.Array(
+} & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
 	Schema.Struct({
 		id: Schema.String,
 		syncProfile: Schema.Boolean,
 		enableTokenStorage: Schema.Boolean,
 		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-		metadata: Schema.Struct({
-			target: Schema.optionalKey(Schema.String),
-			name: Schema.optionalKey(
-				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-					description: 'Validator function',
-				})
-			),
-			logo: Schema.optionalKey(Schema.String),
-			logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-		}),
+		metadata: Schema.StructWithRest(
+			Schema.Struct({
+				target: Schema.optionalKey(Schema.String),
+				name: Schema.optionalKey(
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+						description: 'Validator function',
+					})
+				),
+				logo: Schema.optionalKey(Schema.String),
+				logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 		connectorId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 		),
 		target: Schema.String,
 		name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
@@ -112,68 +411,100 @@ export const ListResponse = Schema.Array(
 			Schema.Array(
 				Schema.Union(
 					[
-						Schema.Struct({
-							type: Schema.String.annotate({ format: '"Select"' }),
-							selectItems: Schema.Array(Schema.Struct({ value: Schema.String, title: Schema.String })),
-							key: Schema.String,
-							label: Schema.String,
-							placeholder: Schema.optionalKey(Schema.String),
-							required: Schema.optionalKey(Schema.Boolean),
-							defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-							showConditions: Schema.optionalKey(
-								Schema.Array(
-									Schema.Struct({
-										targetKey: Schema.String,
-										expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-									})
-								)
-							),
-							description: Schema.optionalKey(Schema.String),
-							tooltip: Schema.optionalKey(Schema.String),
-							isConfidential: Schema.optionalKey(Schema.Boolean),
-							isDevFeature: Schema.optionalKey(Schema.Boolean),
-						}),
-						Schema.Struct({
-							type: Schema.String.annotate({ format: '"MultiSelect"' }),
-							selectItems: Schema.Array(Schema.Struct({ value: Schema.String })),
-							key: Schema.String,
-							label: Schema.String,
-							placeholder: Schema.optionalKey(Schema.String),
-							required: Schema.optionalKey(Schema.Boolean),
-							defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-							showConditions: Schema.optionalKey(
-								Schema.Array(
-									Schema.Struct({
-										targetKey: Schema.String,
-										expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-									})
-								)
-							),
-							description: Schema.optionalKey(Schema.String),
-							tooltip: Schema.optionalKey(Schema.String),
-							isConfidential: Schema.optionalKey(Schema.Boolean),
-							isDevFeature: Schema.optionalKey(Schema.Boolean),
-						}),
-						Schema.Struct({
-							type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
-							key: Schema.String,
-							label: Schema.String,
-							placeholder: Schema.optionalKey(Schema.String),
-							required: Schema.optionalKey(Schema.Boolean),
-							defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-							showConditions: Schema.optionalKey(
-								Schema.Array(
-									Schema.Struct({
-										targetKey: Schema.String,
-										expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-									})
-								)
-							),
-							description: Schema.optionalKey(Schema.String),
-							tooltip: Schema.optionalKey(Schema.String),
-							isConfidential: Schema.optionalKey(Schema.Boolean),
-							isDevFeature: Schema.optionalKey(Schema.Boolean),
-						}),
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"Select"' }),
+								selectItems: Schema.Array(
+									Schema.StructWithRest(Schema.Struct({ value: Schema.String, title: Schema.String }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"MultiSelect"' }),
+								selectItems: Schema.Array(
+									Schema.StructWithRest(Schema.Struct({ value: Schema.String }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
 					],
 					{ mode: 'oneOf' }
 				)
@@ -188,236 +519,9 @@ export const ListResponse = Schema.Array(
 		isDemo: Schema.optionalKey(Schema.Boolean),
 		extraInfo: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
 		usage: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	})
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 )
-
-export type CreatePayload = {
-	readonly config?: { readonly [x: string]: Schema.Json }
-	readonly connectorId: string
-	readonly metadata?: {
-		readonly target?: string
-		readonly name?: { readonly [x: string]: Schema.Json }
-		readonly logo?: string
-		readonly logoDark?: string | null
-	}
-	readonly syncProfile?: boolean
-	readonly enableTokenStorage?: boolean
-	readonly id?: string
-}
-export const CreatePayload = Schema.Struct({
-	config: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-			description:
-				'The connector config object that will be passed to the connector. The config object should be compatible with the connector factory.',
-		})
-	),
-	connectorId: Schema.String.annotate({ description: 'The connector factory ID for creating the connector.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })),
-	metadata: Schema.optionalKey(
-		Schema.Struct({
-			target: Schema.optionalKey(Schema.String),
-			name: Schema.optionalKey(
-				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-					description: 'Validator function',
-				})
-			),
-			logo: Schema.optionalKey(Schema.String),
-			logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-		}).annotate({ description: 'Custom connector metadata, will be used to overwrite the default connector factory metadata.' })
-	),
-	syncProfile: Schema.optionalKey(
-		Schema.Boolean.annotate({
-			description:
-				'Whether to sync user profile from the identity provider to Logto at each sign-in. If `false`, the user profile will only be synced when the user is created.',
-		})
-	),
-	enableTokenStorage: Schema.optionalKey(Schema.Boolean),
-	id: Schema.optionalKey(
-		Schema.String.annotate({ description: 'The unique ID for the connector. If not provided, a random ID will be generated.' })
-			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			.check(Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' }))
-	),
-})
-
-export type CreateResponse = {
-	readonly id: string
-	readonly syncProfile: boolean
-	readonly enableTokenStorage: boolean
-	readonly config: { readonly [x: string]: Schema.Json }
-	readonly metadata: {
-		readonly target?: string
-		readonly name?: { readonly [x: string]: Schema.Json }
-		readonly logo?: string
-		readonly logoDark?: string | null
-	}
-	readonly connectorId: string
-	readonly target: string
-	readonly name: { readonly [x: string]: Schema.Json }
-	readonly description: { readonly [x: string]: Schema.Json }
-	readonly logo: string
-	readonly logoDark: string | null
-	readonly readme: string
-	readonly configTemplate?: string
-	readonly formItems?: ReadonlyArray<
-		| {
-				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string; readonly title: string }>
-				readonly key: string
-				readonly label: string
-				readonly placeholder?: string
-				readonly required?: boolean
-				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
-				readonly description?: string
-				readonly tooltip?: string
-				readonly isConfidential?: boolean
-				readonly isDevFeature?: boolean
-		  }
-		| {
-				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string }>
-				readonly key: string
-				readonly label: string
-				readonly placeholder?: string
-				readonly required?: boolean
-				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
-				readonly description?: string
-				readonly tooltip?: string
-				readonly isConfidential?: boolean
-				readonly isDevFeature?: boolean
-		  }
-		| {
-				readonly type: 'Text' | 'Number' | 'MultilineText' | 'Switch' | 'Json'
-				readonly key: string
-				readonly label: string
-				readonly placeholder?: string
-				readonly required?: boolean
-				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
-				readonly description?: string
-				readonly tooltip?: string
-				readonly isConfidential?: boolean
-				readonly isDevFeature?: boolean
-		  }
-	>
-	readonly customData?: { readonly [x: string]: Schema.Json }
-	readonly fromEmail?: string
-	readonly platform: 'Native' | 'Universal' | 'Web' | null
-	readonly isStandard?: boolean
-	readonly isTokenStorageSupported?: boolean
-	readonly type: 'Email' | 'Sms' | 'Social'
-	readonly isDemo?: boolean
-	readonly extraInfo?: { readonly [x: string]: Schema.Json }
-	readonly usage?: number
-}
-export const CreateResponse = Schema.Struct({
-	id: Schema.String,
-	syncProfile: Schema.Boolean,
-	enableTokenStorage: Schema.Boolean,
-	config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	metadata: Schema.Struct({
-		target: Schema.optionalKey(Schema.String),
-		name: Schema.optionalKey(
-			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'Validator function' })
-		),
-		logo: Schema.optionalKey(Schema.String),
-		logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-	}),
-	connectorId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	target: Schema.String,
-	name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'Validator function' }),
-	description: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Validator function',
-	}),
-	logo: Schema.String,
-	logoDark: Schema.Union([Schema.String, Schema.Null]),
-	readme: Schema.String,
-	configTemplate: Schema.optionalKey(Schema.String),
-	formItems: Schema.optionalKey(
-		Schema.Array(
-			Schema.Union(
-				[
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"Select"' }),
-						selectItems: Schema.Array(Schema.Struct({ value: Schema.String, title: Schema.String })),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
-						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"MultiSelect"' }),
-						selectItems: Schema.Array(Schema.Struct({ value: Schema.String })),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
-						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-					Schema.Struct({
-						type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
-						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-				],
-				{ mode: 'oneOf' }
-			)
-		)
-	),
-	customData: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-	fromEmail: Schema.optionalKey(Schema.String),
-	platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
-	isStandard: Schema.optionalKey(Schema.Boolean),
-	isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
-	type: Schema.Literals(['Email', 'Sms', 'Social']),
-	isDemo: Schema.optionalKey(Schema.Boolean),
-	extraInfo: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-	usage: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-})
 
 export type GetResponse = {
 	readonly id: string
@@ -429,7 +533,7 @@ export type GetResponse = {
 		readonly name?: { readonly [x: string]: Schema.Json }
 		readonly logo?: string
 		readonly logoDark?: string | null
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly connectorId: string
 	readonly target: string
 	readonly name: { readonly [x: string]: Schema.Json }
@@ -439,47 +543,55 @@ export type GetResponse = {
 	readonly readme: string
 	readonly configTemplate?: string
 	readonly formItems?: ReadonlyArray<
-		| {
+		| ({
 				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string; readonly title: string }>
+				readonly selectItems: ReadonlyArray<
+					{ readonly value: string; readonly title: string } & { readonly [x: string]: Schema.Json }
+				>
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string }>
+				readonly selectItems: ReadonlyArray<{ readonly value: string } & { readonly [x: string]: Schema.Json }>
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: 'Text' | 'Number' | 'MultilineText' | 'Switch' | 'Json'
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
+		  } & { readonly [x: string]: Schema.Json })
 	>
 	readonly customData?: { readonly [x: string]: Schema.Json }
 	readonly fromEmail?: string
@@ -490,113 +602,155 @@ export type GetResponse = {
 	readonly isDemo?: boolean
 	readonly extraInfo?: { readonly [x: string]: Schema.Json }
 	readonly usage?: number
-}
-export const GetResponse = Schema.Struct({
-	id: Schema.String,
-	syncProfile: Schema.Boolean,
-	enableTokenStorage: Schema.Boolean,
-	config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	metadata: Schema.Struct({
-		target: Schema.optionalKey(Schema.String),
-		name: Schema.optionalKey(
-			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'Validator function' })
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		id: Schema.String,
+		syncProfile: Schema.Boolean,
+		enableTokenStorage: Schema.Boolean,
+		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		metadata: Schema.StructWithRest(
+			Schema.Struct({
+				target: Schema.optionalKey(Schema.String),
+				name: Schema.optionalKey(
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+						description: 'Validator function',
+					})
+				),
+				logo: Schema.optionalKey(Schema.String),
+				logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		logo: Schema.optionalKey(Schema.String),
-		logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-	}),
-	connectorId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	target: Schema.String,
-	name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'Validator function' }),
-	description: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Validator function',
-	}),
-	logo: Schema.String,
-	logoDark: Schema.Union([Schema.String, Schema.Null]),
-	readme: Schema.String,
-	configTemplate: Schema.optionalKey(Schema.String),
-	formItems: Schema.optionalKey(
-		Schema.Array(
-			Schema.Union(
-				[
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"Select"' }),
-						selectItems: Schema.Array(Schema.Struct({ value: Schema.String, title: Schema.String })),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
+		connectorId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		target: Schema.String,
+		name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Validator function',
+		}),
+		description: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Validator function',
+		}),
+		logo: Schema.String,
+		logoDark: Schema.Union([Schema.String, Schema.Null]),
+		readme: Schema.String,
+		configTemplate: Schema.optionalKey(Schema.String),
+		formItems: Schema.optionalKey(
+			Schema.Array(
+				Schema.Union(
+					[
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"Select"' }),
+								selectItems: Schema.Array(
+									Schema.StructWithRest(Schema.Struct({ value: Schema.String, title: Schema.String }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"MultiSelect"' }),
-						selectItems: Schema.Array(Schema.Struct({ value: Schema.String })),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"MultiSelect"' }),
+								selectItems: Schema.Array(
+									Schema.StructWithRest(Schema.Struct({ value: Schema.String }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-					Schema.Struct({
-						type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-				],
-				{ mode: 'oneOf' }
+					],
+					{ mode: 'oneOf' }
+				)
 			)
-		)
-	),
-	customData: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-	fromEmail: Schema.optionalKey(Schema.String),
-	platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
-	isStandard: Schema.optionalKey(Schema.Boolean),
-	isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
-	type: Schema.Literals(['Email', 'Sms', 'Social']),
-	isDemo: Schema.optionalKey(Schema.Boolean),
-	extraInfo: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-	usage: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-})
+		),
+		customData: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+		fromEmail: Schema.optionalKey(Schema.String),
+		platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
+		isStandard: Schema.optionalKey(Schema.Boolean),
+		isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
+		type: Schema.Literals(['Email', 'Sms', 'Social']),
+		isDemo: Schema.optionalKey(Schema.Boolean),
+		extraInfo: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+		usage: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdatePayload = {
 	readonly config?: { readonly [x: string]: Schema.Json }
@@ -605,37 +759,43 @@ export type UpdatePayload = {
 		readonly name?: { readonly [x: string]: Schema.Json }
 		readonly logo?: string
 		readonly logoDark?: string | null
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly syncProfile?: boolean
 	readonly enableTokenStorage?: boolean
-}
-export const UpdatePayload = Schema.Struct({
-	config: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-			description:
-				'The connector config object that will be passed to the connector. The config object should be compatible with the connector factory.',
-		})
-	),
-	metadata: Schema.optionalKey(
-		Schema.Struct({
-			target: Schema.optionalKey(Schema.String),
-			name: Schema.optionalKey(
-				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-					description: 'Validator function',
-				})
-			),
-			logo: Schema.optionalKey(Schema.String),
-			logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-		}).annotate({ description: 'Custom connector metadata, will be used to overwrite the default connector metadata.' })
-	),
-	syncProfile: Schema.optionalKey(
-		Schema.Boolean.annotate({
-			description:
-				'Whether to sync user profile from the identity provider to Logto at each sign-in. If `false`, the user profile will only be synced when the user is created.',
-		})
-	),
-	enableTokenStorage: Schema.optionalKey(Schema.Boolean),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpdatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		config: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description:
+					'The connector config object that will be passed to the connector. The config object should be compatible with the connector factory.',
+			})
+		),
+		metadata: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					target: Schema.optionalKey(Schema.String),
+					name: Schema.optionalKey(
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+							description: 'Validator function',
+						})
+					),
+					logo: Schema.optionalKey(Schema.String),
+					logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			).annotate({ description: 'Custom connector metadata, will be used to overwrite the default connector metadata.' })
+		),
+		syncProfile: Schema.optionalKey(
+			Schema.Boolean.annotate({
+				description:
+					'Whether to sync user profile from the identity provider to Logto at each sign-in. If `false`, the user profile will only be synced when the user is created.',
+			})
+		),
+		enableTokenStorage: Schema.optionalKey(Schema.Boolean),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateResponse = {
 	readonly id: string
@@ -647,7 +807,7 @@ export type UpdateResponse = {
 		readonly name?: { readonly [x: string]: Schema.Json }
 		readonly logo?: string
 		readonly logoDark?: string | null
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly connectorId: string
 	readonly target: string
 	readonly name: { readonly [x: string]: Schema.Json }
@@ -657,47 +817,55 @@ export type UpdateResponse = {
 	readonly readme: string
 	readonly configTemplate?: string
 	readonly formItems?: ReadonlyArray<
-		| {
+		| ({
 				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string; readonly title: string }>
+				readonly selectItems: ReadonlyArray<
+					{ readonly value: string; readonly title: string } & { readonly [x: string]: Schema.Json }
+				>
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string }>
+				readonly selectItems: ReadonlyArray<{ readonly value: string } & { readonly [x: string]: Schema.Json }>
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: 'Text' | 'Number' | 'MultilineText' | 'Switch' | 'Json'
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
+		  } & { readonly [x: string]: Schema.Json })
 	>
 	readonly customData?: { readonly [x: string]: Schema.Json }
 	readonly fromEmail?: string
@@ -708,162 +876,215 @@ export type UpdateResponse = {
 	readonly isDemo?: boolean
 	readonly extraInfo?: { readonly [x: string]: Schema.Json }
 	readonly usage?: number
-}
-export const UpdateResponse = Schema.Struct({
-	id: Schema.String,
-	syncProfile: Schema.Boolean,
-	enableTokenStorage: Schema.Boolean,
-	config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	metadata: Schema.Struct({
-		target: Schema.optionalKey(Schema.String),
-		name: Schema.optionalKey(
-			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'Validator function' })
+} & { readonly [x: string]: Schema.Json }
+export const UpdateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		id: Schema.String,
+		syncProfile: Schema.Boolean,
+		enableTokenStorage: Schema.Boolean,
+		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		metadata: Schema.StructWithRest(
+			Schema.Struct({
+				target: Schema.optionalKey(Schema.String),
+				name: Schema.optionalKey(
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+						description: 'Validator function',
+					})
+				),
+				logo: Schema.optionalKey(Schema.String),
+				logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		logo: Schema.optionalKey(Schema.String),
-		logoDark: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-	}),
-	connectorId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	target: Schema.String,
-	name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'Validator function' }),
-	description: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Validator function',
-	}),
-	logo: Schema.String,
-	logoDark: Schema.Union([Schema.String, Schema.Null]),
-	readme: Schema.String,
-	configTemplate: Schema.optionalKey(Schema.String),
-	formItems: Schema.optionalKey(
-		Schema.Array(
-			Schema.Union(
-				[
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"Select"' }),
-						selectItems: Schema.Array(Schema.Struct({ value: Schema.String, title: Schema.String })),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
+		connectorId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		target: Schema.String,
+		name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Validator function',
+		}),
+		description: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Validator function',
+		}),
+		logo: Schema.String,
+		logoDark: Schema.Union([Schema.String, Schema.Null]),
+		readme: Schema.String,
+		configTemplate: Schema.optionalKey(Schema.String),
+		formItems: Schema.optionalKey(
+			Schema.Array(
+				Schema.Union(
+					[
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"Select"' }),
+								selectItems: Schema.Array(
+									Schema.StructWithRest(Schema.Struct({ value: Schema.String, title: Schema.String }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"MultiSelect"' }),
-						selectItems: Schema.Array(Schema.Struct({ value: Schema.String })),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"MultiSelect"' }),
+								selectItems: Schema.Array(
+									Schema.StructWithRest(Schema.Struct({ value: Schema.String }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-					Schema.Struct({
-						type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-				],
-				{ mode: 'oneOf' }
+					],
+					{ mode: 'oneOf' }
+				)
 			)
-		)
-	),
-	customData: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-	fromEmail: Schema.optionalKey(Schema.String),
-	platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
-	isStandard: Schema.optionalKey(Schema.Boolean),
-	isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
-	type: Schema.Literals(['Email', 'Sms', 'Social']),
-	isDemo: Schema.optionalKey(Schema.Boolean),
-	extraInfo: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-	usage: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-})
+		),
+		customData: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+		fromEmail: Schema.optionalKey(Schema.String),
+		platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
+		isStandard: Schema.optionalKey(Schema.Boolean),
+		isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
+		type: Schema.Literals(['Email', 'Sms', 'Social']),
+		isDemo: Schema.optionalKey(Schema.Boolean),
+		extraInfo: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+		usage: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateTestPayload = {
 	readonly phone?: string
 	readonly email?: string
 	readonly config: { readonly [x: string]: Schema.Json }
 	readonly locale?: string
-}
-export const CreateTestPayload = Schema.Struct({
-	phone: Schema.optionalKey(
-		Schema.String.annotate({
-			description: 'Phone number to send test message to. If this is set, email will be ignored.',
-			format: 'regex',
-		}).check(Schema.isPattern(/^\d+$/).annotate({ expected: 'a string matching the RegExp ^\\d+$' }))
-	),
-	email: Schema.optionalKey(
-		Schema.String.annotate({
-			description: 'Email address to send test message to. If phone is set, this will be ignored.',
-			format: 'regex',
-		}).check(Schema.isPattern(/^\S+@\S+\.\S+$/).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' }))
-	),
-	config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Connector configuration object for testing.',
+} & { readonly [x: string]: Schema.Json }
+export const CreateTestPayload = Schema.StructWithRest(
+	Schema.Struct({
+		phone: Schema.optionalKey(
+			Schema.String.annotate({
+				description: 'Phone number to send test message to. If this is set, email will be ignored.',
+				format: 'regex',
+			}).check(Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' }))
+		),
+		email: Schema.optionalKey(
+			Schema.String.annotate({
+				description: 'Email address to send test message to. If phone is set, this will be ignored.',
+				format: 'regex',
+			}).check(Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' }))
+		),
+		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+			description: 'Connector configuration object for testing.',
+		}),
+		locale: Schema.optionalKey(
+			Schema.String.annotate({
+				description:
+					'Preferred language for the message. If not set, the default language will be used. (Applicable only when custom i18n templates are configured.)',
+			})
+		),
 	}),
-	locale: Schema.optionalKey(
-		Schema.String.annotate({
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateAuthorizationUriPayload = { readonly state: string; readonly redirectUri: string } & { readonly [x: string]: Schema.Json }
+export const CreateAuthorizationUriPayload = Schema.StructWithRest(
+	Schema.Struct({
+		state: Schema.String.annotate({
+			description: 'A random string generated on the client side to prevent CSRF (Cross-Site Request Forgery) attacks.',
+		}),
+		redirectUri: Schema.String.annotate({
 			description:
-				'Preferred language for the message. If not set, the default language will be used. (Applicable only when custom i18n templates are configured.)',
-		})
-	),
-})
-
-export type CreateAuthorizationUriPayload = { readonly state: string; readonly redirectUri: string }
-export const CreateAuthorizationUriPayload = Schema.Struct({
-	state: Schema.String.annotate({
-		description: 'A random string generated on the client side to prevent CSRF (Cross-Site Request Forgery) attacks.',
+				'The URI to navigate back to after the user is authenticated by the connected social identity provider and has granted access to the connector.',
+		}),
 	}),
-	redirectUri: Schema.String.annotate({
-		description:
-			'The URI to navigate back to after the user is authenticated by the connected social identity provider and has granted access to the connector.',
-	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreateAuthorizationUriResponse = { readonly redirectTo: string; readonly redirectUri?: Schema.Json }
-export const CreateAuthorizationUriResponse = Schema.Struct({
-	redirectTo: Schema.String.annotate({ format: 'url' }),
-	redirectUri: Schema.optionalKey(
-		Schema.Json.annotate({
-			expected: 'JSON value',
-			description: 'The URI to navigate for authentication and authorization in the connected social identity provider.',
-		})
-	),
-})
+export type CreateAuthorizationUriResponse = { readonly redirectTo: string; readonly redirectUri?: Schema.Json } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateAuthorizationUriResponse = Schema.StructWithRest(
+	Schema.Struct({
+		redirectTo: Schema.String.annotate({ format: 'url' }),
+		redirectUri: Schema.optionalKey(
+			Schema.Json.annotate({
+				expected: 'JSON value',
+				description: 'The URI to navigate for authentication and authorization in the connected social identity provider.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

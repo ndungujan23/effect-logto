@@ -49,153 +49,200 @@ export const ListParams = Schema.Struct({
 	search_params: Schema.optionalKey(SearchParams),
 })
 
-export type ListResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly secret?: ApplicationLegacySecret
-	readonly description: string | null
-	readonly type: 'Native' | 'SPA' | 'Traditional' | 'MachineToMachine' | 'Protected' | 'SAML'
-	readonly oidcClientMetadata: {
-		readonly redirectUris: ReadonlyArray<string>
-		readonly postLogoutRedirectUris: ReadonlyArray<string>
-		readonly backchannelLogoutUri?: string
-		readonly backchannelLogoutSessionRequired?: boolean
-		readonly logoUri?: string
-	}
-	readonly customClientMetadata: {
-		readonly corsAllowedOrigins?: ReadonlyArray<string>
-		readonly idTokenTtl?: number
-		readonly refreshTokenTtl?: number
-		readonly refreshTokenTtlInDays?: number
-		readonly tenantId?: string
-		readonly alwaysIssueRefreshToken?: boolean
-		readonly rotateRefreshToken?: boolean
-		readonly allowTokenExchange?: boolean
-		readonly isDeviceFlow?: boolean
-		readonly maxAllowedGrants?: number
-	}
-	readonly protectedAppMetadata:
-		| ({
-				readonly host: string
-				readonly origin: string
-				readonly sessionDuration: number
-				readonly pageRules: ReadonlyArray<{ readonly path: string }>
-				readonly additionalScopes?: ReadonlyArray<
-					'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
-				>
-				readonly customDomains?: ReadonlyArray<{
-					readonly domain: string
-					readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-					readonly errorMessage: string | null
-					readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
-					readonly cloudflareData:
-						| ({
-								readonly id: string
-								readonly status: string
-								readonly ssl: {
-									readonly status: string
-									readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly name: string
+		readonly secret?: ApplicationLegacySecret
+		readonly description: string | null
+		readonly type: 'Native' | 'SPA' | 'Traditional' | 'MachineToMachine' | 'Protected' | 'SAML'
+		readonly oidcClientMetadata: {
+			readonly redirectUris: ReadonlyArray<string>
+			readonly postLogoutRedirectUris: ReadonlyArray<string>
+			readonly backchannelLogoutUri?: string
+			readonly backchannelLogoutSessionRequired?: boolean
+			readonly logoUri?: string
+		} & { readonly [x: string]: Schema.Json }
+		readonly customClientMetadata: {
+			readonly corsAllowedOrigins?: ReadonlyArray<string>
+			readonly idTokenTtl?: number
+			readonly refreshTokenTtl?: number
+			readonly refreshTokenTtlInDays?: number
+			readonly tenantId?: string
+			readonly alwaysIssueRefreshToken?: boolean
+			readonly rotateRefreshToken?: boolean
+			readonly allowTokenExchange?: boolean
+			readonly isDeviceFlow?: boolean
+			readonly maxAllowedGrants?: number
+		} & { readonly [x: string]: Schema.Json }
+		readonly protectedAppMetadata:
+			| ({
+					readonly host: string
+					readonly origin: string
+					readonly sessionDuration: number
+					readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
+					readonly additionalScopes?: ReadonlyArray<
+						'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
+					>
+					readonly customDomains?: ReadonlyArray<
+						{
+							readonly domain: string
+							readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+							readonly errorMessage: string | null
+							readonly dnsRecords: ReadonlyArray<
+								{ readonly name: string; readonly type: string; readonly value: string } & {
+									readonly [x: string]: Schema.Json
 								}
-								readonly verification_errors?: ReadonlyArray<string>
-						  } & { readonly [x: string]: Schema.Json })
-						| null
-				}>
-		  } & { readonly [x: string]: Schema.Json })
-		| null
-	readonly customData: { readonly [x: string]: Schema.Json }
-	readonly isThirdParty: boolean
-	readonly appLevelAccessControlEnabled: boolean
-	readonly createdAt: number
-}>
+							>
+							readonly cloudflareData:
+								| ({
+										readonly id: string
+										readonly status: string
+										readonly ssl: {
+											readonly status: string
+											readonly validation_errors?: ReadonlyArray<
+												{ readonly message: string } & { readonly [x: string]: Schema.Json }
+											>
+										} & { readonly [x: string]: Schema.Json }
+										readonly verification_errors?: ReadonlyArray<string>
+								  } & { readonly [x: string]: Schema.Json })
+								| null
+						} & { readonly [x: string]: Schema.Json }
+					>
+			  } & { readonly [x: string]: Schema.Json })
+			| null
+		readonly customData: { readonly [x: string]: Schema.Json }
+		readonly isThirdParty: boolean
+		readonly appLevelAccessControlEnabled: boolean
+		readonly createdAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		),
-		secret: Schema.optionalKey(ApplicationLegacySecret),
-		description: Schema.Union([Schema.String, Schema.Null]),
-		type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
-		oidcClientMetadata: Schema.Struct({
-			redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-			postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-			backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-			logoUri: Schema.optionalKey(Schema.String),
-		}),
-		customClientMetadata: Schema.Struct({
-			corsAllowedOrigins: Schema.optionalKey(
-				Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			tenantId: Schema.optionalKey(Schema.String),
-			alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-			rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-			allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-			isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-			maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		}),
-		protectedAppMetadata: Schema.Union([
-			Schema.StructWithRest(
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			),
+			secret: Schema.optionalKey(ApplicationLegacySecret),
+			description: Schema.Union([Schema.String, Schema.Null]),
+			type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
+			oidcClientMetadata: Schema.StructWithRest(
 				Schema.Struct({
-					host: Schema.String,
-					origin: Schema.String,
-					sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-					pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-					additionalScopes: Schema.optionalKey(
-						Schema.Array(
-							Schema.Literals([
-								'custom_data',
-								'identities',
-								'roles',
-								'urn:logto:scope:organizations',
-								'urn:logto:scope:organization_roles',
-							])
-						)
-					),
-					customDomains: Schema.optionalKey(
-						Schema.Array(
-							Schema.Struct({
-								domain: Schema.String,
-								status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-								errorMessage: Schema.Union([Schema.String, Schema.Null]),
-								dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-								cloudflareData: Schema.Union([
-									Schema.StructWithRest(
-										Schema.Struct({
-											id: Schema.String,
-											status: Schema.String,
-											ssl: Schema.Struct({
-												status: Schema.String,
-												validation_errors: Schema.optionalKey(
-													Schema.Array(Schema.Struct({ message: Schema.String }))
-												),
-											}),
-											verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-										}),
-										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-									),
-									Schema.Null,
-								]),
-							})
-						)
-					),
+					redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+					postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+					backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+					logoUri: Schema.optionalKey(Schema.String),
 				}),
 				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
-			Schema.Null,
-		]),
-		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-		isThirdParty: Schema.Boolean,
-		appLevelAccessControlEnabled: Schema.Boolean,
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+			customClientMetadata: Schema.StructWithRest(
+				Schema.Struct({
+					corsAllowedOrigins: Schema.optionalKey(
+						Schema.Array(
+							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+						)
+					),
+					idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					refreshTokenTtlInDays: Schema.optionalKey(
+						Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+					),
+					tenantId: Schema.optionalKey(Schema.String),
+					alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+					rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+					allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+					isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+					maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			protectedAppMetadata: Schema.Union([
+				Schema.StructWithRest(
+					Schema.Struct({
+						host: Schema.String,
+						origin: Schema.String,
+						sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						pageRules: Schema.Array(
+							Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+								Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+							])
+						),
+						additionalScopes: Schema.optionalKey(
+							Schema.Array(
+								Schema.Literals([
+									'custom_data',
+									'identities',
+									'roles',
+									'urn:logto:scope:organizations',
+									'urn:logto:scope:organization_roles',
+								])
+							)
+						),
+						customDomains: Schema.optionalKey(
+							Schema.Array(
+								Schema.StructWithRest(
+									Schema.Struct({
+										domain: Schema.String,
+										status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+										errorMessage: Schema.Union([Schema.String, Schema.Null]),
+										dnsRecords: Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										),
+										cloudflareData: Schema.Union([
+											Schema.StructWithRest(
+												Schema.Struct({
+													id: Schema.String,
+													status: Schema.String,
+													ssl: Schema.StructWithRest(
+														Schema.Struct({
+															status: Schema.String,
+															validation_errors: Schema.optionalKey(
+																Schema.Array(
+																	Schema.StructWithRest(Schema.Struct({ message: Schema.String }), [
+																		Schema.Record(
+																			Schema.String,
+																			Schema.Json.annotate({ expected: 'JSON value' })
+																		),
+																	])
+																)
+															),
+														}),
+														[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+													),
+													verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											),
+											Schema.Null,
+										]),
+									}),
+									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+								)
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.Null,
+			]),
+			customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'arbitrary',
+			}),
+			isThirdParty: Schema.Boolean,
+			appLevelAccessControlEnabled: Schema.Boolean,
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type CreatePayload = {
@@ -208,7 +255,7 @@ export type CreatePayload = {
 		readonly backchannelLogoutUri?: string
 		readonly backchannelLogoutSessionRequired?: boolean
 		readonly logoUri?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customClientMetadata?: {
 		readonly corsAllowedOrigins?: ReadonlyArray<string>
 		readonly idTokenTtl?: number
@@ -220,53 +267,69 @@ export type CreatePayload = {
 		readonly allowTokenExchange?: boolean
 		readonly isDeviceFlow?: boolean
 		readonly maxAllowedGrants?: number
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customData?: { readonly [x: string]: Schema.Json }
 	readonly isThirdParty?: boolean
-	readonly protectedAppMetadata?: { readonly subDomain: string; readonly origin: string }
-}
-export const CreatePayload = Schema.Struct({
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-	type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
-	oidcClientMetadata: Schema.optionalKey(
-		Schema.Struct({
-			redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-			postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-			backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-			logoUri: Schema.optionalKey(Schema.String),
-		})
-	),
-	customClientMetadata: Schema.optionalKey(
-		Schema.Struct({
-			corsAllowedOrigins: Schema.optionalKey(
-				Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
-			),
-			idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			tenantId: Schema.optionalKey(Schema.String),
-			alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-			rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-			allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-			isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-			maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		})
-	),
-	customData: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
-	),
-	isThirdParty: Schema.optionalKey(Schema.Boolean),
-	protectedAppMetadata: Schema.optionalKey(
-		Schema.Struct({
-			subDomain: Schema.String.annotate({ description: 'The subdomain prefix, e.g., my-site.' }),
-			origin: Schema.String.annotate({ description: 'The origin of target website, e.g., https://example.com.' }),
-		}).annotate({ description: 'The data for protected app, this feature is not available for open source version.' })
-	),
-})
+	readonly protectedAppMetadata?: { readonly subDomain: string; readonly origin: string } & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const CreatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+		type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
+		oidcClientMetadata: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+					postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+					backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+					logoUri: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customClientMetadata: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					corsAllowedOrigins: Schema.optionalKey(
+						Schema.Array(
+							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+						)
+					),
+					idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					refreshTokenTtlInDays: Schema.optionalKey(
+						Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+					),
+					tenantId: Schema.optionalKey(Schema.String),
+					alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+					rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+					allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+					isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+					maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customData: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
+		),
+		isThirdParty: Schema.optionalKey(Schema.Boolean),
+		protectedAppMetadata: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					subDomain: Schema.String.annotate({ description: 'The subdomain prefix, e.g., my-site.' }),
+					origin: Schema.String.annotate({ description: 'The origin of target website, e.g., https://example.com.' }),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			).annotate({ description: 'The data for protected app, this feature is not available for open source version.' })
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateResponse = {
 	readonly tenantId: string
@@ -281,7 +344,7 @@ export type CreateResponse = {
 		readonly backchannelLogoutUri?: string
 		readonly backchannelLogoutSessionRequired?: boolean
 		readonly logoUri?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customClientMetadata: {
 		readonly corsAllowedOrigins?: ReadonlyArray<string>
 		readonly idTokenTtl?: number
@@ -293,125 +356,164 @@ export type CreateResponse = {
 		readonly allowTokenExchange?: boolean
 		readonly isDeviceFlow?: boolean
 		readonly maxAllowedGrants?: number
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly protectedAppMetadata:
 		| ({
 				readonly host: string
 				readonly origin: string
 				readonly sessionDuration: number
-				readonly pageRules: ReadonlyArray<{ readonly path: string }>
+				readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 				readonly additionalScopes?: ReadonlyArray<
 					'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
 				>
-				readonly customDomains?: ReadonlyArray<{
-					readonly domain: string
-					readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-					readonly errorMessage: string | null
-					readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
-					readonly cloudflareData:
-						| ({
-								readonly id: string
-								readonly status: string
-								readonly ssl: {
+				readonly customDomains?: ReadonlyArray<
+					{
+						readonly domain: string
+						readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+						readonly errorMessage: string | null
+						readonly dnsRecords: ReadonlyArray<
+							{ readonly name: string; readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+						>
+						readonly cloudflareData:
+							| ({
+									readonly id: string
 									readonly status: string
-									readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-								}
-								readonly verification_errors?: ReadonlyArray<string>
-						  } & { readonly [x: string]: Schema.Json })
-						| null
-				}>
+									readonly ssl: {
+										readonly status: string
+										readonly validation_errors?: ReadonlyArray<
+											{ readonly message: string } & { readonly [x: string]: Schema.Json }
+										>
+									} & { readonly [x: string]: Schema.Json }
+									readonly verification_errors?: ReadonlyArray<string>
+							  } & { readonly [x: string]: Schema.Json })
+							| null
+					} & { readonly [x: string]: Schema.Json }
+				>
 		  } & { readonly [x: string]: Schema.Json })
 		| null
 	readonly customData: { readonly [x: string]: Schema.Json }
 	readonly isThirdParty: boolean
 	readonly appLevelAccessControlEnabled: boolean
 	readonly createdAt: number
-}
-export const CreateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	secret: Schema.optionalKey(ApplicationLegacySecret),
-	description: Schema.Union([Schema.String, Schema.Null]),
-	type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
-	oidcClientMetadata: Schema.Struct({
-		redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-		postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-		backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-		logoUri: Schema.optionalKey(Schema.String),
-	}),
-	customClientMetadata: Schema.Struct({
-		corsAllowedOrigins: Schema.optionalKey(
-			Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+} & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		tenantId: Schema.optionalKey(Schema.String),
-		alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-		rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-		allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-		isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-		maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	protectedAppMetadata: Schema.Union([
-		Schema.StructWithRest(
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		secret: Schema.optionalKey(ApplicationLegacySecret),
+		description: Schema.Union([Schema.String, Schema.Null]),
+		type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
+		oidcClientMetadata: Schema.StructWithRest(
 			Schema.Struct({
-				host: Schema.String,
-				origin: Schema.String,
-				sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-				additionalScopes: Schema.optionalKey(
-					Schema.Array(
-						Schema.Literals([
-							'custom_data',
-							'identities',
-							'roles',
-							'urn:logto:scope:organizations',
-							'urn:logto:scope:organization_roles',
-						])
-					)
-				),
-				customDomains: Schema.optionalKey(
-					Schema.Array(
-						Schema.Struct({
-							domain: Schema.String,
-							status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-							errorMessage: Schema.Union([Schema.String, Schema.Null]),
-							dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-							cloudflareData: Schema.Union([
-								Schema.StructWithRest(
-									Schema.Struct({
-										id: Schema.String,
-										status: Schema.String,
-										ssl: Schema.Struct({
-											status: Schema.String,
-											validation_errors: Schema.optionalKey(Schema.Array(Schema.Struct({ message: Schema.String }))),
-										}),
-										verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-									}),
-									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-								),
-								Schema.Null,
-							]),
-						})
-					)
-				),
+				redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+				postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+				backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+				logoUri: Schema.optionalKey(Schema.String),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		Schema.Null,
-	]),
-	customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	isThirdParty: Schema.Boolean,
-	appLevelAccessControlEnabled: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+		customClientMetadata: Schema.StructWithRest(
+			Schema.Struct({
+				corsAllowedOrigins: Schema.optionalKey(
+					Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+				),
+				idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				tenantId: Schema.optionalKey(Schema.String),
+				alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+				rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+				allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+				isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+				maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		protectedAppMetadata: Schema.Union([
+			Schema.StructWithRest(
+				Schema.Struct({
+					host: Schema.String,
+					origin: Schema.String,
+					sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					pageRules: Schema.Array(
+						Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					),
+					additionalScopes: Schema.optionalKey(
+						Schema.Array(
+							Schema.Literals([
+								'custom_data',
+								'identities',
+								'roles',
+								'urn:logto:scope:organizations',
+								'urn:logto:scope:organization_roles',
+							])
+						)
+					),
+					customDomains: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									domain: Schema.String,
+									status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+									errorMessage: Schema.Union([Schema.String, Schema.Null]),
+									dnsRecords: Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									cloudflareData: Schema.Union([
+										Schema.StructWithRest(
+											Schema.Struct({
+												id: Schema.String,
+												status: Schema.String,
+												ssl: Schema.StructWithRest(
+													Schema.Struct({
+														status: Schema.String,
+														validation_errors: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(Schema.Struct({ message: Schema.String }), [
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																])
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										),
+										Schema.Null,
+									]),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.Null,
+		]),
+		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		isThirdParty: Schema.Boolean,
+		appLevelAccessControlEnabled: Schema.Boolean,
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetResponse = {
 	readonly tenantId: string
@@ -426,7 +528,7 @@ export type GetResponse = {
 		readonly backchannelLogoutUri?: string
 		readonly backchannelLogoutSessionRequired?: boolean
 		readonly logoUri?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customClientMetadata: {
 		readonly corsAllowedOrigins?: ReadonlyArray<string>
 		readonly idTokenTtl?: number
@@ -438,33 +540,39 @@ export type GetResponse = {
 		readonly allowTokenExchange?: boolean
 		readonly isDeviceFlow?: boolean
 		readonly maxAllowedGrants?: number
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly protectedAppMetadata:
 		| ({
 				readonly host: string
 				readonly origin: string
 				readonly sessionDuration: number
-				readonly pageRules: ReadonlyArray<{ readonly path: string }>
+				readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 				readonly additionalScopes?: ReadonlyArray<
 					'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
 				>
-				readonly customDomains?: ReadonlyArray<{
-					readonly domain: string
-					readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-					readonly errorMessage: string | null
-					readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
-					readonly cloudflareData:
-						| ({
-								readonly id: string
-								readonly status: string
-								readonly ssl: {
+				readonly customDomains?: ReadonlyArray<
+					{
+						readonly domain: string
+						readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+						readonly errorMessage: string | null
+						readonly dnsRecords: ReadonlyArray<
+							{ readonly name: string; readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+						>
+						readonly cloudflareData:
+							| ({
+									readonly id: string
 									readonly status: string
-									readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-								}
-								readonly verification_errors?: ReadonlyArray<string>
-						  } & { readonly [x: string]: Schema.Json })
-						| null
-				}>
+									readonly ssl: {
+										readonly status: string
+										readonly validation_errors?: ReadonlyArray<
+											{ readonly message: string } & { readonly [x: string]: Schema.Json }
+										>
+									} & { readonly [x: string]: Schema.Json }
+									readonly verification_errors?: ReadonlyArray<string>
+							  } & { readonly [x: string]: Schema.Json })
+							| null
+					} & { readonly [x: string]: Schema.Json }
+				>
 		  } & { readonly [x: string]: Schema.Json })
 		| null
 	readonly customData: { readonly [x: string]: Schema.Json }
@@ -472,175 +580,57 @@ export type GetResponse = {
 	readonly appLevelAccessControlEnabled: boolean
 	readonly createdAt: number
 	readonly isAdmin: boolean
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	secret: Schema.optionalKey(ApplicationLegacySecret),
-	description: Schema.Union([Schema.String, Schema.Null]),
-	type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
-	oidcClientMetadata: Schema.Struct({
-		redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-		postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-		backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-		logoUri: Schema.optionalKey(Schema.String),
-	}),
-	customClientMetadata: Schema.Struct({
-		corsAllowedOrigins: Schema.optionalKey(
-			Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		tenantId: Schema.optionalKey(Schema.String),
-		alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-		rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-		allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-		isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-		maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	protectedAppMetadata: Schema.Union([
-		Schema.StructWithRest(
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		secret: Schema.optionalKey(ApplicationLegacySecret),
+		description: Schema.Union([Schema.String, Schema.Null]),
+		type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
+		oidcClientMetadata: Schema.StructWithRest(
 			Schema.Struct({
-				host: Schema.String,
-				origin: Schema.String,
-				sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-				additionalScopes: Schema.optionalKey(
-					Schema.Array(
-						Schema.Literals([
-							'custom_data',
-							'identities',
-							'roles',
-							'urn:logto:scope:organizations',
-							'urn:logto:scope:organization_roles',
-						])
-					)
-				),
-				customDomains: Schema.optionalKey(
-					Schema.Array(
-						Schema.Struct({
-							domain: Schema.String,
-							status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-							errorMessage: Schema.Union([Schema.String, Schema.Null]),
-							dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-							cloudflareData: Schema.Union([
-								Schema.StructWithRest(
-									Schema.Struct({
-										id: Schema.String,
-										status: Schema.String,
-										ssl: Schema.Struct({
-											status: Schema.String,
-											validation_errors: Schema.optionalKey(Schema.Array(Schema.Struct({ message: Schema.String }))),
-										}),
-										verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-									}),
-									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-								),
-								Schema.Null,
-							]),
-						})
-					)
-				),
+				redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+				postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+				backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+				logoUri: Schema.optionalKey(Schema.String),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		Schema.Null,
-	]),
-	customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	isThirdParty: Schema.Boolean,
-	appLevelAccessControlEnabled: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	isAdmin: Schema.Boolean,
-})
-
-export type UpdatePayload = {
-	readonly name?: string
-	readonly description?: string | null
-	readonly oidcClientMetadata?: {
-		readonly redirectUris: ReadonlyArray<string>
-		readonly postLogoutRedirectUris: ReadonlyArray<string>
-		readonly backchannelLogoutUri?: string
-		readonly backchannelLogoutSessionRequired?: boolean
-		readonly logoUri?: string
-	}
-	readonly customClientMetadata?: {
-		readonly corsAllowedOrigins?: ReadonlyArray<string>
-		readonly idTokenTtl?: number
-		readonly refreshTokenTtl?: number
-		readonly refreshTokenTtlInDays?: number
-		readonly tenantId?: string
-		readonly alwaysIssueRefreshToken?: boolean
-		readonly rotateRefreshToken?: boolean
-		readonly allowTokenExchange?: boolean
-		readonly isDeviceFlow?: boolean
-		readonly maxAllowedGrants?: number
-	}
-	readonly customData?: { readonly [x: string]: Schema.Json }
-	readonly appLevelAccessControlEnabled?: boolean
-	readonly protectedAppMetadata?:
-		| ({
-				readonly origin?: string
-				readonly sessionDuration?: number
-				readonly pageRules?: ReadonlyArray<{ readonly path: string }>
-				readonly additionalScopes?: ReadonlyArray<
-					'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
-				>
-		  } & { readonly [x: string]: Schema.Json })
-		| null
-	readonly isAdmin?: boolean
-}
-export const UpdatePayload = Schema.Struct({
-	name: Schema.optionalKey(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		)
-	),
-	description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-	oidcClientMetadata: Schema.optionalKey(
-		Schema.Struct({
-			redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-			postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-			backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-			logoUri: Schema.optionalKey(Schema.String),
-		})
-	),
-	customClientMetadata: Schema.optionalKey(
-		Schema.Struct({
-			corsAllowedOrigins: Schema.optionalKey(
-				Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
-			),
-			idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-			tenantId: Schema.optionalKey(Schema.String),
-			alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-			rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-			allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-			isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-			maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		})
-	),
-	customData: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
-	),
-	appLevelAccessControlEnabled: Schema.optionalKey(
-		Schema.Boolean.annotate({ description: 'Whether app-level access control is enabled for this application.' })
-	),
-	protectedAppMetadata: Schema.optionalKey(
-		Schema.Union([
+		customClientMetadata: Schema.StructWithRest(
+			Schema.Struct({
+				corsAllowedOrigins: Schema.optionalKey(
+					Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+				),
+				idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				tenantId: Schema.optionalKey(Schema.String),
+				alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+				rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+				allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+				isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+				maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		protectedAppMetadata: Schema.Union([
 			Schema.StructWithRest(
 				Schema.Struct({
-					origin: Schema.optionalKey(Schema.String),
-					sessionDuration: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-					pageRules: Schema.optionalKey(Schema.Array(Schema.Struct({ path: Schema.String }))),
+					host: Schema.String,
+					origin: Schema.String,
+					sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					pageRules: Schema.Array(
+						Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					),
 					additionalScopes: Schema.optionalKey(
 						Schema.Array(
 							Schema.Literals([
@@ -652,18 +642,190 @@ export const UpdatePayload = Schema.Struct({
 							])
 						)
 					),
+					customDomains: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									domain: Schema.String,
+									status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+									errorMessage: Schema.Union([Schema.String, Schema.Null]),
+									dnsRecords: Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									cloudflareData: Schema.Union([
+										Schema.StructWithRest(
+											Schema.Struct({
+												id: Schema.String,
+												status: Schema.String,
+												ssl: Schema.StructWithRest(
+													Schema.Struct({
+														status: Schema.String,
+														validation_errors: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(Schema.Struct({ message: Schema.String }), [
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																])
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										),
+										Schema.Null,
+									]),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						)
+					),
 				}),
 				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
 			Schema.Null,
-		])
-	),
-	isAdmin: Schema.optionalKey(
-		Schema.Boolean.annotate({
-			description: 'Whether the application has admin access. User can enable the admin access for Machine-to-Machine apps.',
-		})
-	),
-})
+		]),
+		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		isThirdParty: Schema.Boolean,
+		appLevelAccessControlEnabled: Schema.Boolean,
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		isAdmin: Schema.Boolean,
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type UpdatePayload = {
+	readonly name?: string
+	readonly description?: string | null
+	readonly oidcClientMetadata?: {
+		readonly redirectUris: ReadonlyArray<string>
+		readonly postLogoutRedirectUris: ReadonlyArray<string>
+		readonly backchannelLogoutUri?: string
+		readonly backchannelLogoutSessionRequired?: boolean
+		readonly logoUri?: string
+	} & { readonly [x: string]: Schema.Json }
+	readonly customClientMetadata?: {
+		readonly corsAllowedOrigins?: ReadonlyArray<string>
+		readonly idTokenTtl?: number
+		readonly refreshTokenTtl?: number
+		readonly refreshTokenTtlInDays?: number
+		readonly tenantId?: string
+		readonly alwaysIssueRefreshToken?: boolean
+		readonly rotateRefreshToken?: boolean
+		readonly allowTokenExchange?: boolean
+		readonly isDeviceFlow?: boolean
+		readonly maxAllowedGrants?: number
+	} & { readonly [x: string]: Schema.Json }
+	readonly customData?: { readonly [x: string]: Schema.Json }
+	readonly appLevelAccessControlEnabled?: boolean
+	readonly protectedAppMetadata?:
+		| ({
+				readonly origin?: string
+				readonly sessionDuration?: number
+				readonly pageRules?: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
+				readonly additionalScopes?: ReadonlyArray<
+					'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
+				>
+		  } & { readonly [x: string]: Schema.Json })
+		| null
+	readonly isAdmin?: boolean
+} & { readonly [x: string]: Schema.Json }
+export const UpdatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		name: Schema.optionalKey(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			)
+		),
+		description: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+		oidcClientMetadata: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+					postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+					backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+					logoUri: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customClientMetadata: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					corsAllowedOrigins: Schema.optionalKey(
+						Schema.Array(
+							Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+						)
+					),
+					idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+					refreshTokenTtlInDays: Schema.optionalKey(
+						Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+					),
+					tenantId: Schema.optionalKey(Schema.String),
+					alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+					rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+					allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+					isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+					maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customData: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
+		),
+		appLevelAccessControlEnabled: Schema.optionalKey(
+			Schema.Boolean.annotate({ description: 'Whether app-level access control is enabled for this application.' })
+		),
+		protectedAppMetadata: Schema.optionalKey(
+			Schema.Union([
+				Schema.StructWithRest(
+					Schema.Struct({
+						origin: Schema.optionalKey(Schema.String),
+						sessionDuration: Schema.optionalKey(
+							Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+						),
+						pageRules: Schema.optionalKey(
+							Schema.Array(
+								Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+									Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+								])
+							)
+						),
+						additionalScopes: Schema.optionalKey(
+							Schema.Array(
+								Schema.Literals([
+									'custom_data',
+									'identities',
+									'roles',
+									'urn:logto:scope:organizations',
+									'urn:logto:scope:organization_roles',
+								])
+							)
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.Null,
+			])
+		),
+		isAdmin: Schema.optionalKey(
+			Schema.Boolean.annotate({
+				description: 'Whether the application has admin access. User can enable the admin access for Machine-to-Machine apps.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateResponse = {
 	readonly tenantId: string
@@ -678,7 +840,7 @@ export type UpdateResponse = {
 		readonly backchannelLogoutUri?: string
 		readonly backchannelLogoutSessionRequired?: boolean
 		readonly logoUri?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customClientMetadata: {
 		readonly corsAllowedOrigins?: ReadonlyArray<string>
 		readonly idTokenTtl?: number
@@ -690,125 +852,164 @@ export type UpdateResponse = {
 		readonly allowTokenExchange?: boolean
 		readonly isDeviceFlow?: boolean
 		readonly maxAllowedGrants?: number
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly protectedAppMetadata:
 		| ({
 				readonly host: string
 				readonly origin: string
 				readonly sessionDuration: number
-				readonly pageRules: ReadonlyArray<{ readonly path: string }>
+				readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 				readonly additionalScopes?: ReadonlyArray<
 					'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
 				>
-				readonly customDomains?: ReadonlyArray<{
-					readonly domain: string
-					readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-					readonly errorMessage: string | null
-					readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
-					readonly cloudflareData:
-						| ({
-								readonly id: string
-								readonly status: string
-								readonly ssl: {
+				readonly customDomains?: ReadonlyArray<
+					{
+						readonly domain: string
+						readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+						readonly errorMessage: string | null
+						readonly dnsRecords: ReadonlyArray<
+							{ readonly name: string; readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+						>
+						readonly cloudflareData:
+							| ({
+									readonly id: string
 									readonly status: string
-									readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-								}
-								readonly verification_errors?: ReadonlyArray<string>
-						  } & { readonly [x: string]: Schema.Json })
-						| null
-				}>
+									readonly ssl: {
+										readonly status: string
+										readonly validation_errors?: ReadonlyArray<
+											{ readonly message: string } & { readonly [x: string]: Schema.Json }
+										>
+									} & { readonly [x: string]: Schema.Json }
+									readonly verification_errors?: ReadonlyArray<string>
+							  } & { readonly [x: string]: Schema.Json })
+							| null
+					} & { readonly [x: string]: Schema.Json }
+				>
 		  } & { readonly [x: string]: Schema.Json })
 		| null
 	readonly customData: { readonly [x: string]: Schema.Json }
 	readonly isThirdParty: boolean
 	readonly appLevelAccessControlEnabled: boolean
 	readonly createdAt: number
-}
-export const UpdateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	secret: Schema.optionalKey(ApplicationLegacySecret),
-	description: Schema.Union([Schema.String, Schema.Null]),
-	type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
-	oidcClientMetadata: Schema.Struct({
-		redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-		postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-		backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-		logoUri: Schema.optionalKey(Schema.String),
-	}),
-	customClientMetadata: Schema.Struct({
-		corsAllowedOrigins: Schema.optionalKey(
-			Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+} & { readonly [x: string]: Schema.Json }
+export const UpdateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		tenantId: Schema.optionalKey(Schema.String),
-		alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-		rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-		allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-		isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-		maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	protectedAppMetadata: Schema.Union([
-		Schema.StructWithRest(
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		secret: Schema.optionalKey(ApplicationLegacySecret),
+		description: Schema.Union([Schema.String, Schema.Null]),
+		type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
+		oidcClientMetadata: Schema.StructWithRest(
 			Schema.Struct({
-				host: Schema.String,
-				origin: Schema.String,
-				sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-				additionalScopes: Schema.optionalKey(
-					Schema.Array(
-						Schema.Literals([
-							'custom_data',
-							'identities',
-							'roles',
-							'urn:logto:scope:organizations',
-							'urn:logto:scope:organization_roles',
-						])
-					)
-				),
-				customDomains: Schema.optionalKey(
-					Schema.Array(
-						Schema.Struct({
-							domain: Schema.String,
-							status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-							errorMessage: Schema.Union([Schema.String, Schema.Null]),
-							dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-							cloudflareData: Schema.Union([
-								Schema.StructWithRest(
-									Schema.Struct({
-										id: Schema.String,
-										status: Schema.String,
-										ssl: Schema.Struct({
-											status: Schema.String,
-											validation_errors: Schema.optionalKey(Schema.Array(Schema.Struct({ message: Schema.String }))),
-										}),
-										verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-									}),
-									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-								),
-								Schema.Null,
-							]),
-						})
-					)
-				),
+				redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+				postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+				backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+				logoUri: Schema.optionalKey(Schema.String),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		Schema.Null,
-	]),
-	customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	isThirdParty: Schema.Boolean,
-	appLevelAccessControlEnabled: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+		customClientMetadata: Schema.StructWithRest(
+			Schema.Struct({
+				corsAllowedOrigins: Schema.optionalKey(
+					Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+				),
+				idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				tenantId: Schema.optionalKey(Schema.String),
+				alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+				rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+				allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+				isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+				maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		protectedAppMetadata: Schema.Union([
+			Schema.StructWithRest(
+				Schema.Struct({
+					host: Schema.String,
+					origin: Schema.String,
+					sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					pageRules: Schema.Array(
+						Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					),
+					additionalScopes: Schema.optionalKey(
+						Schema.Array(
+							Schema.Literals([
+								'custom_data',
+								'identities',
+								'roles',
+								'urn:logto:scope:organizations',
+								'urn:logto:scope:organization_roles',
+							])
+						)
+					),
+					customDomains: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									domain: Schema.String,
+									status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+									errorMessage: Schema.Union([Schema.String, Schema.Null]),
+									dnsRecords: Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									cloudflareData: Schema.Union([
+										Schema.StructWithRest(
+											Schema.Struct({
+												id: Schema.String,
+												status: Schema.String,
+												ssl: Schema.StructWithRest(
+													Schema.Struct({
+														status: Schema.String,
+														validation_errors: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(Schema.Struct({ message: Schema.String }), [
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																])
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										),
+										Schema.Null,
+									]),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.Null,
+		]),
+		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		isThirdParty: Schema.Boolean,
+		appLevelAccessControlEnabled: Schema.Boolean,
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateCustomDataPayload = { readonly [x: string]: Schema.Json }
 export const UpdateCustomDataPayload = Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
@@ -824,54 +1025,80 @@ export type GetAccessControlResponse = {
 	readonly userIds: ReadonlyArray<string>
 	readonly userRoleIds: ReadonlyArray<string>
 	readonly organizationIds: ReadonlyArray<string>
-	readonly organizationRoleRules: ReadonlyArray<{ readonly organizationId: string; readonly organizationRoleIds: ReadonlyArray<string> }>
-}
-export const GetAccessControlResponse = Schema.Struct({
-	userIds: Schema.Array(Schema.String),
-	userRoleIds: Schema.Array(Schema.String),
-	organizationIds: Schema.Array(Schema.String),
-	organizationRoleRules: Schema.Array(Schema.Struct({ organizationId: Schema.String, organizationRoleIds: Schema.Array(Schema.String) })),
-})
+	readonly organizationRoleRules: ReadonlyArray<
+		{ readonly organizationId: string; readonly organizationRoleIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+	>
+} & { readonly [x: string]: Schema.Json }
+export const GetAccessControlResponse = Schema.StructWithRest(
+	Schema.Struct({
+		userIds: Schema.Array(Schema.String),
+		userRoleIds: Schema.Array(Schema.String),
+		organizationIds: Schema.Array(Schema.String),
+		organizationRoleRules: Schema.Array(
+			Schema.StructWithRest(Schema.Struct({ organizationId: Schema.String, organizationRoleIds: Schema.Array(Schema.String) }), [
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			])
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ReplaceAccessControlPayload = {
 	readonly userIds: ReadonlyArray<string>
 	readonly userRoleIds: ReadonlyArray<string>
 	readonly organizationIds: ReadonlyArray<string>
-	readonly organizationRoleRules: ReadonlyArray<{ readonly organizationId: string; readonly organizationRoleIds: ReadonlyArray<string> }>
-}
-export const ReplaceAccessControlPayload = Schema.Struct({
-	userIds: Schema.Array(Schema.String).annotate({ description: 'An array of user IDs that can access the application.' }),
-	userRoleIds: Schema.Array(Schema.String).annotate({
-		description: 'An array of user role IDs whose assigned users can access the application.',
+	readonly organizationRoleRules: ReadonlyArray<
+		{ readonly organizationId: string; readonly organizationRoleIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+	>
+} & { readonly [x: string]: Schema.Json }
+export const ReplaceAccessControlPayload = Schema.StructWithRest(
+	Schema.Struct({
+		userIds: Schema.Array(Schema.String).annotate({ description: 'An array of user IDs that can access the application.' }),
+		userRoleIds: Schema.Array(Schema.String).annotate({
+			description: 'An array of user role IDs whose assigned users can access the application.',
+		}),
+		organizationIds: Schema.Array(Schema.String).annotate({
+			description: 'An array of organization IDs whose members can access the application.',
+		}),
+		organizationRoleRules: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					organizationId: Schema.String,
+					organizationRoleIds: Schema.Array(Schema.String).check(
+						Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		).annotate({
+			description:
+				'An array of organization-role rule groups. Each group contains an organization ID and the organization role IDs that can access the application in that organization.',
+		}),
 	}),
-	organizationIds: Schema.Array(Schema.String).annotate({
-		description: 'An array of organization IDs whose members can access the application.',
-	}),
-	organizationRoleRules: Schema.Array(
-		Schema.Struct({
-			organizationId: Schema.String,
-			organizationRoleIds: Schema.Array(Schema.String).check(
-				Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-			),
-		})
-	).annotate({
-		description:
-			'An array of organization-role rule groups. Each group contains an organization ID and the organization role IDs that can access the application in that organization.',
-	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ReplaceAccessControlResponse = {
 	readonly userIds: ReadonlyArray<string>
 	readonly userRoleIds: ReadonlyArray<string>
 	readonly organizationIds: ReadonlyArray<string>
-	readonly organizationRoleRules: ReadonlyArray<{ readonly organizationId: string; readonly organizationRoleIds: ReadonlyArray<string> }>
-}
-export const ReplaceAccessControlResponse = Schema.Struct({
-	userIds: Schema.Array(Schema.String),
-	userRoleIds: Schema.Array(Schema.String),
-	organizationIds: Schema.Array(Schema.String),
-	organizationRoleRules: Schema.Array(Schema.Struct({ organizationId: Schema.String, organizationRoleIds: Schema.Array(Schema.String) })),
-})
+	readonly organizationRoleRules: ReadonlyArray<
+		{ readonly organizationId: string; readonly organizationRoleIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+	>
+} & { readonly [x: string]: Schema.Json }
+export const ReplaceAccessControlResponse = Schema.StructWithRest(
+	Schema.Struct({
+		userIds: Schema.Array(Schema.String),
+		userRoleIds: Schema.Array(Schema.String),
+		organizationIds: Schema.Array(Schema.String),
+		organizationRoleRules: Schema.Array(
+			Schema.StructWithRest(Schema.Struct({ organizationId: Schema.String, organizationRoleIds: Schema.Array(Schema.String) }), [
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			])
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListRolesParams = { readonly page?: number; readonly page_size?: number; readonly search_params?: SearchParams }
 export const ListRolesParams = Schema.Struct({
@@ -888,100 +1115,140 @@ export const ListRolesParams = Schema.Struct({
 	search_params: Schema.optionalKey(SearchParams),
 })
 
-export type ListRolesResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly description: string
-	readonly type: 'User' | 'MachineToMachine'
-	readonly isDefault: boolean
-}>
+export type ListRolesResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly name: string
+		readonly description: string
+		readonly type: 'User' | 'MachineToMachine'
+		readonly isDefault: boolean
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListRolesResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		type: Schema.Literals(['User', 'MachineToMachine']),
-		isDefault: Schema.Boolean,
-	})
-)
-
-export type ReplaceRolesPayload = { readonly roleIds: ReadonlyArray<string> }
-export const ReplaceRolesPayload = Schema.Struct({
-	roleIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({ description: 'An array of API resource role IDs to update for the application.' }),
-})
-
-export type AssignRolesPayload = { readonly roleIds: ReadonlyArray<string> }
-export const AssignRolesPayload = Schema.Struct({
-	roleIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({ description: 'An array of API resource role IDs to assign.' }),
-})
-
-export type AssignRolesResponse = { readonly roleIds: ReadonlyArray<string>; readonly addedRoleIds: ReadonlyArray<string> }
-export const AssignRolesResponse = Schema.Struct({
-	roleIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({ description: 'An array of API resource role IDs requested for assignment.' }),
-	addedRoleIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({
-		description:
-			'An array of API resource role IDs newly assigned to the application. Role IDs already attached to the application are silently ignored and not present in this array.',
-	}),
-})
-
-export type ListProtectedAppMetadataCustomDomainsResponse = ReadonlyArray<{
-	readonly domain: string
-	readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-	readonly errorMessage: string | null
-	readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
-	readonly cloudflareData:
-		| ({
-				readonly id: string
-				readonly status: string
-				readonly ssl: { readonly status: string; readonly validation_errors?: ReadonlyArray<{ readonly message: string }> }
-				readonly verification_errors?: ReadonlyArray<string>
-		  } & { readonly [x: string]: Schema.Json })
-		| null
-}>
-export const ListProtectedAppMetadataCustomDomainsResponse = Schema.Array(
-	Schema.Struct({
-		domain: Schema.String,
-		status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-		errorMessage: Schema.Union([Schema.String, Schema.Null]),
-		dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-		cloudflareData: Schema.Union([
-			Schema.StructWithRest(
-				Schema.Struct({
-					id: Schema.String,
-					status: Schema.String,
-					ssl: Schema.Struct({
-						status: Schema.String,
-						validation_errors: Schema.optionalKey(Schema.Array(Schema.Struct({ message: Schema.String }))),
-					}),
-					verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-				}),
-				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			Schema.Null,
-		]),
-	})
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			description: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			type: Schema.Literals(['User', 'MachineToMachine']),
+			isDefault: Schema.Boolean,
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
-export type CreateProtectedAppMetadataCustomDomainPayload = { readonly domain: string }
-export const CreateProtectedAppMetadataCustomDomainPayload = Schema.Struct({
-	domain: Schema.String.annotate({ description: 'The domain to be added to the application.' }),
-})
+export type ReplaceRolesPayload = { readonly roleIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+export const ReplaceRolesPayload = Schema.StructWithRest(
+	Schema.Struct({
+		roleIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({ description: 'An array of API resource role IDs to update for the application.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type AssignRolesPayload = { readonly roleIds: ReadonlyArray<string> } & { readonly [x: string]: Schema.Json }
+export const AssignRolesPayload = Schema.StructWithRest(
+	Schema.Struct({
+		roleIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({ description: 'An array of API resource role IDs to assign.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type AssignRolesResponse = { readonly roleIds: ReadonlyArray<string>; readonly addedRoleIds: ReadonlyArray<string> } & {
+	readonly [x: string]: Schema.Json
+}
+export const AssignRolesResponse = Schema.StructWithRest(
+	Schema.Struct({
+		roleIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({ description: 'An array of API resource role IDs requested for assignment.' }),
+		addedRoleIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({
+			description:
+				'An array of API resource role IDs newly assigned to the application. Role IDs already attached to the application are silently ignored and not present in this array.',
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type ListProtectedAppMetadataCustomDomainsResponse = ReadonlyArray<
+	{
+		readonly domain: string
+		readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+		readonly errorMessage: string | null
+		readonly dnsRecords: ReadonlyArray<
+			{ readonly name: string; readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+		>
+		readonly cloudflareData:
+			| ({
+					readonly id: string
+					readonly status: string
+					readonly ssl: {
+						readonly status: string
+						readonly validation_errors?: ReadonlyArray<{ readonly message: string } & { readonly [x: string]: Schema.Json }>
+					} & { readonly [x: string]: Schema.Json }
+					readonly verification_errors?: ReadonlyArray<string>
+			  } & { readonly [x: string]: Schema.Json })
+			| null
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ListProtectedAppMetadataCustomDomainsResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			domain: Schema.String,
+			status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+			errorMessage: Schema.Union([Schema.String, Schema.Null]),
+			dnsRecords: Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
+			),
+			cloudflareData: Schema.Union([
+				Schema.StructWithRest(
+					Schema.Struct({
+						id: Schema.String,
+						status: Schema.String,
+						ssl: Schema.StructWithRest(
+							Schema.Struct({
+								status: Schema.String,
+								validation_errors: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(Schema.Struct({ message: Schema.String }), [
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+										])
+									)
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.Null,
+			]),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
+
+export type CreateProtectedAppMetadataCustomDomainPayload = { readonly domain: string } & { readonly [x: string]: Schema.Json }
+export const CreateProtectedAppMetadataCustomDomainPayload = Schema.StructWithRest(
+	Schema.Struct({ domain: Schema.String.annotate({ description: 'The domain to be added to the application.' }) }),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListOrganizationsParams = { readonly page?: number; readonly page_size?: number }
 export const ListOrganizationsParams = Schema.Struct({
@@ -997,66 +1264,85 @@ export const ListOrganizationsParams = Schema.Struct({
 	),
 })
 
-export type ListOrganizationsResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly description: string | null
-	readonly customData: { readonly [x: string]: Schema.Json }
-	readonly isMfaRequired: boolean
-	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string }
-	readonly branding: {
-		readonly logoUrl?: string
-		readonly darkLogoUrl?: string
-		readonly favicon?: string
-		readonly darkFavicon?: string
-	}
-	readonly customCss: string | null
-	readonly createdAt: number
-	readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string }>
-}>
+export type ListOrganizationsResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly name: string
+		readonly description: string | null
+		readonly customData: { readonly [x: string]: Schema.Json }
+		readonly isMfaRequired: boolean
+		readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
+			readonly [x: string]: Schema.Json
+		}
+		readonly branding: {
+			readonly logoUrl?: string
+			readonly darkLogoUrl?: string
+			readonly favicon?: string
+			readonly darkFavicon?: string
+		} & { readonly [x: string]: Schema.Json }
+		readonly customCss: string | null
+		readonly createdAt: number
+		readonly organizationRoles: ReadonlyArray<{ readonly id: string; readonly name: string } & { readonly [x: string]: Schema.Json }>
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListOrganizationsResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		description: Schema.Union([
-			Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-			Schema.Null,
-		]),
-		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-		isMfaRequired: Schema.Boolean,
-		color: Schema.Struct({
-			primaryColor: Schema.optionalKey(
-				Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-					})
-				)
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
-			darkPrimaryColor: Schema.optionalKey(
-				Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-					})
-				)
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			description: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+				Schema.Null,
+			]),
+			customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'arbitrary',
+			}),
+			isMfaRequired: Schema.Boolean,
+			color: Schema.StructWithRest(
+				Schema.Struct({
+					primaryColor: Schema.optionalKey(
+						Schema.String.annotate({ format: 'regex' }).check(
+							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+							})
+						)
+					),
+					isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
+					darkPrimaryColor: Schema.optionalKey(
+						Schema.String.annotate({ format: 'regex' }).check(
+							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+							})
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			branding: Schema.StructWithRest(
+				Schema.Struct({
+					logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			customCss: Schema.Union([Schema.String, Schema.Null]),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			organizationRoles: Schema.Array(
+				Schema.StructWithRest(Schema.Struct({ id: Schema.String, name: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				])
 			),
 		}),
-		branding: Schema.Struct({
-			logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		}),
-		customCss: Schema.Union([Schema.String, Schema.Null]),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		organizationRoles: Schema.Array(Schema.Struct({ id: Schema.String, name: Schema.String })),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type DeleteLegacySecretResponse = {
@@ -1072,7 +1358,7 @@ export type DeleteLegacySecretResponse = {
 		readonly backchannelLogoutUri?: string
 		readonly backchannelLogoutSessionRequired?: boolean
 		readonly logoUri?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customClientMetadata: {
 		readonly corsAllowedOrigins?: ReadonlyArray<string>
 		readonly idTokenTtl?: number
@@ -1084,166 +1370,213 @@ export type DeleteLegacySecretResponse = {
 		readonly allowTokenExchange?: boolean
 		readonly isDeviceFlow?: boolean
 		readonly maxAllowedGrants?: number
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly protectedAppMetadata:
 		| ({
 				readonly host: string
 				readonly origin: string
 				readonly sessionDuration: number
-				readonly pageRules: ReadonlyArray<{ readonly path: string }>
+				readonly pageRules: ReadonlyArray<{ readonly path: string } & { readonly [x: string]: Schema.Json }>
 				readonly additionalScopes?: ReadonlyArray<
 					'custom_data' | 'identities' | 'roles' | 'urn:logto:scope:organizations' | 'urn:logto:scope:organization_roles'
 				>
-				readonly customDomains?: ReadonlyArray<{
-					readonly domain: string
-					readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
-					readonly errorMessage: string | null
-					readonly dnsRecords: ReadonlyArray<{ readonly name: string; readonly type: string; readonly value: string }>
-					readonly cloudflareData:
-						| ({
-								readonly id: string
-								readonly status: string
-								readonly ssl: {
+				readonly customDomains?: ReadonlyArray<
+					{
+						readonly domain: string
+						readonly status: 'PendingVerification' | 'PendingSsl' | 'Active' | 'Error'
+						readonly errorMessage: string | null
+						readonly dnsRecords: ReadonlyArray<
+							{ readonly name: string; readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
+						>
+						readonly cloudflareData:
+							| ({
+									readonly id: string
 									readonly status: string
-									readonly validation_errors?: ReadonlyArray<{ readonly message: string }>
-								}
-								readonly verification_errors?: ReadonlyArray<string>
-						  } & { readonly [x: string]: Schema.Json })
-						| null
-				}>
+									readonly ssl: {
+										readonly status: string
+										readonly validation_errors?: ReadonlyArray<
+											{ readonly message: string } & { readonly [x: string]: Schema.Json }
+										>
+									} & { readonly [x: string]: Schema.Json }
+									readonly verification_errors?: ReadonlyArray<string>
+							  } & { readonly [x: string]: Schema.Json })
+							| null
+					} & { readonly [x: string]: Schema.Json }
+				>
 		  } & { readonly [x: string]: Schema.Json })
 		| null
 	readonly customData: { readonly [x: string]: Schema.Json }
 	readonly isThirdParty: boolean
 	readonly appLevelAccessControlEnabled: boolean
 	readonly createdAt: number
-}
-export const DeleteLegacySecretResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	secret: Schema.optionalKey(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })
-		)
-	),
-	description: Schema.Union([Schema.String, Schema.Null]),
-	type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
-	oidcClientMetadata: Schema.Struct({
-		redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-		postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
-		backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
-		logoUri: Schema.optionalKey(Schema.String),
-	}),
-	customClientMetadata: Schema.Struct({
-		corsAllowedOrigins: Schema.optionalKey(
-			Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+} & { readonly [x: string]: Schema.Json }
+export const DeleteLegacySecretResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		tenantId: Schema.optionalKey(Schema.String),
-		alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
-		rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
-		allowTokenExchange: Schema.optionalKey(Schema.Boolean),
-		isDeviceFlow: Schema.optionalKey(Schema.Boolean),
-		maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	protectedAppMetadata: Schema.Union([
-		Schema.StructWithRest(
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		secret: Schema.optionalKey(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })
+			)
+		),
+		description: Schema.Union([Schema.String, Schema.Null]),
+		type: Schema.Literals(['Native', 'SPA', 'Traditional', 'MachineToMachine', 'Protected', 'SAML']),
+		oidcClientMetadata: Schema.StructWithRest(
 			Schema.Struct({
-				host: Schema.String,
-				origin: Schema.String,
-				sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				pageRules: Schema.Array(Schema.Struct({ path: Schema.String })),
-				additionalScopes: Schema.optionalKey(
-					Schema.Array(
-						Schema.Literals([
-							'custom_data',
-							'identities',
-							'roles',
-							'urn:logto:scope:organizations',
-							'urn:logto:scope:organization_roles',
-						])
-					)
-				),
-				customDomains: Schema.optionalKey(
-					Schema.Array(
-						Schema.Struct({
-							domain: Schema.String,
-							status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
-							errorMessage: Schema.Union([Schema.String, Schema.Null]),
-							dnsRecords: Schema.Array(Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String })),
-							cloudflareData: Schema.Union([
-								Schema.StructWithRest(
-									Schema.Struct({
-										id: Schema.String,
-										status: Schema.String,
-										ssl: Schema.Struct({
-											status: Schema.String,
-											validation_errors: Schema.optionalKey(Schema.Array(Schema.Struct({ message: Schema.String }))),
-										}),
-										verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
-									}),
-									[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-								),
-								Schema.Null,
-							]),
-						})
-					)
-				),
+				redirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+				postLogoutRedirectUris: Schema.Array(Schema.String.annotate({ format: 'uri' })),
+				backchannelLogoutUri: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				backchannelLogoutSessionRequired: Schema.optionalKey(Schema.Boolean),
+				logoUri: Schema.optionalKey(Schema.String),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		Schema.Null,
-	]),
-	customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	isThirdParty: Schema.Boolean,
-	appLevelAccessControlEnabled: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
-
-export type ListSecretsResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly applicationId: string
-	readonly name: string
-	readonly value: string
-	readonly createdAt: number
-	readonly expiresAt: number | null
-}>
-export const ListSecretsResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+		customClientMetadata: Schema.StructWithRest(
+			Schema.Struct({
+				corsAllowedOrigins: Schema.optionalKey(
+					Schema.Array(Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })))
+				),
+				idTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				refreshTokenTtl: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				refreshTokenTtlInDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				tenantId: Schema.optionalKey(Schema.String),
+				alwaysIssueRefreshToken: Schema.optionalKey(Schema.Boolean),
+				rotateRefreshToken: Schema.optionalKey(Schema.Boolean),
+				allowTokenExchange: Schema.optionalKey(Schema.Boolean),
+				isDeviceFlow: Schema.optionalKey(Schema.Boolean),
+				maxAllowedGrants: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
-		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-		),
-		value: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })
-		),
+		protectedAppMetadata: Schema.Union([
+			Schema.StructWithRest(
+				Schema.Struct({
+					host: Schema.String,
+					origin: Schema.String,
+					sessionDuration: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					pageRules: Schema.Array(
+						Schema.StructWithRest(Schema.Struct({ path: Schema.String }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					),
+					additionalScopes: Schema.optionalKey(
+						Schema.Array(
+							Schema.Literals([
+								'custom_data',
+								'identities',
+								'roles',
+								'urn:logto:scope:organizations',
+								'urn:logto:scope:organization_roles',
+							])
+						)
+					),
+					customDomains: Schema.optionalKey(
+						Schema.Array(
+							Schema.StructWithRest(
+								Schema.Struct({
+									domain: Schema.String,
+									status: Schema.Literals(['PendingVerification', 'PendingSsl', 'Active', 'Error']),
+									errorMessage: Schema.Union([Schema.String, Schema.Null]),
+									dnsRecords: Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({ name: Schema.String, type: Schema.String, value: Schema.String }),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									),
+									cloudflareData: Schema.Union([
+										Schema.StructWithRest(
+											Schema.Struct({
+												id: Schema.String,
+												status: Schema.String,
+												ssl: Schema.StructWithRest(
+													Schema.Struct({
+														status: Schema.String,
+														validation_errors: Schema.optionalKey(
+															Schema.Array(
+																Schema.StructWithRest(Schema.Struct({ message: Schema.String }), [
+																	Schema.Record(
+																		Schema.String,
+																		Schema.Json.annotate({ expected: 'JSON value' })
+																	),
+																])
+															)
+														),
+													}),
+													[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+												),
+												verification_errors: Schema.optionalKey(Schema.Array(Schema.String)),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										),
+										Schema.Null,
+									]),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							)
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			Schema.Null,
+		]),
+		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		isThirdParty: Schema.Boolean,
+		appLevelAccessControlEnabled: Schema.Boolean,
 		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		expiresAt: Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]),
-	})
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 )
 
-export type CreateSecretPayload = { readonly name: string; readonly expiresAt?: number | null }
-export const CreateSecretPayload = Schema.Struct({
-	name: Schema.String.annotate({ description: 'The secret name. Must be unique within the application.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-	expiresAt: Schema.optionalKey(
-		Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]).annotate({
-			description: 'The epoch time in milliseconds when the secret will expire. If not provided, the secret will never expire.',
-		})
-	),
-})
+export type ListSecretsResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly applicationId: string
+		readonly name: string
+		readonly value: string
+		readonly createdAt: number
+		readonly expiresAt: number | null
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ListSecretsResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+			),
+			value: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })
+			),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			expiresAt: Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
+
+export type CreateSecretPayload = { readonly name: string; readonly expiresAt?: number | null } & { readonly [x: string]: Schema.Json }
+export const CreateSecretPayload = Schema.StructWithRest(
+	Schema.Struct({
+		name: Schema.String.annotate({ description: 'The secret name. Must be unique within the application.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+		expiresAt: Schema.optionalKey(
+			Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]).annotate({
+				description: 'The epoch time in milliseconds when the secret will expire. If not provided, the secret will never expire.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateSecretResponse = {
 	readonly tenantId: string
@@ -1252,28 +1585,34 @@ export type CreateSecretResponse = {
 	readonly value: string
 	readonly createdAt: number
 	readonly expiresAt: number | null
-}
-export const CreateSecretResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	value: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })
-	),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]),
-})
+} & { readonly [x: string]: Schema.Json }
+export const CreateSecretResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		value: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type UpdateSecretPayload = { readonly name: string }
-export const UpdateSecretPayload = Schema.Struct({
-	name: Schema.String.annotate({ description: 'The secret name to update. Must be unique within the application.' })
-		.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-		.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-})
+export type UpdateSecretPayload = { readonly name: string } & { readonly [x: string]: Schema.Json }
+export const UpdateSecretPayload = Schema.StructWithRest(
+	Schema.Struct({
+		name: Schema.String.annotate({ description: 'The secret name to update. Must be unique within the application.' })
+			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+			.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateSecretResponse = {
 	readonly tenantId: string
@@ -1282,32 +1621,49 @@ export type UpdateSecretResponse = {
 	readonly value: string
 	readonly createdAt: number
 	readonly expiresAt: number | null
-}
-export const UpdateSecretResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
-	),
-	value: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })
-	),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpdateSecretResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
+		),
+		value: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })), Schema.Null]),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListUserConsentScopesResponse = {
-	readonly organizationScopes: ReadonlyArray<{ readonly id: string; readonly name: string; readonly description: string | null }>
-	readonly resourceScopes: ReadonlyArray<{
-		readonly resource: { readonly id: string; readonly name: string; readonly indicator: string }
-		readonly scopes: ReadonlyArray<{ readonly id: string; readonly name: string; readonly description: string | null }>
-	}>
-	readonly organizationResourceScopes: ReadonlyArray<{
-		readonly resource: { readonly id: string; readonly name: string; readonly indicator: string }
-		readonly scopes: ReadonlyArray<{ readonly id: string; readonly name: string; readonly description: string | null }>
-	}>
+	readonly organizationScopes: ReadonlyArray<
+		{ readonly id: string; readonly name: string; readonly description: string | null } & { readonly [x: string]: Schema.Json }
+	>
+	readonly resourceScopes: ReadonlyArray<
+		{
+			readonly resource: { readonly id: string; readonly name: string; readonly indicator: string } & {
+				readonly [x: string]: Schema.Json
+			}
+			readonly scopes: ReadonlyArray<
+				{ readonly id: string; readonly name: string; readonly description: string | null } & { readonly [x: string]: Schema.Json }
+			>
+		} & { readonly [x: string]: Schema.Json }
+	>
+	readonly organizationResourceScopes: ReadonlyArray<
+		{
+			readonly resource: { readonly id: string; readonly name: string; readonly indicator: string } & {
+				readonly [x: string]: Schema.Json
+			}
+			readonly scopes: ReadonlyArray<
+				{ readonly id: string; readonly name: string; readonly description: string | null } & { readonly [x: string]: Schema.Json }
+			>
+		} & { readonly [x: string]: Schema.Json }
+	>
 	readonly userScopes: ReadonlyArray<
 		| 'profile'
 		| 'email'
@@ -1321,82 +1677,110 @@ export type ListUserConsentScopesResponse = {
 		| 'urn:logto:scope:sessions'
 		| 'urn:logto:scope:trusted_devices'
 	>
-}
-export const ListUserConsentScopesResponse = Schema.Struct({
-	organizationScopes: Schema.Array(
-		Schema.Struct({
-			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-			),
-			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-			),
-			description: Schema.Union([
-				Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-				Schema.Null,
-			]),
-		})
-	).annotate({ description: 'A list of organization scope details assigned to the application.' }),
-	resourceScopes: Schema.Array(
-		Schema.Struct({
-			resource: Schema.Struct({
-				id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-				),
-				name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-				indicator: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-			}),
-			scopes: Schema.Array(
+} & { readonly [x: string]: Schema.Json }
+export const ListUserConsentScopesResponse = Schema.StructWithRest(
+	Schema.Struct({
+		organizationScopes: Schema.Array(
+			Schema.StructWithRest(
 				Schema.Struct({
 					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 					),
 					name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
+						Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 					),
-					description: Schema.Union([Schema.String, Schema.Null]),
-				})
-			),
-		})
-	).annotate({ description: 'A list of resource scope details grouped by resource id assigned to the application.' }),
-	organizationResourceScopes: Schema.Array(
-		Schema.Struct({
-			resource: Schema.Struct({
-				id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-					Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-				),
-				name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-				indicator: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-			}),
-			scopes: Schema.Array(
+					description: Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+						Schema.Null,
+					]),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		).annotate({ description: 'A list of organization scope details assigned to the application.' }),
+		resourceScopes: Schema.Array(
+			Schema.StructWithRest(
 				Schema.Struct({
-					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+					resource: Schema.StructWithRest(
+						Schema.Struct({
+							id: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+							name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+							indicator: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 					),
-					name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-						Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })
+					scopes: Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String.check(
+									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+								).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+								name: Schema.String.check(
+									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+								).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+								description: Schema.Union([Schema.String, Schema.Null]),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
 					),
-					description: Schema.Union([Schema.String, Schema.Null]),
-				})
-			),
-		})
-	).annotate({ description: 'A list of organization resource scope details grouped by resource id assigned to the application.' }),
-	userScopes: Schema.Array(
-		Schema.Literals([
-			'profile',
-			'email',
-			'phone',
-			'address',
-			'custom_data',
-			'identities',
-			'roles',
-			'urn:logto:scope:organizations',
-			'urn:logto:scope:organization_roles',
-			'urn:logto:scope:sessions',
-			'urn:logto:scope:trusted_devices',
-		])
-	).annotate({ description: 'A list of user scope enum value assigned to the application.' }),
-})
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		).annotate({ description: 'A list of resource scope details grouped by resource id assigned to the application.' }),
+		organizationResourceScopes: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					resource: Schema.StructWithRest(
+						Schema.Struct({
+							id: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+							name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+							indicator: Schema.String.check(
+								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+					scopes: Schema.Array(
+						Schema.StructWithRest(
+							Schema.Struct({
+								id: Schema.String.check(
+									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+								).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+								name: Schema.String.check(
+									Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
+								).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+								description: Schema.Union([Schema.String, Schema.Null]),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		).annotate({ description: 'A list of organization resource scope details grouped by resource id assigned to the application.' }),
+		userScopes: Schema.Array(
+			Schema.Literals([
+				'profile',
+				'email',
+				'phone',
+				'address',
+				'custom_data',
+				'identities',
+				'roles',
+				'urn:logto:scope:organizations',
+				'urn:logto:scope:organization_roles',
+				'urn:logto:scope:sessions',
+				'urn:logto:scope:trusted_devices',
+			])
+		).annotate({ description: 'A list of user scope enum value assigned to the application.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateUserConsentScopePayload = {
 	readonly organizationScopes?: ReadonlyArray<string>
@@ -1415,287 +1799,335 @@ export type CreateUserConsentScopePayload = {
 		| 'urn:logto:scope:sessions'
 		| 'urn:logto:scope:trusted_devices'
 	>
-}
-export const CreateUserConsentScopePayload = Schema.Struct({
-	organizationScopes: Schema.optionalKey(
-		Schema.Array(Schema.String).annotate({
-			description:
-				'A list of organization scope id to assign to the application. Throws error if any given organization scope is not found.',
-		})
-	),
-	resourceScopes: Schema.optionalKey(
-		Schema.Array(Schema.String).annotate({
-			description: 'A list of resource scope id to assign to the application. Throws error if any given resource scope is not found.',
-		})
-	),
-	organizationResourceScopes: Schema.optionalKey(
-		Schema.Array(Schema.String).annotate({
-			description:
-				'A list of organization resource scope id to assign to the application. Throws error if any given resource scope is not found.',
-		})
-	),
-	userScopes: Schema.optionalKey(
-		Schema.Array(
-			Schema.Literals([
-				'profile',
-				'email',
-				'phone',
-				'address',
-				'custom_data',
-				'identities',
-				'roles',
-				'urn:logto:scope:organizations',
-				'urn:logto:scope:organization_roles',
-				'urn:logto:scope:sessions',
-				'urn:logto:scope:trusted_devices',
-			])
-		).annotate({ description: 'A list of user scope enum value to assign to the application.' })
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const CreateUserConsentScopePayload = Schema.StructWithRest(
+	Schema.Struct({
+		organizationScopes: Schema.optionalKey(
+			Schema.Array(Schema.String).annotate({
+				description:
+					'A list of organization scope id to assign to the application. Throws error if any given organization scope is not found.',
+			})
+		),
+		resourceScopes: Schema.optionalKey(
+			Schema.Array(Schema.String).annotate({
+				description:
+					'A list of resource scope id to assign to the application. Throws error if any given resource scope is not found.',
+			})
+		),
+		organizationResourceScopes: Schema.optionalKey(
+			Schema.Array(Schema.String).annotate({
+				description:
+					'A list of organization resource scope id to assign to the application. Throws error if any given resource scope is not found.',
+			})
+		),
+		userScopes: Schema.optionalKey(
+			Schema.Array(
+				Schema.Literals([
+					'profile',
+					'email',
+					'phone',
+					'address',
+					'custom_data',
+					'identities',
+					'roles',
+					'urn:logto:scope:organizations',
+					'urn:logto:scope:organization_roles',
+					'urn:logto:scope:sessions',
+					'urn:logto:scope:trusted_devices',
+				])
+			).annotate({ description: 'A list of user scope enum value to assign to the application.' })
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetSignInExperienceResponse = {
 	readonly tenantId: string
 	readonly applicationId: string
-	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string }
+	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly branding: {
 		readonly logoUrl?: string
 		readonly darkLogoUrl?: string
 		readonly favicon?: string
 		readonly darkFavicon?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customCss: string | null
 	readonly termsOfUseUrl: string | null
 	readonly privacyPolicyUrl: string | null
 	readonly displayName: string | null
-}
-export const GetSignInExperienceResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	color: Schema.Struct({
-		primaryColor: Schema.optionalKey(
-			Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-					expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-				})
-			)
+} & { readonly [x: string]: Schema.Json }
+export const GetSignInExperienceResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
-		darkPrimaryColor: Schema.optionalKey(
-			Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-					expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-				})
-			)
+		color: Schema.StructWithRest(
+			Schema.Struct({
+				primaryColor: Schema.optionalKey(
+					Schema.String.annotate({ format: 'regex' }).check(
+						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+						})
+					)
+				),
+				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
+				darkPrimaryColor: Schema.optionalKey(
+					Schema.String.annotate({ format: 'regex' }).check(
+						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+						})
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
+		branding: Schema.StructWithRest(
+			Schema.Struct({
+				logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		customCss: Schema.Union([Schema.String, Schema.Null]),
+		termsOfUseUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		privacyPolicyUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		displayName: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+			Schema.Null,
+		]),
 	}),
-	branding: Schema.Struct({
-		logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-	}),
-	customCss: Schema.Union([Schema.String, Schema.Null]),
-	termsOfUseUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	privacyPolicyUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	displayName: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-		Schema.Null,
-	]),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ReplaceSignInExperiencePayload = {
-	readonly color?: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string }
+	readonly color?: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly branding?: {
 		readonly logoUrl?: string
 		readonly darkLogoUrl?: string
 		readonly favicon?: string
 		readonly darkFavicon?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customCss?: string | null
 	readonly displayName?: string | null
 	readonly termsOfUseUrl: string | null | string
 	readonly privacyPolicyUrl: string | null | string
-}
-export const ReplaceSignInExperiencePayload = Schema.Struct({
-	color: Schema.optionalKey(
-		Schema.Struct({
-			primaryColor: Schema.optionalKey(
-				Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-					})
-				)
-			),
-			isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
-			darkPrimaryColor: Schema.optionalKey(
-				Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-					})
-				)
-			),
-		})
-	),
-	branding: Schema.optionalKey(
-		Schema.Struct({
-			logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		})
-	),
-	customCss: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
-	displayName: Schema.optionalKey(
-		Schema.Union([
-			Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-			Schema.Null,
-		])
-	),
-	termsOfUseUrl: Schema.Union(
-		[
+} & { readonly [x: string]: Schema.Json }
+export const ReplaceSignInExperiencePayload = Schema.StructWithRest(
+	Schema.Struct({
+		color: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					primaryColor: Schema.optionalKey(
+						Schema.String.annotate({ format: 'regex' }).check(
+							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+							})
+						)
+					),
+					isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
+					darkPrimaryColor: Schema.optionalKey(
+						Schema.String.annotate({ format: 'regex' }).check(
+							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+							})
+						)
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		branding: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+					darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		customCss: Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+		displayName: Schema.optionalKey(
 			Schema.Union([
-				Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
+				Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
 				Schema.Null,
-			]).annotate({ format: 'url' }),
-			Schema.String.annotate({ format: 'empty' }),
-		],
-		{ mode: 'oneOf' }
-	),
-	privacyPolicyUrl: Schema.Union(
-		[
-			Schema.Union([
-				Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-				Schema.Null,
-			]).annotate({ format: 'url' }),
-			Schema.String.annotate({ format: 'empty' }),
-		],
-		{ mode: 'oneOf' }
-	),
-})
+			])
+		),
+		termsOfUseUrl: Schema.Union(
+			[
+				Schema.Union([
+					Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+					Schema.Null,
+				]).annotate({ format: 'url' }),
+				Schema.String.annotate({ format: 'empty' }),
+			],
+			{ mode: 'oneOf' }
+		),
+		privacyPolicyUrl: Schema.Union(
+			[
+				Schema.Union([
+					Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+					Schema.Null,
+				]).annotate({ format: 'url' }),
+				Schema.String.annotate({ format: 'empty' }),
+			],
+			{ mode: 'oneOf' }
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ReplaceSignInExperienceResponse200 = {
 	readonly tenantId: string
 	readonly applicationId: string
-	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string }
+	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly branding: {
 		readonly logoUrl?: string
 		readonly darkLogoUrl?: string
 		readonly favicon?: string
 		readonly darkFavicon?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customCss: string | null
 	readonly termsOfUseUrl: string | null
 	readonly privacyPolicyUrl: string | null
 	readonly displayName: string | null
-}
-export const ReplaceSignInExperienceResponse200 = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	color: Schema.Struct({
-		primaryColor: Schema.optionalKey(
-			Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-					expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-				})
-			)
+} & { readonly [x: string]: Schema.Json }
+export const ReplaceSignInExperienceResponse200 = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
-		darkPrimaryColor: Schema.optionalKey(
-			Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-					expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-				})
-			)
+		color: Schema.StructWithRest(
+			Schema.Struct({
+				primaryColor: Schema.optionalKey(
+					Schema.String.annotate({ format: 'regex' }).check(
+						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+						})
+					)
+				),
+				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
+				darkPrimaryColor: Schema.optionalKey(
+					Schema.String.annotate({ format: 'regex' }).check(
+						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+						})
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
+		branding: Schema.StructWithRest(
+			Schema.Struct({
+				logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		customCss: Schema.Union([Schema.String, Schema.Null]),
+		termsOfUseUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		privacyPolicyUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		displayName: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+			Schema.Null,
+		]),
 	}),
-	branding: Schema.Struct({
-		logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-	}),
-	customCss: Schema.Union([Schema.String, Schema.Null]),
-	termsOfUseUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	privacyPolicyUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	displayName: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-		Schema.Null,
-	]),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ReplaceSignInExperienceResponse201 = {
 	readonly tenantId: string
 	readonly applicationId: string
-	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string }
+	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly branding: {
 		readonly logoUrl?: string
 		readonly darkLogoUrl?: string
 		readonly favicon?: string
 		readonly darkFavicon?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly customCss: string | null
 	readonly termsOfUseUrl: string | null
 	readonly privacyPolicyUrl: string | null
 	readonly displayName: string | null
-}
-export const ReplaceSignInExperienceResponse201 = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	color: Schema.Struct({
-		primaryColor: Schema.optionalKey(
-			Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-					expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-				})
-			)
+} & { readonly [x: string]: Schema.Json }
+export const ReplaceSignInExperienceResponse201 = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		applicationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
-		darkPrimaryColor: Schema.optionalKey(
-			Schema.String.annotate({ format: 'regex' }).check(
-				Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-					expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-				})
-			)
+		color: Schema.StructWithRest(
+			Schema.Struct({
+				primaryColor: Schema.optionalKey(
+					Schema.String.annotate({ format: 'regex' }).check(
+						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+						})
+					)
+				),
+				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
+				darkPrimaryColor: Schema.optionalKey(
+					Schema.String.annotate({ format: 'regex' }).check(
+						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+						})
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
+		branding: Schema.StructWithRest(
+			Schema.Struct({
+				logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+				darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		customCss: Schema.Union([Schema.String, Schema.Null]),
+		termsOfUseUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		privacyPolicyUrl: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })),
+			Schema.Null,
+		]),
+		displayName: Schema.Union([
+			Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+			Schema.Null,
+		]),
 	}),
-	branding: Schema.Struct({
-		logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-		darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-	}),
-	customCss: Schema.Union([Schema.String, Schema.Null]),
-	termsOfUseUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	privacyPolicyUrl: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(2048).annotate({ expected: 'a value with a length of at most 2048' })),
-		Schema.Null,
-	]),
-	displayName: Schema.Union([
-		Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-		Schema.Null,
-	]),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListUserConsentOrganizationsParams = { readonly page?: number; readonly page_size?: number }
 export const ListUserConsentOrganizationsParams = Schema.Struct({
@@ -1712,84 +2144,112 @@ export const ListUserConsentOrganizationsParams = Schema.Struct({
 })
 
 export type ListUserConsentOrganizationsResponse = {
-	readonly organizations: ReadonlyArray<{
-		readonly tenantId: string
-		readonly id: string
-		readonly name: string
-		readonly description: string | null
-		readonly customData: { readonly [x: string]: Schema.Json }
-		readonly isMfaRequired: boolean
-		readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string }
-		readonly branding: {
-			readonly logoUrl?: string
-			readonly darkLogoUrl?: string
-			readonly favicon?: string
-			readonly darkFavicon?: string
-		}
-		readonly customCss: string | null
-		readonly createdAt: number
-	}>
-}
-export const ListUserConsentOrganizationsResponse = Schema.Struct({
-	organizations: Schema.Array(
-		Schema.Struct({
-			tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-			),
-			name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-			),
-			description: Schema.Union([
-				Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-				Schema.Null,
-			]),
-			customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-				description: 'arbitrary',
-			}),
-			isMfaRequired: Schema.Boolean,
-			color: Schema.Struct({
-				primaryColor: Schema.optionalKey(
-					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-						})
-					)
-				),
-				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
-				darkPrimaryColor: Schema.optionalKey(
-					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/).annotate({
-							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
-						})
-					)
-				),
-			}),
-			branding: Schema.Struct({
-				logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-				darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-				favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-				darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
-			}),
-			customCss: Schema.Union([Schema.String, Schema.Null]),
-			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		})
-	).annotate({ description: 'A list of organization entities granted by the user for the application.' }),
-})
-
-export type ReplaceUserConsentOrganizationsPayload = { readonly organizationIds: ReadonlyArray<string> }
-export const ReplaceUserConsentOrganizationsPayload = Schema.Struct({
-	organizationIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({
-		description:
-			"A list of organization ids to be granted. <br/> All the existing organizations' access will be revoked if not in the list. <br/> If the list is empty, all the organizations' access will be revoked.",
+	readonly organizations: ReadonlyArray<
+		{
+			readonly tenantId: string
+			readonly id: string
+			readonly name: string
+			readonly description: string | null
+			readonly customData: { readonly [x: string]: Schema.Json }
+			readonly isMfaRequired: boolean
+			readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
+				readonly [x: string]: Schema.Json
+			}
+			readonly branding: {
+				readonly logoUrl?: string
+				readonly darkLogoUrl?: string
+				readonly favicon?: string
+				readonly darkFavicon?: string
+			} & { readonly [x: string]: Schema.Json }
+			readonly customCss: string | null
+			readonly createdAt: number
+		} & { readonly [x: string]: Schema.Json }
+	>
+} & { readonly [x: string]: Schema.Json }
+export const ListUserConsentOrganizationsResponse = Schema.StructWithRest(
+	Schema.Struct({
+		organizations: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					tenantId: Schema.String.check(
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+					),
+					id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+						Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+					),
+					name: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+						Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+					),
+					description: Schema.Union([
+						Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+						Schema.Null,
+					]),
+					customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+						description: 'arbitrary',
+					}),
+					isMfaRequired: Schema.Boolean,
+					color: Schema.StructWithRest(
+						Schema.Struct({
+							primaryColor: Schema.optionalKey(
+								Schema.String.annotate({ format: 'regex' }).check(
+									Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+										expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+									})
+								)
+							),
+							isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
+							darkPrimaryColor: Schema.optionalKey(
+								Schema.String.annotate({ format: 'regex' }).check(
+									Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+										expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
+									})
+								)
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+					branding: Schema.StructWithRest(
+						Schema.Struct({
+							logoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+							darkLogoUrl: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+							favicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+							darkFavicon: Schema.optionalKey(Schema.String.annotate({ format: 'url' })),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+					customCss: Schema.Union([Schema.String, Schema.Null]),
+					createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		).annotate({ description: 'A list of organization entities granted by the user for the application.' }),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type CreateUserConsentOrganizationPayload = { readonly organizationIds: ReadonlyArray<string> }
-export const CreateUserConsentOrganizationPayload = Schema.Struct({
-	organizationIds: Schema.Array(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-	).annotate({ description: 'A list of organization ids to be granted.' }),
-})
+export type ReplaceUserConsentOrganizationsPayload = { readonly organizationIds: ReadonlyArray<string> } & {
+	readonly [x: string]: Schema.Json
+}
+export const ReplaceUserConsentOrganizationsPayload = Schema.StructWithRest(
+	Schema.Struct({
+		organizationIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({
+			description:
+				"A list of organization ids to be granted. <br/> All the existing organizations' access will be revoked if not in the list. <br/> If the list is empty, all the organizations' access will be revoked.",
+		}),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateUserConsentOrganizationPayload = { readonly organizationIds: ReadonlyArray<string> } & {
+	readonly [x: string]: Schema.Json
+}
+export const CreateUserConsentOrganizationPayload = Schema.StructWithRest(
+	Schema.Struct({
+		organizationIds: Schema.Array(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+		).annotate({ description: 'A list of organization ids to be granted.' }),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

@@ -13,9 +13,16 @@ import {
 } from '../../../domain/schema/well-known.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeWellKnown = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): WellKnownOperations => ({
+export const makeWellKnown = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): WellKnownOperations => ({
 	getSignInExperienceConfig: options =>
-		HttpClientRequest.get(`/api/.well-known/sign-in-exp`).pipe(
+		HttpClientRequest.get('/api/.well-known/sign-in-exp').pipe(
 			HttpClientRequest.setUrlParams({
 				organizationId: options?.params?.['organizationId'] as any,
 				appId: options?.params?.['appId'] as any,
@@ -25,14 +32,14 @@ export const makeWellKnown = ({ withResponse, decodeSuccess, unexpectedStatus, s
 			)
 		),
 	getSignInExperiencePhrases: options =>
-		HttpClientRequest.get(`/api/.well-known/phrases`).pipe(
+		HttpClientRequest.get('/api/.well-known/phrases').pipe(
 			HttpClientRequest.setUrlParams({ lng: options?.params?.['lng'] as any }),
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSignInExperiencePhrasesResponse), orElse: unexpectedStatus })
 			)
 		),
 	getExperience: options =>
-		HttpClientRequest.get(`/api/.well-known/experience`).pipe(
+		HttpClientRequest.get('/api/.well-known/experience').pipe(
 			HttpClientRequest.setUrlParams({
 				organizationId: options?.params?.['organizationId'] as any,
 				appId: options?.params?.['appId'] as any,
@@ -42,21 +49,21 @@ export const makeWellKnown = ({ withResponse, decodeSuccess, unexpectedStatus, s
 			)
 		),
 	getAccountCenter: options =>
-		HttpClientRequest.get(`/api/.well-known/account-center`).pipe(
+		HttpClientRequest.get('/api/.well-known/account-center').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetAccountCenterResponse), orElse: unexpectedStatus })
 			)
 		),
 	getManagementOpenapiJson: options =>
-		HttpClientRequest.get(`/api/.well-known/management.openapi.json`).pipe(
+		HttpClientRequest.get('/api/.well-known/management.openapi.json').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
 		),
 	getExperienceOpenapiJson: options =>
-		HttpClientRequest.get(`/api/.well-known/experience.openapi.json`).pipe(
+		HttpClientRequest.get('/api/.well-known/experience.openapi.json').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
 		),
 	getUserOpenapiJson: options =>
-		HttpClientRequest.get(`/api/.well-known/user.openapi.json`).pipe(
+		HttpClientRequest.get('/api/.well-known/user.openapi.json').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
 		),
 })

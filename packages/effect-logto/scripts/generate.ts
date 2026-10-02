@@ -409,7 +409,7 @@ ${members.join('\n')}
 import * as HttpClientResponse from 'effect/http/HttpClientResponse';
 
 ${namedImport([interfaceName(resource.key)], adapterPath, portPath, true)}${importsFor(adapterRefs, resource.key, adapterPath, false)}${namedImport(['Transport'], adapterPath, transportFile, true)}
-export const ${factoryName(resource.key)} = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): ${interfaceName(resource.key)} => ({
+export const ${factoryName(resource.key)} = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams, __makePathRequest, __encodePathParam }: Transport): ${interfaceName(resource.key)} => ({
 ${adapterText}
 });
 `

@@ -3,5 +3,14 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type GetApplicationConfigResponse = { readonly protectedApps: { readonly defaultDomain: string } }
-export const GetApplicationConfigResponse = Schema.Struct({ protectedApps: Schema.Struct({ defaultDomain: Schema.String }) })
+export type GetApplicationConfigResponse = {
+	readonly protectedApps: { readonly defaultDomain: string } & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const GetApplicationConfigResponse = Schema.StructWithRest(
+	Schema.Struct({
+		protectedApps: Schema.StructWithRest(Schema.Struct({ defaultDomain: Schema.String }), [
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+		]),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

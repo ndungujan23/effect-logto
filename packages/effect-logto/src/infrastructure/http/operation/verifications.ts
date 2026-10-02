@@ -16,44 +16,51 @@ import {
 } from '../../../domain/schema/verifications.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeVerifications = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): VerificationsOperations => ({
+export const makeVerifications = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): VerificationsOperations => ({
 	createByPassword: options =>
-		HttpClientRequest.post(`/api/verifications/password`).pipe(
+		HttpClientRequest.post('/api/verifications/password').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateByPasswordResponse), orElse: unexpectedStatus })
 			)
 		),
 	createByVerificationCode: options =>
-		HttpClientRequest.post(`/api/verifications/verification-code`).pipe(
+		HttpClientRequest.post('/api/verifications/verification-code').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateByVerificationCodeResponse), orElse: unexpectedStatus })
 			)
 		),
 	verifyByVerificationCode: options =>
-		HttpClientRequest.post(`/api/verifications/verification-code/verify`).pipe(
+		HttpClientRequest.post('/api/verifications/verification-code/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyByVerificationCodeResponse), orElse: unexpectedStatus })
 			)
 		),
 	createBySocial: options =>
-		HttpClientRequest.post(`/api/verifications/social`).pipe(
+		HttpClientRequest.post('/api/verifications/social').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateBySocialResponse), orElse: unexpectedStatus })
 			)
 		),
 	verifyBySocial: options =>
-		HttpClientRequest.post(`/api/verifications/social/verify`).pipe(
+		HttpClientRequest.post('/api/verifications/social/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyBySocialResponse), orElse: unexpectedStatus })
 			)
 		),
 	generateWebAuthnRegistrationOptions: options =>
-		HttpClientRequest.post(`/api/verifications/web-authn/registration`).pipe(
+		HttpClientRequest.post('/api/verifications/web-authn/registration').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({
 					'2xx': decodeSuccess(GenerateWebAuthnRegistrationOptionsResponse),
@@ -62,7 +69,7 @@ export const makeVerifications = ({ withResponse, decodeSuccess, unexpectedStatu
 			)
 		),
 	verifyWebAuthnRegistration: options =>
-		HttpClientRequest.post(`/api/verifications/web-authn/registration/verify`).pipe(
+		HttpClientRequest.post('/api/verifications/web-authn/registration/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyWebAuthnRegistrationResponse), orElse: unexpectedStatus })

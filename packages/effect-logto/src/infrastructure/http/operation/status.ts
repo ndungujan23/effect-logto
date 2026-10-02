@@ -8,9 +8,16 @@ import * as HttpClientResponse from 'effect/http/HttpClientResponse'
 import type { StatusOperations } from '../../../application/operation/status.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeStatus = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): StatusOperations => ({
+export const makeStatus = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): StatusOperations => ({
 	get: options =>
-		HttpClientRequest.get(`/api/status`).pipe(
+		HttpClientRequest.get('/api/status').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 })

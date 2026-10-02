@@ -19,7 +19,7 @@ export type ListParams = {
 export const ListParams = Schema.Struct({
 	languageTag: Schema.optionalKey(
 		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(16).annotate({ expected: 'a value with a length of at most 16' })
+			Schema.isMaxCodePoints(16).annotate({ expected: 'a string with at most 16 code points' })
 		)
 	),
 	templateType: Schema.optionalKey(
@@ -37,66 +37,10 @@ export const ListParams = Schema.Struct({
 	),
 })
 
-export type ListResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly languageTag: string
-	readonly templateType:
-		| 'SignIn'
-		| 'Register'
-		| 'ForgotPassword'
-		| 'OrganizationInvitation'
-		| 'Generic'
-		| 'UserPermissionValidation'
-		| 'BindNewIdentifier'
-		| 'MfaVerification'
-		| 'BindMfa'
-	readonly details: {
-		readonly subject: string
-		readonly content: string
-		readonly contentType?: string | string
-		readonly replyTo?: string
-		readonly sendFrom?: string
-	}
-	readonly createdAt: number
-}>
-export const ListResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		languageTag: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(16).annotate({ expected: 'a value with a length of at most 16' })
-		),
-		templateType: Schema.Literals([
-			'SignIn',
-			'Register',
-			'ForgotPassword',
-			'OrganizationInvitation',
-			'Generic',
-			'UserPermissionValidation',
-			'BindNewIdentifier',
-			'MfaVerification',
-			'BindMfa',
-		]),
-		details: Schema.Struct({
-			subject: Schema.String,
-			content: Schema.String,
-			contentType: Schema.optionalKey(
-				Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
-					mode: 'oneOf',
-				})
-			),
-			replyTo: Schema.optionalKey(Schema.String),
-			sendFrom: Schema.optionalKey(Schema.String),
-		}),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
-)
-
-export type ReplacePayload = {
-	readonly templates: ReadonlyArray<{
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
 		readonly languageTag: string
 		readonly templateType:
 			| 'SignIn'
@@ -114,15 +58,20 @@ export type ReplacePayload = {
 			readonly contentType?: string | string
 			readonly replyTo?: string
 			readonly sendFrom?: string
-		}
-	}>
-}
-export const ReplacePayload = Schema.Struct({
-	templates: Schema.Array(
+		} & { readonly [x: string]: Schema.Json }
+		readonly createdAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ListResponse = Schema.Array(
+	Schema.StructWithRest(
 		Schema.Struct({
-			languageTag: Schema.String.annotate({ description: 'The language tag of the email template, e.g., `en` or `fr`.' })
-				.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-				.check(Schema.isMaxLength(16).annotate({ expected: 'a value with a length of at most 16' })),
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			languageTag: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(16).annotate({ expected: 'a string with at most 16 code points' })
+			),
 			templateType: Schema.Literals([
 				'SignIn',
 				'Register',
@@ -133,88 +82,171 @@ export const ReplacePayload = Schema.Struct({
 				'BindNewIdentifier',
 				'MfaVerification',
 				'BindMfa',
-			]).annotate({ description: 'The type of the email template, e.g. `SignIn` or `ForgotPassword`' }),
-			details: Schema.Struct({
-				subject: Schema.String.annotate({ description: 'The template of the email subject.' }),
-				content: Schema.String.annotate({ description: 'The template of the email body.' }),
-				contentType: Schema.optionalKey(
-					Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
-						mode: 'oneOf',
-					}).annotate({ description: 'The content type of the email body. (Only required by some specific email providers.)' })
-				),
-				replyTo: Schema.optionalKey(
-					Schema.String.annotate({
-						description:
-							'The reply name template of the email. If not provided, the target email address will be used. (The render logic may differ based on the email provider.)',
-					})
-				),
-				sendFrom: Schema.optionalKey(
-					Schema.String.annotate({
-						description:
-							'The send from name template of the email. If not provided, the default Logto email address will be used. (The render logic may differ based on the email provider.)',
-					})
-				),
-			}).annotate({ description: 'The details of the email template.' }),
-		})
-	),
-})
-
-export type ReplaceResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly languageTag: string
-	readonly templateType:
-		| 'SignIn'
-		| 'Register'
-		| 'ForgotPassword'
-		| 'OrganizationInvitation'
-		| 'Generic'
-		| 'UserPermissionValidation'
-		| 'BindNewIdentifier'
-		| 'MfaVerification'
-		| 'BindMfa'
-	readonly details: {
-		readonly subject: string
-		readonly content: string
-		readonly contentType?: string | string
-		readonly replyTo?: string
-		readonly sendFrom?: string
-	}
-	readonly createdAt: number
-}>
-export const ReplaceResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		languageTag: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(16).annotate({ expected: 'a value with a length of at most 16' })
-		),
-		templateType: Schema.Literals([
-			'SignIn',
-			'Register',
-			'ForgotPassword',
-			'OrganizationInvitation',
-			'Generic',
-			'UserPermissionValidation',
-			'BindNewIdentifier',
-			'MfaVerification',
-			'BindMfa',
-		]),
-		details: Schema.Struct({
-			subject: Schema.String,
-			content: Schema.String,
-			contentType: Schema.optionalKey(
-				Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
-					mode: 'oneOf',
-				})
+			]),
+			details: Schema.StructWithRest(
+				Schema.Struct({
+					subject: Schema.String,
+					content: Schema.String,
+					contentType: Schema.optionalKey(
+						Schema.Union(
+							[Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })],
+							{ mode: 'oneOf' }
+						)
+					),
+					replyTo: Schema.optionalKey(Schema.String),
+					sendFrom: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
-			replyTo: Schema.optionalKey(Schema.String),
-			sendFrom: Schema.optionalKey(Schema.String),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 		}),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
+
+export type ReplacePayload = {
+	readonly templates: ReadonlyArray<
+		{
+			readonly languageTag: string
+			readonly templateType:
+				| 'SignIn'
+				| 'Register'
+				| 'ForgotPassword'
+				| 'OrganizationInvitation'
+				| 'Generic'
+				| 'UserPermissionValidation'
+				| 'BindNewIdentifier'
+				| 'MfaVerification'
+				| 'BindMfa'
+			readonly details: {
+				readonly subject: string
+				readonly content: string
+				readonly contentType?: string | string
+				readonly replyTo?: string
+				readonly sendFrom?: string
+			} & { readonly [x: string]: Schema.Json }
+		} & { readonly [x: string]: Schema.Json }
+	>
+} & { readonly [x: string]: Schema.Json }
+export const ReplacePayload = Schema.StructWithRest(
+	Schema.Struct({
+		templates: Schema.Array(
+			Schema.StructWithRest(
+				Schema.Struct({
+					languageTag: Schema.String.annotate({ description: 'The language tag of the email template, e.g., `en` or `fr`.' })
+						.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+						.check(Schema.isMaxCodePoints(16).annotate({ expected: 'a string with at most 16 code points' })),
+					templateType: Schema.Literals([
+						'SignIn',
+						'Register',
+						'ForgotPassword',
+						'OrganizationInvitation',
+						'Generic',
+						'UserPermissionValidation',
+						'BindNewIdentifier',
+						'MfaVerification',
+						'BindMfa',
+					]).annotate({ description: 'The type of the email template, e.g. `SignIn` or `ForgotPassword`' }),
+					details: Schema.StructWithRest(
+						Schema.Struct({
+							subject: Schema.String.annotate({ description: 'The template of the email subject.' }),
+							content: Schema.String.annotate({ description: 'The template of the email body.' }),
+							contentType: Schema.optionalKey(
+								Schema.Union(
+									[Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })],
+									{ mode: 'oneOf' }
+								).annotate({
+									description: 'The content type of the email body. (Only required by some specific email providers.)',
+								})
+							),
+							replyTo: Schema.optionalKey(
+								Schema.String.annotate({
+									description:
+										'The reply name template of the email. If not provided, the target email address will be used. (The render logic may differ based on the email provider.)',
+								})
+							),
+							sendFrom: Schema.optionalKey(
+								Schema.String.annotate({
+									description:
+										'The send from name template of the email. If not provided, the default Logto email address will be used. (The render logic may differ based on the email provider.)',
+								})
+							),
+						}),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					).annotate({ description: 'The details of the email template.' }),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type ReplaceResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly languageTag: string
+		readonly templateType:
+			| 'SignIn'
+			| 'Register'
+			| 'ForgotPassword'
+			| 'OrganizationInvitation'
+			| 'Generic'
+			| 'UserPermissionValidation'
+			| 'BindNewIdentifier'
+			| 'MfaVerification'
+			| 'BindMfa'
+		readonly details: {
+			readonly subject: string
+			readonly content: string
+			readonly contentType?: string | string
+			readonly replyTo?: string
+			readonly sendFrom?: string
+		} & { readonly [x: string]: Schema.Json }
+		readonly createdAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ReplaceResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			languageTag: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(16).annotate({ expected: 'a string with at most 16 code points' })
+			),
+			templateType: Schema.Literals([
+				'SignIn',
+				'Register',
+				'ForgotPassword',
+				'OrganizationInvitation',
+				'Generic',
+				'UserPermissionValidation',
+				'BindNewIdentifier',
+				'MfaVerification',
+				'BindMfa',
+			]),
+			details: Schema.StructWithRest(
+				Schema.Struct({
+					subject: Schema.String,
+					content: Schema.String,
+					contentType: Schema.optionalKey(
+						Schema.Union(
+							[Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })],
+							{ mode: 'oneOf' }
+						)
+					),
+					replyTo: Schema.optionalKey(Schema.String),
+					sendFrom: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type DeleteManyParams = {
@@ -233,7 +265,7 @@ export type DeleteManyParams = {
 export const DeleteManyParams = Schema.Struct({
 	languageTag: Schema.optionalKey(
 		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(16).annotate({ expected: 'a value with a length of at most 16' })
+			Schema.isMaxCodePoints(16).annotate({ expected: 'a string with at most 16 code points' })
 		)
 	),
 	templateType: Schema.optionalKey(
@@ -251,12 +283,15 @@ export const DeleteManyParams = Schema.Struct({
 	),
 })
 
-export type DeleteManyResponse = { readonly rowCount: number }
-export const DeleteManyResponse = Schema.Struct({
-	rowCount: Schema.Number.annotate({ description: 'The number of email templates deleted.' }).check(
-		Schema.isFinite().annotate({ expected: 'a finite number' })
-	),
-})
+export type DeleteManyResponse = { readonly rowCount: number } & { readonly [x: string]: Schema.Json }
+export const DeleteManyResponse = Schema.StructWithRest(
+	Schema.Struct({
+		rowCount: Schema.Number.annotate({ description: 'The number of email templates deleted.' }).check(
+			Schema.isFinite().annotate({ expected: 'a finite number' })
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetResponse = {
 	readonly tenantId: string
@@ -278,41 +313,47 @@ export type GetResponse = {
 		readonly contentType?: string | string
 		readonly replyTo?: string
 		readonly sendFrom?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly createdAt: number
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	languageTag: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(16).annotate({ expected: 'a value with a length of at most 16' })
-	),
-	templateType: Schema.Literals([
-		'SignIn',
-		'Register',
-		'ForgotPassword',
-		'OrganizationInvitation',
-		'Generic',
-		'UserPermissionValidation',
-		'BindNewIdentifier',
-		'MfaVerification',
-		'BindMfa',
-	]),
-	details: Schema.Struct({
-		subject: Schema.String,
-		content: Schema.String,
-		contentType: Schema.optionalKey(
-			Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
-				mode: 'oneOf',
-			})
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		replyTo: Schema.optionalKey(Schema.String),
-		sendFrom: Schema.optionalKey(Schema.String),
+		languageTag: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(16).annotate({ expected: 'a string with at most 16 code points' })
+		),
+		templateType: Schema.Literals([
+			'SignIn',
+			'Register',
+			'ForgotPassword',
+			'OrganizationInvitation',
+			'Generic',
+			'UserPermissionValidation',
+			'BindNewIdentifier',
+			'MfaVerification',
+			'BindMfa',
+		]),
+		details: Schema.StructWithRest(
+			Schema.Struct({
+				subject: Schema.String,
+				content: Schema.String,
+				contentType: Schema.optionalKey(
+					Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
+						mode: 'oneOf',
+					})
+				),
+				replyTo: Schema.optionalKey(Schema.String),
+				sendFrom: Schema.optionalKey(Schema.String),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateDetailsPayload = {
 	readonly subject?: string
@@ -320,28 +361,31 @@ export type UpdateDetailsPayload = {
 	readonly contentType?: string | string
 	readonly replyTo?: string
 	readonly sendFrom?: string
-}
-export const UpdateDetailsPayload = Schema.Struct({
-	subject: Schema.optionalKey(Schema.String.annotate({ description: 'The template of the email subject.' })),
-	content: Schema.optionalKey(Schema.String.annotate({ description: 'The template of the email body.' })),
-	contentType: Schema.optionalKey(
-		Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
-			mode: 'oneOf',
-		}).annotate({ description: 'The content type of the email body. (Only required by some specific email providers.)' })
-	),
-	replyTo: Schema.optionalKey(
-		Schema.String.annotate({
-			description:
-				'The reply name template of the email. If not provided, the target email address will be used. (The render logic may differ based on the email provider.)',
-		})
-	),
-	sendFrom: Schema.optionalKey(
-		Schema.String.annotate({
-			description:
-				'The send from name template of the email. If not provided, the default Logto email address will be used. (The render logic may differ based on the email provider.)',
-		})
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpdateDetailsPayload = Schema.StructWithRest(
+	Schema.Struct({
+		subject: Schema.optionalKey(Schema.String.annotate({ description: 'The template of the email subject.' })),
+		content: Schema.optionalKey(Schema.String.annotate({ description: 'The template of the email body.' })),
+		contentType: Schema.optionalKey(
+			Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
+				mode: 'oneOf',
+			}).annotate({ description: 'The content type of the email body. (Only required by some specific email providers.)' })
+		),
+		replyTo: Schema.optionalKey(
+			Schema.String.annotate({
+				description:
+					'The reply name template of the email. If not provided, the target email address will be used. (The render logic may differ based on the email provider.)',
+			})
+		),
+		sendFrom: Schema.optionalKey(
+			Schema.String.annotate({
+				description:
+					'The send from name template of the email. If not provided, the default Logto email address will be used. (The render logic may differ based on the email provider.)',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateDetailsResponse = {
 	readonly tenantId: string
@@ -363,38 +407,44 @@ export type UpdateDetailsResponse = {
 		readonly contentType?: string | string
 		readonly replyTo?: string
 		readonly sendFrom?: string
-	}
+	} & { readonly [x: string]: Schema.Json }
 	readonly createdAt: number
-}
-export const UpdateDetailsResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	languageTag: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(16).annotate({ expected: 'a value with a length of at most 16' })
-	),
-	templateType: Schema.Literals([
-		'SignIn',
-		'Register',
-		'ForgotPassword',
-		'OrganizationInvitation',
-		'Generic',
-		'UserPermissionValidation',
-		'BindNewIdentifier',
-		'MfaVerification',
-		'BindMfa',
-	]),
-	details: Schema.Struct({
-		subject: Schema.String,
-		content: Schema.String,
-		contentType: Schema.optionalKey(
-			Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
-				mode: 'oneOf',
-			})
+} & { readonly [x: string]: Schema.Json }
+export const UpdateDetailsResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		replyTo: Schema.optionalKey(Schema.String),
-		sendFrom: Schema.optionalKey(Schema.String),
+		languageTag: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(16).annotate({ expected: 'a string with at most 16 code points' })
+		),
+		templateType: Schema.Literals([
+			'SignIn',
+			'Register',
+			'ForgotPassword',
+			'OrganizationInvitation',
+			'Generic',
+			'UserPermissionValidation',
+			'BindNewIdentifier',
+			'MfaVerification',
+			'BindMfa',
+		]),
+		details: Schema.StructWithRest(
+			Schema.Struct({
+				subject: Schema.String,
+				content: Schema.String,
+				contentType: Schema.optionalKey(
+					Schema.Union([Schema.String.annotate({ format: '"text/html"' }), Schema.String.annotate({ format: '"text/plain"' })], {
+						mode: 'oneOf',
+					})
+				),
+				replyTo: Schema.optionalKey(Schema.String),
+				sendFrom: Schema.optionalKey(Schema.String),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

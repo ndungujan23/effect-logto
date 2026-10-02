@@ -8,9 +8,20 @@ import * as HttpClientResponse from 'effect/http/HttpClientResponse'
 import type { SecretsOperations } from '../../../application/operation/secrets.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeSecrets = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): SecretsOperations => ({
+export const makeSecrets = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): SecretsOperations => ({
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/secrets/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/secrets/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 })

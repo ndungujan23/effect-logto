@@ -3,7 +3,207 @@
  */
 import * as Schema from 'effect/Schema'
 
-export type ListResponse = ReadonlyArray<{
+export type ListResponse = ReadonlyArray<
+	{
+		readonly type: 'Email' | 'Sms' | 'Social'
+		readonly isDemo?: boolean
+		readonly id: string
+		readonly target: string
+		readonly name: { readonly [x: string]: Schema.Json }
+		readonly description: { readonly [x: string]: Schema.Json }
+		readonly logo: string
+		readonly logoDark: string | null
+		readonly readme: string
+		readonly configTemplate?: string
+		readonly formItems?: ReadonlyArray<
+			| ({
+					readonly type: string
+					readonly selectItems: ReadonlyArray<
+						{ readonly value: string; readonly title: string } & { readonly [x: string]: Schema.Json }
+					>
+					readonly key: string
+					readonly label: string
+					readonly placeholder?: string
+					readonly required?: boolean
+					readonly defaultValue?: Schema.Json
+					readonly showConditions?: ReadonlyArray<
+						{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+					>
+					readonly description?: string
+					readonly tooltip?: string
+					readonly isConfidential?: boolean
+					readonly isDevFeature?: boolean
+			  } & { readonly [x: string]: Schema.Json })
+			| ({
+					readonly type: string
+					readonly selectItems: ReadonlyArray<{ readonly value: string } & { readonly [x: string]: Schema.Json }>
+					readonly key: string
+					readonly label: string
+					readonly placeholder?: string
+					readonly required?: boolean
+					readonly defaultValue?: Schema.Json
+					readonly showConditions?: ReadonlyArray<
+						{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+					>
+					readonly description?: string
+					readonly tooltip?: string
+					readonly isConfidential?: boolean
+					readonly isDevFeature?: boolean
+			  } & { readonly [x: string]: Schema.Json })
+			| ({
+					readonly type: 'Text' | 'Number' | 'MultilineText' | 'Switch' | 'Json'
+					readonly key: string
+					readonly label: string
+					readonly placeholder?: string
+					readonly required?: boolean
+					readonly defaultValue?: Schema.Json
+					readonly showConditions?: ReadonlyArray<
+						{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+					>
+					readonly description?: string
+					readonly tooltip?: string
+					readonly isConfidential?: boolean
+					readonly isDevFeature?: boolean
+			  } & { readonly [x: string]: Schema.Json })
+		>
+		readonly customData?: { readonly [x: string]: Schema.Json }
+		readonly fromEmail?: string
+		readonly platform: 'Native' | 'Universal' | 'Web' | null
+		readonly isStandard?: boolean
+		readonly isTokenStorageSupported?: boolean
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ListResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			type: Schema.Literals(['Email', 'Sms', 'Social']),
+			isDemo: Schema.optionalKey(Schema.Boolean),
+			id: Schema.String,
+			target: Schema.String,
+			name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'Validator function',
+			}),
+			description: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+				description: 'Validator function',
+			}),
+			logo: Schema.String,
+			logoDark: Schema.Union([Schema.String, Schema.Null]),
+			readme: Schema.String,
+			configTemplate: Schema.optionalKey(Schema.String),
+			formItems: Schema.optionalKey(
+				Schema.Array(
+					Schema.Union(
+						[
+							Schema.StructWithRest(
+								Schema.Struct({
+									type: Schema.String.annotate({ format: '"Select"' }),
+									selectItems: Schema.Array(
+										Schema.StructWithRest(Schema.Struct({ value: Schema.String, title: Schema.String }), [
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+										])
+									),
+									key: Schema.String,
+									label: Schema.String,
+									placeholder: Schema.optionalKey(Schema.String),
+									required: Schema.optionalKey(Schema.Boolean),
+									defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+									showConditions: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													targetKey: Schema.String,
+													expectValue: Schema.optionalKey(
+														Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									tooltip: Schema.optionalKey(Schema.String),
+									isConfidential: Schema.optionalKey(Schema.Boolean),
+									isDevFeature: Schema.optionalKey(Schema.Boolean),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+							Schema.StructWithRest(
+								Schema.Struct({
+									type: Schema.String.annotate({ format: '"MultiSelect"' }),
+									selectItems: Schema.Array(
+										Schema.StructWithRest(Schema.Struct({ value: Schema.String }), [
+											Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+										])
+									),
+									key: Schema.String,
+									label: Schema.String,
+									placeholder: Schema.optionalKey(Schema.String),
+									required: Schema.optionalKey(Schema.Boolean),
+									defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+									showConditions: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													targetKey: Schema.String,
+													expectValue: Schema.optionalKey(
+														Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									tooltip: Schema.optionalKey(Schema.String),
+									isConfidential: Schema.optionalKey(Schema.Boolean),
+									isDevFeature: Schema.optionalKey(Schema.Boolean),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+							Schema.StructWithRest(
+								Schema.Struct({
+									type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
+									key: Schema.String,
+									label: Schema.String,
+									placeholder: Schema.optionalKey(Schema.String),
+									required: Schema.optionalKey(Schema.Boolean),
+									defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+									showConditions: Schema.optionalKey(
+										Schema.Array(
+											Schema.StructWithRest(
+												Schema.Struct({
+													targetKey: Schema.String,
+													expectValue: Schema.optionalKey(
+														Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+													),
+												}),
+												[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+											)
+										)
+									),
+									description: Schema.optionalKey(Schema.String),
+									tooltip: Schema.optionalKey(Schema.String),
+									isConfidential: Schema.optionalKey(Schema.Boolean),
+									isDevFeature: Schema.optionalKey(Schema.Boolean),
+								}),
+								[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+							),
+						],
+						{ mode: 'oneOf' }
+					)
+				)
+			),
+			customData: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+			fromEmail: Schema.optionalKey(Schema.String),
+			platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
+			isStandard: Schema.optionalKey(Schema.Boolean),
+			isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
+
+export type GetResponse = {
 	readonly type: 'Email' | 'Sms' | 'Social'
 	readonly isDemo?: boolean
 	readonly id: string
@@ -15,55 +215,63 @@ export type ListResponse = ReadonlyArray<{
 	readonly readme: string
 	readonly configTemplate?: string
 	readonly formItems?: ReadonlyArray<
-		| {
+		| ({
 				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string; readonly title: string }>
+				readonly selectItems: ReadonlyArray<
+					{ readonly value: string; readonly title: string } & { readonly [x: string]: Schema.Json }
+				>
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string }>
+				readonly selectItems: ReadonlyArray<{ readonly value: string } & { readonly [x: string]: Schema.Json }>
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
-		| {
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
 				readonly type: 'Text' | 'Number' | 'MultilineText' | 'Switch' | 'Json'
 				readonly key: string
 				readonly label: string
 				readonly placeholder?: string
 				readonly required?: boolean
 				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
+				readonly showConditions?: ReadonlyArray<
+					{ readonly targetKey: string; readonly expectValue?: Schema.Json } & { readonly [x: string]: Schema.Json }
+				>
 				readonly description?: string
 				readonly tooltip?: string
 				readonly isConfidential?: boolean
 				readonly isDevFeature?: boolean
-		  }
+		  } & { readonly [x: string]: Schema.Json })
 	>
 	readonly customData?: { readonly [x: string]: Schema.Json }
 	readonly fromEmail?: string
 	readonly platform: 'Native' | 'Universal' | 'Web' | null
 	readonly isStandard?: boolean
 	readonly isTokenStorageSupported?: boolean
-}>
-export const ListResponse = Schema.Array(
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
 	Schema.Struct({
 		type: Schema.Literals(['Email', 'Sms', 'Social']),
 		isDemo: Schema.optionalKey(Schema.Boolean),
@@ -83,68 +291,100 @@ export const ListResponse = Schema.Array(
 			Schema.Array(
 				Schema.Union(
 					[
-						Schema.Struct({
-							type: Schema.String.annotate({ format: '"Select"' }),
-							selectItems: Schema.Array(Schema.Struct({ value: Schema.String, title: Schema.String })),
-							key: Schema.String,
-							label: Schema.String,
-							placeholder: Schema.optionalKey(Schema.String),
-							required: Schema.optionalKey(Schema.Boolean),
-							defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-							showConditions: Schema.optionalKey(
-								Schema.Array(
-									Schema.Struct({
-										targetKey: Schema.String,
-										expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-									})
-								)
-							),
-							description: Schema.optionalKey(Schema.String),
-							tooltip: Schema.optionalKey(Schema.String),
-							isConfidential: Schema.optionalKey(Schema.Boolean),
-							isDevFeature: Schema.optionalKey(Schema.Boolean),
-						}),
-						Schema.Struct({
-							type: Schema.String.annotate({ format: '"MultiSelect"' }),
-							selectItems: Schema.Array(Schema.Struct({ value: Schema.String })),
-							key: Schema.String,
-							label: Schema.String,
-							placeholder: Schema.optionalKey(Schema.String),
-							required: Schema.optionalKey(Schema.Boolean),
-							defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-							showConditions: Schema.optionalKey(
-								Schema.Array(
-									Schema.Struct({
-										targetKey: Schema.String,
-										expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-									})
-								)
-							),
-							description: Schema.optionalKey(Schema.String),
-							tooltip: Schema.optionalKey(Schema.String),
-							isConfidential: Schema.optionalKey(Schema.Boolean),
-							isDevFeature: Schema.optionalKey(Schema.Boolean),
-						}),
-						Schema.Struct({
-							type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
-							key: Schema.String,
-							label: Schema.String,
-							placeholder: Schema.optionalKey(Schema.String),
-							required: Schema.optionalKey(Schema.Boolean),
-							defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-							showConditions: Schema.optionalKey(
-								Schema.Array(
-									Schema.Struct({
-										targetKey: Schema.String,
-										expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-									})
-								)
-							),
-							description: Schema.optionalKey(Schema.String),
-							tooltip: Schema.optionalKey(Schema.String),
-							isConfidential: Schema.optionalKey(Schema.Boolean),
-							isDevFeature: Schema.optionalKey(Schema.Boolean),
-						}),
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"Select"' }),
+								selectItems: Schema.Array(
+									Schema.StructWithRest(Schema.Struct({ value: Schema.String, title: Schema.String }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.String.annotate({ format: '"MultiSelect"' }),
+								selectItems: Schema.Array(
+									Schema.StructWithRest(Schema.Struct({ value: Schema.String }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
+						Schema.StructWithRest(
+							Schema.Struct({
+								type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
+								key: Schema.String,
+								label: Schema.String,
+								placeholder: Schema.optionalKey(Schema.String),
+								required: Schema.optionalKey(Schema.Boolean),
+								defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
+								showConditions: Schema.optionalKey(
+									Schema.Array(
+										Schema.StructWithRest(
+											Schema.Struct({
+												targetKey: Schema.String,
+												expectValue: Schema.optionalKey(
+													Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })
+												),
+											}),
+											[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+										)
+									)
+								),
+								description: Schema.optionalKey(Schema.String),
+								tooltip: Schema.optionalKey(Schema.String),
+								isConfidential: Schema.optionalKey(Schema.Boolean),
+								isDevFeature: Schema.optionalKey(Schema.Boolean),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						),
 					],
 					{ mode: 'oneOf' }
 				)
@@ -155,156 +395,6 @@ export const ListResponse = Schema.Array(
 		platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
 		isStandard: Schema.optionalKey(Schema.Boolean),
 		isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
-	})
-)
-
-export type GetResponse = {
-	readonly type: 'Email' | 'Sms' | 'Social'
-	readonly isDemo?: boolean
-	readonly id: string
-	readonly target: string
-	readonly name: { readonly [x: string]: Schema.Json }
-	readonly description: { readonly [x: string]: Schema.Json }
-	readonly logo: string
-	readonly logoDark: string | null
-	readonly readme: string
-	readonly configTemplate?: string
-	readonly formItems?: ReadonlyArray<
-		| {
-				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string; readonly title: string }>
-				readonly key: string
-				readonly label: string
-				readonly placeholder?: string
-				readonly required?: boolean
-				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
-				readonly description?: string
-				readonly tooltip?: string
-				readonly isConfidential?: boolean
-				readonly isDevFeature?: boolean
-		  }
-		| {
-				readonly type: string
-				readonly selectItems: ReadonlyArray<{ readonly value: string }>
-				readonly key: string
-				readonly label: string
-				readonly placeholder?: string
-				readonly required?: boolean
-				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
-				readonly description?: string
-				readonly tooltip?: string
-				readonly isConfidential?: boolean
-				readonly isDevFeature?: boolean
-		  }
-		| {
-				readonly type: 'Text' | 'Number' | 'MultilineText' | 'Switch' | 'Json'
-				readonly key: string
-				readonly label: string
-				readonly placeholder?: string
-				readonly required?: boolean
-				readonly defaultValue?: Schema.Json
-				readonly showConditions?: ReadonlyArray<{ readonly targetKey: string; readonly expectValue?: Schema.Json }>
-				readonly description?: string
-				readonly tooltip?: string
-				readonly isConfidential?: boolean
-				readonly isDevFeature?: boolean
-		  }
-	>
-	readonly customData?: { readonly [x: string]: Schema.Json }
-	readonly fromEmail?: string
-	readonly platform: 'Native' | 'Universal' | 'Web' | null
-	readonly isStandard?: boolean
-	readonly isTokenStorageSupported?: boolean
-}
-export const GetResponse = Schema.Struct({
-	type: Schema.Literals(['Email', 'Sms', 'Social']),
-	isDemo: Schema.optionalKey(Schema.Boolean),
-	id: Schema.String,
-	target: Schema.String,
-	name: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'Validator function' }),
-	description: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
-		description: 'Validator function',
 	}),
-	logo: Schema.String,
-	logoDark: Schema.Union([Schema.String, Schema.Null]),
-	readme: Schema.String,
-	configTemplate: Schema.optionalKey(Schema.String),
-	formItems: Schema.optionalKey(
-		Schema.Array(
-			Schema.Union(
-				[
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"Select"' }),
-						selectItems: Schema.Array(Schema.Struct({ value: Schema.String, title: Schema.String })),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
-						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-					Schema.Struct({
-						type: Schema.String.annotate({ format: '"MultiSelect"' }),
-						selectItems: Schema.Array(Schema.Struct({ value: Schema.String })),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
-						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-					Schema.Struct({
-						type: Schema.Literals(['Text', 'Number', 'MultilineText', 'Switch', 'Json']),
-						key: Schema.String,
-						label: Schema.String,
-						placeholder: Schema.optionalKey(Schema.String),
-						required: Schema.optionalKey(Schema.Boolean),
-						defaultValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-						showConditions: Schema.optionalKey(
-							Schema.Array(
-								Schema.Struct({
-									targetKey: Schema.String,
-									expectValue: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })),
-								})
-							)
-						),
-						description: Schema.optionalKey(Schema.String),
-						tooltip: Schema.optionalKey(Schema.String),
-						isConfidential: Schema.optionalKey(Schema.Boolean),
-						isDevFeature: Schema.optionalKey(Schema.Boolean),
-					}),
-				],
-				{ mode: 'oneOf' }
-			)
-		)
-	),
-	customData: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-	fromEmail: Schema.optionalKey(Schema.String),
-	platform: Schema.Union([Schema.Literals(['Native', 'Universal', 'Web']), Schema.Null], { mode: 'oneOf' }),
-	isStandard: Schema.optionalKey(Schema.Boolean),
-	isTokenStorageSupported: Schema.optionalKey(Schema.Boolean),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

@@ -16,39 +16,64 @@ import {
 } from '../../../domain/schema/domains.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeDomains = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): DomainsOperations => ({
+export const makeDomains = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): DomainsOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/domains`).pipe(
+		HttpClientRequest.get('/api/domains').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/domains`).pipe(
+		HttpClientRequest.post('/api/domains').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/domains/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/domains/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/domains/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/domains/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	listVerificationFiles: (id, options) =>
-		HttpClientRequest.get(`/api/domains/${encodeURIComponent(id)}/verification-files`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListVerificationFilesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/domains/' + __encodePathParam(id) + '/verification-files').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListVerificationFilesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	replaceVerificationFiles: (id, options) =>
-		HttpClientRequest.put(`/api/domains/${encodeURIComponent(id)}/verification-files`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceVerificationFilesResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.put, [id], () => '/api/domains/' + __encodePathParam(id) + '/verification-files').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceVerificationFilesResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	cleanup: options =>
-		HttpClientRequest.post(`/api/domains/cleanup`).pipe(
+		HttpClientRequest.post('/api/domains/cleanup').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CleanupResponse), orElse: unexpectedStatus })

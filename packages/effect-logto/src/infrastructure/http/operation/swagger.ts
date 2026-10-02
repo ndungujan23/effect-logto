@@ -7,9 +7,16 @@ import * as HttpClientResponse from 'effect/http/HttpClientResponse'
 import type { SwaggerOperations } from '../../../application/operation/swagger.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeSwagger = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): SwaggerOperations => ({
+export const makeSwagger = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): SwaggerOperations => ({
 	get: options =>
-		HttpClientRequest.get(`/api/swagger.json`).pipe(
+		HttpClientRequest.get('/api/swagger.json').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
 		),
 })

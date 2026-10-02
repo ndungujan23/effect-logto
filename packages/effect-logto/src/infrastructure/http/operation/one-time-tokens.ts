@@ -9,9 +9,16 @@ import type { OneTimeTokensOperations } from '../../../application/operation/one
 import { AddResponse, GetResponse, ListResponse, ReplaceStatusResponse, VerifyResponse } from '../../../domain/schema/one-time-tokens.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeOneTimeTokens = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): OneTimeTokensOperations => ({
+export const makeOneTimeTokens = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): OneTimeTokensOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/one-time-tokens`).pipe(
+		HttpClientRequest.get('/api/one-time-tokens').pipe(
 			HttpClientRequest.setUrlParams({
 				email: options?.params?.['email'] as any,
 				status: options?.params?.['status'] as any,
@@ -21,28 +28,42 @@ export const makeOneTimeTokens = ({ withResponse, decodeSuccess, unexpectedStatu
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	add: options =>
-		HttpClientRequest.post(`/api/one-time-tokens`).pipe(
+		HttpClientRequest.post('/api/one-time-tokens').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(AddResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/one-time-tokens/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/one-time-tokens/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/one-time-tokens/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/one-time-tokens/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	verify: options =>
-		HttpClientRequest.post(`/api/one-time-tokens/verify`).pipe(
+		HttpClientRequest.post('/api/one-time-tokens/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyResponse), orElse: unexpectedStatus }))
 		),
 	replaceStatus: (id, options) =>
-		HttpClientRequest.put(`/api/one-time-tokens/${encodeURIComponent(id)}/status`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceStatusResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.put, [id], () => '/api/one-time-tokens/' + __encodePathParam(id) + '/status').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ReplaceStatusResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 })

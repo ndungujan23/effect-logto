@@ -8,15 +8,22 @@ import type { AccountCenterOperations } from '../../../application/operation/acc
 import { GetSettingsResponse, UpdateSettingsResponse } from '../../../domain/schema/account-center.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeAccountCenter = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): AccountCenterOperations => ({
+export const makeAccountCenter = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): AccountCenterOperations => ({
 	getSettings: options =>
-		HttpClientRequest.get(`/api/account-center`).pipe(
+		HttpClientRequest.get('/api/account-center').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetSettingsResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateSettings: options =>
-		HttpClientRequest.patch(`/api/account-center`).pipe(
+		HttpClientRequest.patch('/api/account-center').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateSettingsResponse), orElse: unexpectedStatus })

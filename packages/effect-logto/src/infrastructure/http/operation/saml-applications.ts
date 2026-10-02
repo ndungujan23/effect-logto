@@ -22,64 +22,114 @@ export const makeSamlApplications = ({
 	decodeSuccess,
 	unexpectedStatus,
 	searchParams,
+	__makePathRequest,
+	__encodePathParam,
 }: Transport): SamlApplicationsOperations => ({
 	create: options =>
-		HttpClientRequest.post(`/api/saml-applications`).pipe(
+		HttpClientRequest.post('/api/saml-applications').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/saml-applications/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/saml-applications/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/saml-applications/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/saml-applications/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (id, options) =>
-		HttpClientRequest.patch(`/api/saml-applications/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/saml-applications/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	listSecrets: (id, options) =>
-		HttpClientRequest.get(`/api/saml-applications/${encodeURIComponent(id)}/secrets`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListSecretsResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/saml-applications/' + __encodePathParam(id) + '/secrets').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListSecretsResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createSecret: (id, options) =>
-		HttpClientRequest.post(`/api/saml-applications/${encodeURIComponent(id)}/secrets`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateSecretResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/saml-applications/' + __encodePathParam(id) + '/secrets').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateSecretResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteSecret: (id, secretId, options) =>
-		HttpClientRequest.delete(`/api/saml-applications/${encodeURIComponent(id)}/secrets/${encodeURIComponent(secretId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, secretId],
+			() => '/api/saml-applications/' + __encodePathParam(id) + '/secrets/' + __encodePathParam(secretId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updateSecret: (id, secretId, options) =>
-		HttpClientRequest.patch(`/api/saml-applications/${encodeURIComponent(id)}/secrets/${encodeURIComponent(secretId)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateSecretResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[id, secretId],
+			() => '/api/saml-applications/' + __encodePathParam(id) + '/secrets/' + __encodePathParam(secretId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateSecretResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listMetadata: (id, options) =>
-		HttpClientRequest.get(`/api/saml-applications/${encodeURIComponent(id)}/metadata`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListMetadataResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/saml-applications/' + __encodePathParam(id) + '/metadata').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListMetadataResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	getCallback: (id, options) =>
-		HttpClientRequest.get(`/api/saml-applications/${encodeURIComponent(id)}/callback`).pipe(
-			HttpClientRequest.setUrlParams({
-				code: options?.params?.['code'] as any,
-				state: options?.params?.['state'] as any,
-				redirectUri: options?.params?.['redirectUri'] as any,
-				error: options?.params?.['error'] as any,
-				error_description: options?.params?.['error_description'] as any,
-			}),
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/saml-applications/' + __encodePathParam(id) + '/callback').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.setUrlParams({
+						code: options?.params?.['code'] as any,
+						state: options?.params?.['state'] as any,
+						redirectUri: options?.params?.['redirectUri'] as any,
+						error: options?.params?.['error'] as any,
+						error_description: options?.params?.['error_description'] as any,
+					}),
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ orElse: unexpectedStatus }))
+				)
+			)
 		),
 })

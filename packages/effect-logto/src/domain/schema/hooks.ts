@@ -18,7 +18,352 @@ export const ListParams = Schema.Struct({
 	),
 })
 
-export type ListResponse = ReadonlyArray<{
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly name: string
+		readonly event:
+			| 'PostRegister'
+			| 'PostSignIn'
+			| 'PostSignInAdaptiveMfaTriggered'
+			| 'PostResetPassword'
+			| 'User.Created'
+			| 'User.Deleted'
+			| 'User.Data.Updated'
+			| 'User.SuspensionStatus.Updated'
+			| 'Role.Created'
+			| 'Role.Deleted'
+			| 'Role.Data.Updated'
+			| 'Role.Scopes.Updated'
+			| 'Scope.Created'
+			| 'Scope.Deleted'
+			| 'Scope.Data.Updated'
+			| 'Organization.Created'
+			| 'Organization.Deleted'
+			| 'Organization.Data.Updated'
+			| 'Organization.Membership.Updated'
+			| 'OrganizationRole.Created'
+			| 'OrganizationRole.Deleted'
+			| 'OrganizationRole.Data.Updated'
+			| 'OrganizationRole.Scopes.Updated'
+			| 'OrganizationScope.Created'
+			| 'OrganizationScope.Deleted'
+			| 'OrganizationScope.Data.Updated'
+			| 'Identifier.Lockout'
+			| 'Message.RateLimited'
+			| 'Grant.LimitExceeded'
+			| null
+		readonly events: ReadonlyArray<
+			| 'PostRegister'
+			| 'PostSignIn'
+			| 'PostSignInAdaptiveMfaTriggered'
+			| 'PostResetPassword'
+			| 'User.Created'
+			| 'User.Deleted'
+			| 'User.Data.Updated'
+			| 'User.SuspensionStatus.Updated'
+			| 'Role.Created'
+			| 'Role.Deleted'
+			| 'Role.Data.Updated'
+			| 'Role.Scopes.Updated'
+			| 'Scope.Created'
+			| 'Scope.Deleted'
+			| 'Scope.Data.Updated'
+			| 'Organization.Created'
+			| 'Organization.Deleted'
+			| 'Organization.Data.Updated'
+			| 'Organization.Membership.Updated'
+			| 'OrganizationRole.Created'
+			| 'OrganizationRole.Deleted'
+			| 'OrganizationRole.Data.Updated'
+			| 'OrganizationRole.Scopes.Updated'
+			| 'OrganizationScope.Created'
+			| 'OrganizationScope.Deleted'
+			| 'OrganizationScope.Data.Updated'
+			| 'Identifier.Lockout'
+			| 'Message.RateLimited'
+			| 'Grant.LimitExceeded'
+		>
+		readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number } & {
+			readonly [x: string]: Schema.Json
+		}
+		readonly signingKey: string
+		readonly enabled: boolean
+		readonly createdAt: number
+		readonly executionStats?: { readonly successCount: number; readonly requestCount: number } & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ListResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			name: Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+			event: Schema.Union(
+				[
+					Schema.Literals([
+						'PostRegister',
+						'PostSignIn',
+						'PostSignInAdaptiveMfaTriggered',
+						'PostResetPassword',
+						'User.Created',
+						'User.Deleted',
+						'User.Data.Updated',
+						'User.SuspensionStatus.Updated',
+						'Role.Created',
+						'Role.Deleted',
+						'Role.Data.Updated',
+						'Role.Scopes.Updated',
+						'Scope.Created',
+						'Scope.Deleted',
+						'Scope.Data.Updated',
+						'Organization.Created',
+						'Organization.Deleted',
+						'Organization.Data.Updated',
+						'Organization.Membership.Updated',
+						'OrganizationRole.Created',
+						'OrganizationRole.Deleted',
+						'OrganizationRole.Data.Updated',
+						'OrganizationRole.Scopes.Updated',
+						'OrganizationScope.Created',
+						'OrganizationScope.Deleted',
+						'OrganizationScope.Data.Updated',
+						'Identifier.Lockout',
+						'Message.RateLimited',
+						'Grant.LimitExceeded',
+					]),
+					Schema.Null,
+				],
+				{ mode: 'oneOf' }
+			),
+			events: Schema.Array(
+				Schema.Literals([
+					'PostRegister',
+					'PostSignIn',
+					'PostSignInAdaptiveMfaTriggered',
+					'PostResetPassword',
+					'User.Created',
+					'User.Deleted',
+					'User.Data.Updated',
+					'User.SuspensionStatus.Updated',
+					'Role.Created',
+					'Role.Deleted',
+					'Role.Data.Updated',
+					'Role.Scopes.Updated',
+					'Scope.Created',
+					'Scope.Deleted',
+					'Scope.Data.Updated',
+					'Organization.Created',
+					'Organization.Deleted',
+					'Organization.Data.Updated',
+					'Organization.Membership.Updated',
+					'OrganizationRole.Created',
+					'OrganizationRole.Deleted',
+					'OrganizationRole.Data.Updated',
+					'OrganizationRole.Scopes.Updated',
+					'OrganizationScope.Created',
+					'OrganizationScope.Deleted',
+					'OrganizationScope.Data.Updated',
+					'Identifier.Lockout',
+					'Message.RateLimited',
+					'Grant.LimitExceeded',
+				])
+			),
+			config: Schema.StructWithRest(
+				Schema.Struct({
+					url: Schema.String,
+					headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+					retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			signingKey: Schema.String.check(Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })),
+			enabled: Schema.Boolean,
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			executionStats: Schema.optionalKey(
+				Schema.StructWithRest(
+					Schema.Struct({
+						successCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+						requestCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				)
+			),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
+
+export type CreatePayload = {
+	readonly tenantId?: string
+	readonly name?: string
+	readonly event?:
+		| 'PostRegister'
+		| 'PostSignIn'
+		| 'PostSignInAdaptiveMfaTriggered'
+		| 'PostResetPassword'
+		| 'User.Created'
+		| 'User.Deleted'
+		| 'User.Data.Updated'
+		| 'User.SuspensionStatus.Updated'
+		| 'Role.Created'
+		| 'Role.Deleted'
+		| 'Role.Data.Updated'
+		| 'Role.Scopes.Updated'
+		| 'Scope.Created'
+		| 'Scope.Deleted'
+		| 'Scope.Data.Updated'
+		| 'Organization.Created'
+		| 'Organization.Deleted'
+		| 'Organization.Data.Updated'
+		| 'Organization.Membership.Updated'
+		| 'OrganizationRole.Created'
+		| 'OrganizationRole.Deleted'
+		| 'OrganizationRole.Data.Updated'
+		| 'OrganizationRole.Scopes.Updated'
+		| 'OrganizationScope.Created'
+		| 'OrganizationScope.Deleted'
+		| 'OrganizationScope.Data.Updated'
+		| 'Identifier.Lockout'
+		| 'Message.RateLimited'
+		| 'Grant.LimitExceeded'
+	readonly events?: ReadonlyArray<
+		| 'PostRegister'
+		| 'PostSignIn'
+		| 'PostSignInAdaptiveMfaTriggered'
+		| 'PostResetPassword'
+		| 'User.Created'
+		| 'User.Deleted'
+		| 'User.Data.Updated'
+		| 'User.SuspensionStatus.Updated'
+		| 'Role.Created'
+		| 'Role.Deleted'
+		| 'Role.Data.Updated'
+		| 'Role.Scopes.Updated'
+		| 'Scope.Created'
+		| 'Scope.Deleted'
+		| 'Scope.Data.Updated'
+		| 'Organization.Created'
+		| 'Organization.Deleted'
+		| 'Organization.Data.Updated'
+		| 'Organization.Membership.Updated'
+		| 'OrganizationRole.Created'
+		| 'OrganizationRole.Deleted'
+		| 'OrganizationRole.Data.Updated'
+		| 'OrganizationRole.Scopes.Updated'
+		| 'OrganizationScope.Created'
+		| 'OrganizationScope.Deleted'
+		| 'OrganizationScope.Data.Updated'
+		| 'Identifier.Lockout'
+		| 'Message.RateLimited'
+		| 'Grant.LimitExceeded'
+	>
+	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number } & {
+		readonly [x: string]: Schema.Json
+	}
+	readonly enabled?: boolean
+	readonly createdAt?: number
+} & { readonly [x: string]: Schema.Json }
+export const CreatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.optionalKey(
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' }))
+		),
+		name: Schema.optionalKey(
+			Schema.String.annotate({ description: 'The name of the hook.' })
+				.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+		),
+		event: Schema.optionalKey(
+			Schema.Literals([
+				'PostRegister',
+				'PostSignIn',
+				'PostSignInAdaptiveMfaTriggered',
+				'PostResetPassword',
+				'User.Created',
+				'User.Deleted',
+				'User.Data.Updated',
+				'User.SuspensionStatus.Updated',
+				'Role.Created',
+				'Role.Deleted',
+				'Role.Data.Updated',
+				'Role.Scopes.Updated',
+				'Scope.Created',
+				'Scope.Deleted',
+				'Scope.Data.Updated',
+				'Organization.Created',
+				'Organization.Deleted',
+				'Organization.Data.Updated',
+				'Organization.Membership.Updated',
+				'OrganizationRole.Created',
+				'OrganizationRole.Deleted',
+				'OrganizationRole.Data.Updated',
+				'OrganizationRole.Scopes.Updated',
+				'OrganizationScope.Created',
+				'OrganizationScope.Deleted',
+				'OrganizationScope.Data.Updated',
+				'Identifier.Lockout',
+				'Message.RateLimited',
+				'Grant.LimitExceeded',
+			]).annotate({ description: 'Use `events` instead.' })
+		),
+		events: Schema.optionalKey(
+			Schema.Array(
+				Schema.Literals([
+					'PostRegister',
+					'PostSignIn',
+					'PostSignInAdaptiveMfaTriggered',
+					'PostResetPassword',
+					'User.Created',
+					'User.Deleted',
+					'User.Data.Updated',
+					'User.SuspensionStatus.Updated',
+					'Role.Created',
+					'Role.Deleted',
+					'Role.Data.Updated',
+					'Role.Scopes.Updated',
+					'Scope.Created',
+					'Scope.Deleted',
+					'Scope.Data.Updated',
+					'Organization.Created',
+					'Organization.Deleted',
+					'Organization.Data.Updated',
+					'Organization.Membership.Updated',
+					'OrganizationRole.Created',
+					'OrganizationRole.Deleted',
+					'OrganizationRole.Data.Updated',
+					'OrganizationRole.Scopes.Updated',
+					'OrganizationScope.Created',
+					'OrganizationScope.Deleted',
+					'OrganizationScope.Data.Updated',
+					'Identifier.Lockout',
+					'Message.RateLimited',
+					'Grant.LimitExceeded',
+				])
+			).annotate({ description: 'An array of hook events.' })
+		),
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				url: Schema.String,
+				headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				retries: Schema.optionalKey(
+					Schema.Number.annotate({ description: 'Now the retry times is fixed to 3. Keep for backward compatibility.' }).check(
+						Schema.isFinite().annotate({ expected: 'a finite number' })
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		enabled: Schema.optionalKey(Schema.Boolean),
+		createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type CreateResponse = {
 	readonly tenantId: string
 	readonly id: string
 	readonly name: string
@@ -84,19 +429,20 @@ export type ListResponse = ReadonlyArray<{
 		| 'Message.RateLimited'
 		| 'Grant.LimitExceeded'
 	>
-	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number }
+	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly signingKey: string
 	readonly enabled: boolean
 	readonly createdAt: number
-	readonly executionStats?: { readonly successCount: number; readonly requestCount: number }
-}>
-export const ListResponse = Schema.Array(
+} & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
 	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
 		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
-		name: Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
+		name: Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
 		event: Schema.Union(
 			[
 				Schema.Literals([
@@ -167,335 +513,20 @@ export const ListResponse = Schema.Array(
 				'Grant.LimitExceeded',
 			])
 		),
-		config: Schema.Struct({
-			url: Schema.String,
-			headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-		}),
-		signingKey: Schema.String.check(Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })),
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				url: Schema.String,
+				headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		signingKey: Schema.String.check(Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })),
 		enabled: Schema.Boolean,
 		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		executionStats: Schema.optionalKey(
-			Schema.Struct({
-				successCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-				requestCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			})
-		),
-	})
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 )
-
-export type CreatePayload = {
-	readonly tenantId?: string
-	readonly name?: string
-	readonly event?:
-		| 'PostRegister'
-		| 'PostSignIn'
-		| 'PostSignInAdaptiveMfaTriggered'
-		| 'PostResetPassword'
-		| 'User.Created'
-		| 'User.Deleted'
-		| 'User.Data.Updated'
-		| 'User.SuspensionStatus.Updated'
-		| 'Role.Created'
-		| 'Role.Deleted'
-		| 'Role.Data.Updated'
-		| 'Role.Scopes.Updated'
-		| 'Scope.Created'
-		| 'Scope.Deleted'
-		| 'Scope.Data.Updated'
-		| 'Organization.Created'
-		| 'Organization.Deleted'
-		| 'Organization.Data.Updated'
-		| 'Organization.Membership.Updated'
-		| 'OrganizationRole.Created'
-		| 'OrganizationRole.Deleted'
-		| 'OrganizationRole.Data.Updated'
-		| 'OrganizationRole.Scopes.Updated'
-		| 'OrganizationScope.Created'
-		| 'OrganizationScope.Deleted'
-		| 'OrganizationScope.Data.Updated'
-		| 'Identifier.Lockout'
-		| 'Message.RateLimited'
-		| 'Grant.LimitExceeded'
-	readonly events?: ReadonlyArray<
-		| 'PostRegister'
-		| 'PostSignIn'
-		| 'PostSignInAdaptiveMfaTriggered'
-		| 'PostResetPassword'
-		| 'User.Created'
-		| 'User.Deleted'
-		| 'User.Data.Updated'
-		| 'User.SuspensionStatus.Updated'
-		| 'Role.Created'
-		| 'Role.Deleted'
-		| 'Role.Data.Updated'
-		| 'Role.Scopes.Updated'
-		| 'Scope.Created'
-		| 'Scope.Deleted'
-		| 'Scope.Data.Updated'
-		| 'Organization.Created'
-		| 'Organization.Deleted'
-		| 'Organization.Data.Updated'
-		| 'Organization.Membership.Updated'
-		| 'OrganizationRole.Created'
-		| 'OrganizationRole.Deleted'
-		| 'OrganizationRole.Data.Updated'
-		| 'OrganizationRole.Scopes.Updated'
-		| 'OrganizationScope.Created'
-		| 'OrganizationScope.Deleted'
-		| 'OrganizationScope.Data.Updated'
-		| 'Identifier.Lockout'
-		| 'Message.RateLimited'
-		| 'Grant.LimitExceeded'
-	>
-	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number }
-	readonly enabled?: boolean
-	readonly createdAt?: number
-}
-export const CreatePayload = Schema.Struct({
-	tenantId: Schema.optionalKey(Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))),
-	name: Schema.optionalKey(
-		Schema.String.annotate({ description: 'The name of the hook.' })
-			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-	),
-	event: Schema.optionalKey(
-		Schema.Literals([
-			'PostRegister',
-			'PostSignIn',
-			'PostSignInAdaptiveMfaTriggered',
-			'PostResetPassword',
-			'User.Created',
-			'User.Deleted',
-			'User.Data.Updated',
-			'User.SuspensionStatus.Updated',
-			'Role.Created',
-			'Role.Deleted',
-			'Role.Data.Updated',
-			'Role.Scopes.Updated',
-			'Scope.Created',
-			'Scope.Deleted',
-			'Scope.Data.Updated',
-			'Organization.Created',
-			'Organization.Deleted',
-			'Organization.Data.Updated',
-			'Organization.Membership.Updated',
-			'OrganizationRole.Created',
-			'OrganizationRole.Deleted',
-			'OrganizationRole.Data.Updated',
-			'OrganizationRole.Scopes.Updated',
-			'OrganizationScope.Created',
-			'OrganizationScope.Deleted',
-			'OrganizationScope.Data.Updated',
-			'Identifier.Lockout',
-			'Message.RateLimited',
-			'Grant.LimitExceeded',
-		]).annotate({ description: 'Use `events` instead.' })
-	),
-	events: Schema.optionalKey(
-		Schema.Array(
-			Schema.Literals([
-				'PostRegister',
-				'PostSignIn',
-				'PostSignInAdaptiveMfaTriggered',
-				'PostResetPassword',
-				'User.Created',
-				'User.Deleted',
-				'User.Data.Updated',
-				'User.SuspensionStatus.Updated',
-				'Role.Created',
-				'Role.Deleted',
-				'Role.Data.Updated',
-				'Role.Scopes.Updated',
-				'Scope.Created',
-				'Scope.Deleted',
-				'Scope.Data.Updated',
-				'Organization.Created',
-				'Organization.Deleted',
-				'Organization.Data.Updated',
-				'Organization.Membership.Updated',
-				'OrganizationRole.Created',
-				'OrganizationRole.Deleted',
-				'OrganizationRole.Data.Updated',
-				'OrganizationRole.Scopes.Updated',
-				'OrganizationScope.Created',
-				'OrganizationScope.Deleted',
-				'OrganizationScope.Data.Updated',
-				'Identifier.Lockout',
-				'Message.RateLimited',
-				'Grant.LimitExceeded',
-			])
-		).annotate({ description: 'An array of hook events.' })
-	),
-	config: Schema.Struct({
-		url: Schema.String,
-		headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-		retries: Schema.optionalKey(
-			Schema.Number.annotate({ description: 'Now the retry times is fixed to 3. Keep for backward compatibility.' }).check(
-				Schema.isFinite().annotate({ expected: 'a finite number' })
-			)
-		),
-	}),
-	enabled: Schema.optionalKey(Schema.Boolean),
-	createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-})
-
-export type CreateResponse = {
-	readonly tenantId: string
-	readonly id: string
-	readonly name: string
-	readonly event:
-		| 'PostRegister'
-		| 'PostSignIn'
-		| 'PostSignInAdaptiveMfaTriggered'
-		| 'PostResetPassword'
-		| 'User.Created'
-		| 'User.Deleted'
-		| 'User.Data.Updated'
-		| 'User.SuspensionStatus.Updated'
-		| 'Role.Created'
-		| 'Role.Deleted'
-		| 'Role.Data.Updated'
-		| 'Role.Scopes.Updated'
-		| 'Scope.Created'
-		| 'Scope.Deleted'
-		| 'Scope.Data.Updated'
-		| 'Organization.Created'
-		| 'Organization.Deleted'
-		| 'Organization.Data.Updated'
-		| 'Organization.Membership.Updated'
-		| 'OrganizationRole.Created'
-		| 'OrganizationRole.Deleted'
-		| 'OrganizationRole.Data.Updated'
-		| 'OrganizationRole.Scopes.Updated'
-		| 'OrganizationScope.Created'
-		| 'OrganizationScope.Deleted'
-		| 'OrganizationScope.Data.Updated'
-		| 'Identifier.Lockout'
-		| 'Message.RateLimited'
-		| 'Grant.LimitExceeded'
-		| null
-	readonly events: ReadonlyArray<
-		| 'PostRegister'
-		| 'PostSignIn'
-		| 'PostSignInAdaptiveMfaTriggered'
-		| 'PostResetPassword'
-		| 'User.Created'
-		| 'User.Deleted'
-		| 'User.Data.Updated'
-		| 'User.SuspensionStatus.Updated'
-		| 'Role.Created'
-		| 'Role.Deleted'
-		| 'Role.Data.Updated'
-		| 'Role.Scopes.Updated'
-		| 'Scope.Created'
-		| 'Scope.Deleted'
-		| 'Scope.Data.Updated'
-		| 'Organization.Created'
-		| 'Organization.Deleted'
-		| 'Organization.Data.Updated'
-		| 'Organization.Membership.Updated'
-		| 'OrganizationRole.Created'
-		| 'OrganizationRole.Deleted'
-		| 'OrganizationRole.Data.Updated'
-		| 'OrganizationRole.Scopes.Updated'
-		| 'OrganizationScope.Created'
-		| 'OrganizationScope.Deleted'
-		| 'OrganizationScope.Data.Updated'
-		| 'Identifier.Lockout'
-		| 'Message.RateLimited'
-		| 'Grant.LimitExceeded'
-	>
-	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number }
-	readonly signingKey: string
-	readonly enabled: boolean
-	readonly createdAt: number
-}
-export const CreateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-	event: Schema.Union(
-		[
-			Schema.Literals([
-				'PostRegister',
-				'PostSignIn',
-				'PostSignInAdaptiveMfaTriggered',
-				'PostResetPassword',
-				'User.Created',
-				'User.Deleted',
-				'User.Data.Updated',
-				'User.SuspensionStatus.Updated',
-				'Role.Created',
-				'Role.Deleted',
-				'Role.Data.Updated',
-				'Role.Scopes.Updated',
-				'Scope.Created',
-				'Scope.Deleted',
-				'Scope.Data.Updated',
-				'Organization.Created',
-				'Organization.Deleted',
-				'Organization.Data.Updated',
-				'Organization.Membership.Updated',
-				'OrganizationRole.Created',
-				'OrganizationRole.Deleted',
-				'OrganizationRole.Data.Updated',
-				'OrganizationRole.Scopes.Updated',
-				'OrganizationScope.Created',
-				'OrganizationScope.Deleted',
-				'OrganizationScope.Data.Updated',
-				'Identifier.Lockout',
-				'Message.RateLimited',
-				'Grant.LimitExceeded',
-			]),
-			Schema.Null,
-		],
-		{ mode: 'oneOf' }
-	),
-	events: Schema.Array(
-		Schema.Literals([
-			'PostRegister',
-			'PostSignIn',
-			'PostSignInAdaptiveMfaTriggered',
-			'PostResetPassword',
-			'User.Created',
-			'User.Deleted',
-			'User.Data.Updated',
-			'User.SuspensionStatus.Updated',
-			'Role.Created',
-			'Role.Deleted',
-			'Role.Data.Updated',
-			'Role.Scopes.Updated',
-			'Scope.Created',
-			'Scope.Deleted',
-			'Scope.Data.Updated',
-			'Organization.Created',
-			'Organization.Deleted',
-			'Organization.Data.Updated',
-			'Organization.Membership.Updated',
-			'OrganizationRole.Created',
-			'OrganizationRole.Deleted',
-			'OrganizationRole.Data.Updated',
-			'OrganizationRole.Scopes.Updated',
-			'OrganizationScope.Created',
-			'OrganizationScope.Deleted',
-			'OrganizationScope.Data.Updated',
-			'Identifier.Lockout',
-			'Message.RateLimited',
-			'Grant.LimitExceeded',
-		])
-	),
-	config: Schema.Struct({
-		url: Schema.String,
-		headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-		retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-	}),
-	signingKey: Schema.String.check(Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })),
-	enabled: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
 
 export type GetParams = { readonly includeExecutionStats?: string }
 export const GetParams = Schema.Struct({ includeExecutionStats: Schema.optionalKey(Schema.String) })
@@ -566,20 +597,59 @@ export type GetResponse = {
 		| 'Message.RateLimited'
 		| 'Grant.LimitExceeded'
 	>
-	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number }
+	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly signingKey: string
 	readonly enabled: boolean
 	readonly createdAt: number
-	readonly executionStats?: { readonly successCount: number; readonly requestCount: number }
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-	event: Schema.Union(
-		[
+	readonly executionStats?: { readonly successCount: number; readonly requestCount: number } & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+		event: Schema.Union(
+			[
+				Schema.Literals([
+					'PostRegister',
+					'PostSignIn',
+					'PostSignInAdaptiveMfaTriggered',
+					'PostResetPassword',
+					'User.Created',
+					'User.Deleted',
+					'User.Data.Updated',
+					'User.SuspensionStatus.Updated',
+					'Role.Created',
+					'Role.Deleted',
+					'Role.Data.Updated',
+					'Role.Scopes.Updated',
+					'Scope.Created',
+					'Scope.Deleted',
+					'Scope.Data.Updated',
+					'Organization.Created',
+					'Organization.Deleted',
+					'Organization.Data.Updated',
+					'Organization.Membership.Updated',
+					'OrganizationRole.Created',
+					'OrganizationRole.Deleted',
+					'OrganizationRole.Data.Updated',
+					'OrganizationRole.Scopes.Updated',
+					'OrganizationScope.Created',
+					'OrganizationScope.Deleted',
+					'OrganizationScope.Data.Updated',
+					'Identifier.Lockout',
+					'Message.RateLimited',
+					'Grant.LimitExceeded',
+				]),
+				Schema.Null,
+			],
+			{ mode: 'oneOf' }
+		),
+		events: Schema.Array(
 			Schema.Literals([
 				'PostRegister',
 				'PostSignIn',
@@ -610,59 +680,31 @@ export const GetResponse = Schema.Struct({
 				'Identifier.Lockout',
 				'Message.RateLimited',
 				'Grant.LimitExceeded',
-			]),
-			Schema.Null,
-		],
-		{ mode: 'oneOf' }
-	),
-	events: Schema.Array(
-		Schema.Literals([
-			'PostRegister',
-			'PostSignIn',
-			'PostSignInAdaptiveMfaTriggered',
-			'PostResetPassword',
-			'User.Created',
-			'User.Deleted',
-			'User.Data.Updated',
-			'User.SuspensionStatus.Updated',
-			'Role.Created',
-			'Role.Deleted',
-			'Role.Data.Updated',
-			'Role.Scopes.Updated',
-			'Scope.Created',
-			'Scope.Deleted',
-			'Scope.Data.Updated',
-			'Organization.Created',
-			'Organization.Deleted',
-			'Organization.Data.Updated',
-			'Organization.Membership.Updated',
-			'OrganizationRole.Created',
-			'OrganizationRole.Deleted',
-			'OrganizationRole.Data.Updated',
-			'OrganizationRole.Scopes.Updated',
-			'OrganizationScope.Created',
-			'OrganizationScope.Deleted',
-			'OrganizationScope.Data.Updated',
-			'Identifier.Lockout',
-			'Message.RateLimited',
-			'Grant.LimitExceeded',
-		])
-	),
-	config: Schema.Struct({
-		url: Schema.String,
-		headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-		retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			])
+		),
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				url: Schema.String,
+				headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		signingKey: Schema.String.check(Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })),
+		enabled: Schema.Boolean,
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		executionStats: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					successCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+					requestCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
 	}),
-	signingKey: Schema.String.check(Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })),
-	enabled: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	executionStats: Schema.optionalKey(
-		Schema.Struct({
-			successCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-			requestCount: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		})
-	),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdatePayload = {
 	readonly tenantId?: string
@@ -729,20 +771,63 @@ export type UpdatePayload = {
 		| 'Message.RateLimited'
 		| 'Grant.LimitExceeded'
 	>
-	readonly config?: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number }
+	readonly config?: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly enabled?: boolean
 	readonly createdAt?: number
-}
-export const UpdatePayload = Schema.Struct({
-	tenantId: Schema.optionalKey(Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' }))),
-	name: Schema.optionalKey(
-		Schema.String.annotate({ description: 'The updated name of the hook.' })
-			.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
-			.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' }))
-	),
-	event: Schema.optionalKey(
-		Schema.Union(
-			[
+} & { readonly [x: string]: Schema.Json }
+export const UpdatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.optionalKey(
+			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' }))
+		),
+		name: Schema.optionalKey(
+			Schema.String.annotate({ description: 'The updated name of the hook.' })
+				.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' }))
+				.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
+		),
+		event: Schema.optionalKey(
+			Schema.Union(
+				[
+					Schema.Literals([
+						'PostRegister',
+						'PostSignIn',
+						'PostSignInAdaptiveMfaTriggered',
+						'PostResetPassword',
+						'User.Created',
+						'User.Deleted',
+						'User.Data.Updated',
+						'User.SuspensionStatus.Updated',
+						'Role.Created',
+						'Role.Deleted',
+						'Role.Data.Updated',
+						'Role.Scopes.Updated',
+						'Scope.Created',
+						'Scope.Deleted',
+						'Scope.Data.Updated',
+						'Organization.Created',
+						'Organization.Deleted',
+						'Organization.Data.Updated',
+						'Organization.Membership.Updated',
+						'OrganizationRole.Created',
+						'OrganizationRole.Deleted',
+						'OrganizationRole.Data.Updated',
+						'OrganizationRole.Scopes.Updated',
+						'OrganizationScope.Created',
+						'OrganizationScope.Deleted',
+						'OrganizationScope.Data.Updated',
+						'Identifier.Lockout',
+						'Message.RateLimited',
+						'Grant.LimitExceeded',
+					]),
+					Schema.Null,
+				],
+				{ mode: 'oneOf' }
+			).annotate({ description: 'Use `events` instead.' })
+		),
+		events: Schema.optionalKey(
+			Schema.Array(
 				Schema.Literals([
 					'PostRegister',
 					'PostSignIn',
@@ -773,61 +858,28 @@ export const UpdatePayload = Schema.Struct({
 					'Identifier.Lockout',
 					'Message.RateLimited',
 					'Grant.LimitExceeded',
-				]),
-				Schema.Null,
-			],
-			{ mode: 'oneOf' }
-		).annotate({ description: 'Use `events` instead.' })
-	),
-	events: Schema.optionalKey(
-		Schema.Array(
-			Schema.Literals([
-				'PostRegister',
-				'PostSignIn',
-				'PostSignInAdaptiveMfaTriggered',
-				'PostResetPassword',
-				'User.Created',
-				'User.Deleted',
-				'User.Data.Updated',
-				'User.SuspensionStatus.Updated',
-				'Role.Created',
-				'Role.Deleted',
-				'Role.Data.Updated',
-				'Role.Scopes.Updated',
-				'Scope.Created',
-				'Scope.Deleted',
-				'Scope.Data.Updated',
-				'Organization.Created',
-				'Organization.Deleted',
-				'Organization.Data.Updated',
-				'Organization.Membership.Updated',
-				'OrganizationRole.Created',
-				'OrganizationRole.Deleted',
-				'OrganizationRole.Data.Updated',
-				'OrganizationRole.Scopes.Updated',
-				'OrganizationScope.Created',
-				'OrganizationScope.Deleted',
-				'OrganizationScope.Data.Updated',
-				'Identifier.Lockout',
-				'Message.RateLimited',
-				'Grant.LimitExceeded',
-			])
-		).annotate({ description: 'An array of updated hook events.' })
-	),
-	config: Schema.optionalKey(
-		Schema.Struct({
-			url: Schema.String,
-			headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-			retries: Schema.optionalKey(
-				Schema.Number.annotate({ description: 'Now the retry times is fixed to 3. Keep for backward compatibility.' }).check(
-					Schema.isFinite().annotate({ expected: 'a finite number' })
-				)
-			),
-		})
-	),
-	enabled: Schema.optionalKey(Schema.Boolean),
-	createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-})
+				])
+			).annotate({ description: 'An array of updated hook events.' })
+		),
+		config: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					url: Schema.String,
+					headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+					retries: Schema.optionalKey(
+						Schema.Number.annotate({
+							description: 'Now the retry times is fixed to 3. Keep for backward compatibility.',
+						}).check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		enabled: Schema.optionalKey(Schema.Boolean),
+		createdAt: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateResponse = {
 	readonly tenantId: string
@@ -895,19 +947,58 @@ export type UpdateResponse = {
 		| 'Message.RateLimited'
 		| 'Grant.LimitExceeded'
 	>
-	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number }
+	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly signingKey: string
 	readonly enabled: boolean
 	readonly createdAt: number
-}
-export const UpdateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-	event: Schema.Union(
-		[
+} & { readonly [x: string]: Schema.Json }
+export const UpdateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+		event: Schema.Union(
+			[
+				Schema.Literals([
+					'PostRegister',
+					'PostSignIn',
+					'PostSignInAdaptiveMfaTriggered',
+					'PostResetPassword',
+					'User.Created',
+					'User.Deleted',
+					'User.Data.Updated',
+					'User.SuspensionStatus.Updated',
+					'Role.Created',
+					'Role.Deleted',
+					'Role.Data.Updated',
+					'Role.Scopes.Updated',
+					'Scope.Created',
+					'Scope.Deleted',
+					'Scope.Data.Updated',
+					'Organization.Created',
+					'Organization.Deleted',
+					'Organization.Data.Updated',
+					'Organization.Membership.Updated',
+					'OrganizationRole.Created',
+					'OrganizationRole.Deleted',
+					'OrganizationRole.Data.Updated',
+					'OrganizationRole.Scopes.Updated',
+					'OrganizationScope.Created',
+					'OrganizationScope.Deleted',
+					'OrganizationScope.Data.Updated',
+					'Identifier.Lockout',
+					'Message.RateLimited',
+					'Grant.LimitExceeded',
+				]),
+				Schema.Null,
+			],
+			{ mode: 'oneOf' }
+		),
+		events: Schema.Array(
 			Schema.Literals([
 				'PostRegister',
 				'PostSignIn',
@@ -938,53 +1029,22 @@ export const UpdateResponse = Schema.Struct({
 				'Identifier.Lockout',
 				'Message.RateLimited',
 				'Grant.LimitExceeded',
-			]),
-			Schema.Null,
-		],
-		{ mode: 'oneOf' }
-	),
-	events: Schema.Array(
-		Schema.Literals([
-			'PostRegister',
-			'PostSignIn',
-			'PostSignInAdaptiveMfaTriggered',
-			'PostResetPassword',
-			'User.Created',
-			'User.Deleted',
-			'User.Data.Updated',
-			'User.SuspensionStatus.Updated',
-			'Role.Created',
-			'Role.Deleted',
-			'Role.Data.Updated',
-			'Role.Scopes.Updated',
-			'Scope.Created',
-			'Scope.Deleted',
-			'Scope.Data.Updated',
-			'Organization.Created',
-			'Organization.Deleted',
-			'Organization.Data.Updated',
-			'Organization.Membership.Updated',
-			'OrganizationRole.Created',
-			'OrganizationRole.Deleted',
-			'OrganizationRole.Data.Updated',
-			'OrganizationRole.Scopes.Updated',
-			'OrganizationScope.Created',
-			'OrganizationScope.Deleted',
-			'OrganizationScope.Data.Updated',
-			'Identifier.Lockout',
-			'Message.RateLimited',
-			'Grant.LimitExceeded',
-		])
-	),
-	config: Schema.Struct({
-		url: Schema.String,
-		headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-		retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			])
+		),
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				url: Schema.String,
+				headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		signingKey: Schema.String.check(Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })),
+		enabled: Schema.Boolean,
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	signingKey: Schema.String.check(Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })),
-	enabled: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type ListRecentLogsParams = {
 	readonly logKey?: string
@@ -1011,85 +1071,127 @@ export const ListRecentLogsParams = Schema.Struct({
 	),
 })
 
-export type ListRecentLogsResponse = ReadonlyArray<{
-	readonly id: string
-	readonly key: string
-	readonly payload: {
+export type ListRecentLogsResponse = ReadonlyArray<
+	{
+		readonly id: string
 		readonly key: string
-		readonly result: 'Success' | 'Error'
-		readonly error?: { readonly [x: string]: Schema.Json } | string
-		readonly ip?: string
-		readonly userAgent?: string
-		readonly userAgentParsed?: {
-			readonly ua?: string
-			readonly browser?: { readonly name?: string; readonly version?: string; readonly major?: string; readonly type?: string }
-			readonly device?: { readonly model?: string; readonly type?: string; readonly vendor?: string }
-			readonly engine?: { readonly name?: string; readonly version?: string }
-			readonly os?: { readonly name?: string; readonly version?: string }
-			readonly cpu?: { readonly architecture?: string }
-		}
-		readonly userId?: string
-		readonly applicationId?: string
-		readonly cimdClientId?: string
-		readonly sessionId?: string
-		readonly params?: { readonly [x: string]: Schema.Json }
-	}
-	readonly createdAt: number
-}>
+		readonly payload: {
+			readonly key: string
+			readonly result: 'Success' | 'Error'
+			readonly error?: { readonly [x: string]: Schema.Json } | string
+			readonly ip?: string
+			readonly userAgent?: string
+			readonly userAgentParsed?: {
+				readonly ua?: string
+				readonly browser?: {
+					readonly name?: string
+					readonly version?: string
+					readonly major?: string
+					readonly type?: string
+				} & { readonly [x: string]: Schema.Json }
+				readonly device?: { readonly model?: string; readonly type?: string; readonly vendor?: string } & {
+					readonly [x: string]: Schema.Json
+				}
+				readonly engine?: { readonly name?: string; readonly version?: string } & { readonly [x: string]: Schema.Json }
+				readonly os?: { readonly name?: string; readonly version?: string } & { readonly [x: string]: Schema.Json }
+				readonly cpu?: { readonly architecture?: string } & { readonly [x: string]: Schema.Json }
+			} & { readonly [x: string]: Schema.Json }
+			readonly userId?: string
+			readonly applicationId?: string
+			readonly cimdClientId?: string
+			readonly sessionId?: string
+			readonly params?: { readonly [x: string]: Schema.Json }
+		} & { readonly [x: string]: Schema.Json }
+		readonly createdAt: number
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListRecentLogsResponse = Schema.Array(
-	Schema.Struct({
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-		),
-		key: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		payload: Schema.Struct({
-			key: Schema.String,
-			result: Schema.Literals(['Success', 'Error']),
-			error: Schema.optionalKey(
-				Schema.Union(
-					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })), Schema.String],
-					{ mode: 'oneOf' }
-				)
+	Schema.StructWithRest(
+		Schema.Struct({
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
-			ip: Schema.optionalKey(Schema.String),
-			userAgent: Schema.optionalKey(Schema.String),
-			userAgentParsed: Schema.optionalKey(
+			key: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			payload: Schema.StructWithRest(
 				Schema.Struct({
-					ua: Schema.optionalKey(Schema.String),
-					browser: Schema.optionalKey(
-						Schema.Struct({
-							name: Schema.optionalKey(Schema.String),
-							version: Schema.optionalKey(Schema.String),
-							major: Schema.optionalKey(Schema.String),
-							type: Schema.optionalKey(Schema.String),
-						})
+					key: Schema.String,
+					result: Schema.Literals(['Success', 'Error']),
+					error: Schema.optionalKey(
+						Schema.Union(
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] })), Schema.String],
+							{ mode: 'oneOf' }
+						)
 					),
-					device: Schema.optionalKey(
-						Schema.Struct({
-							model: Schema.optionalKey(Schema.String),
-							type: Schema.optionalKey(Schema.String),
-							vendor: Schema.optionalKey(Schema.String),
-						})
+					ip: Schema.optionalKey(Schema.String),
+					userAgent: Schema.optionalKey(Schema.String),
+					userAgentParsed: Schema.optionalKey(
+						Schema.StructWithRest(
+							Schema.Struct({
+								ua: Schema.optionalKey(Schema.String),
+								browser: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											name: Schema.optionalKey(Schema.String),
+											version: Schema.optionalKey(Schema.String),
+											major: Schema.optionalKey(Schema.String),
+											type: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								device: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											model: Schema.optionalKey(Schema.String),
+											type: Schema.optionalKey(Schema.String),
+											vendor: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								engine: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											name: Schema.optionalKey(Schema.String),
+											version: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								os: Schema.optionalKey(
+									Schema.StructWithRest(
+										Schema.Struct({
+											name: Schema.optionalKey(Schema.String),
+											version: Schema.optionalKey(Schema.String),
+										}),
+										[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+									)
+								),
+								cpu: Schema.optionalKey(
+									Schema.StructWithRest(Schema.Struct({ architecture: Schema.optionalKey(Schema.String) }), [
+										Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+									])
+								),
+							}),
+							[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+						)
 					),
-					engine: Schema.optionalKey(
-						Schema.Struct({ name: Schema.optionalKey(Schema.String), version: Schema.optionalKey(Schema.String) })
+					userId: Schema.optionalKey(Schema.String),
+					applicationId: Schema.optionalKey(Schema.String),
+					cimdClientId: Schema.optionalKey(Schema.String),
+					sessionId: Schema.optionalKey(Schema.String),
+					params: Schema.optionalKey(
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))
 					),
-					os: Schema.optionalKey(
-						Schema.Struct({ name: Schema.optionalKey(Schema.String), version: Schema.optionalKey(Schema.String) })
-					),
-					cpu: Schema.optionalKey(Schema.Struct({ architecture: Schema.optionalKey(Schema.String) })),
-				})
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			),
-			userId: Schema.optionalKey(Schema.String),
-			applicationId: Schema.optionalKey(Schema.String),
-			cimdClientId: Schema.optionalKey(Schema.String),
-			sessionId: Schema.optionalKey(Schema.String),
-			params: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 		}),
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type CreateTestPayload = {
@@ -1124,54 +1226,62 @@ export type CreateTestPayload = {
 		| 'Message.RateLimited'
 		| 'Grant.LimitExceeded'
 	>
-	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number }
+	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly event?: Schema.Json
-}
-export const CreateTestPayload = Schema.Struct({
-	events: Schema.Array(
-		Schema.Literals([
-			'PostRegister',
-			'PostSignIn',
-			'PostSignInAdaptiveMfaTriggered',
-			'PostResetPassword',
-			'User.Created',
-			'User.Deleted',
-			'User.Data.Updated',
-			'User.SuspensionStatus.Updated',
-			'Role.Created',
-			'Role.Deleted',
-			'Role.Data.Updated',
-			'Role.Scopes.Updated',
-			'Scope.Created',
-			'Scope.Deleted',
-			'Scope.Data.Updated',
-			'Organization.Created',
-			'Organization.Deleted',
-			'Organization.Data.Updated',
-			'Organization.Membership.Updated',
-			'OrganizationRole.Created',
-			'OrganizationRole.Deleted',
-			'OrganizationRole.Data.Updated',
-			'OrganizationRole.Scopes.Updated',
-			'OrganizationScope.Created',
-			'OrganizationScope.Deleted',
-			'OrganizationScope.Data.Updated',
-			'Identifier.Lockout',
-			'Message.RateLimited',
-			'Grant.LimitExceeded',
-		])
-	).annotate({ description: 'An array of hook events for testing.' }),
-	config: Schema.Struct({
-		url: Schema.String,
-		headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-		retries: Schema.optionalKey(
-			Schema.Number.annotate({ description: 'Now the retry times is fixed to 3. Keep for backward compatibility.' }).check(
-				Schema.isFinite().annotate({ expected: 'a finite number' })
-			)
-		),
-	}).annotate({ description: 'The hook configuration for testing.' }),
-	event: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', description: 'Use `events` instead.' })),
-})
+} & { readonly [x: string]: Schema.Json }
+export const CreateTestPayload = Schema.StructWithRest(
+	Schema.Struct({
+		events: Schema.Array(
+			Schema.Literals([
+				'PostRegister',
+				'PostSignIn',
+				'PostSignInAdaptiveMfaTriggered',
+				'PostResetPassword',
+				'User.Created',
+				'User.Deleted',
+				'User.Data.Updated',
+				'User.SuspensionStatus.Updated',
+				'Role.Created',
+				'Role.Deleted',
+				'Role.Data.Updated',
+				'Role.Scopes.Updated',
+				'Scope.Created',
+				'Scope.Deleted',
+				'Scope.Data.Updated',
+				'Organization.Created',
+				'Organization.Deleted',
+				'Organization.Data.Updated',
+				'Organization.Membership.Updated',
+				'OrganizationRole.Created',
+				'OrganizationRole.Deleted',
+				'OrganizationRole.Data.Updated',
+				'OrganizationRole.Scopes.Updated',
+				'OrganizationScope.Created',
+				'OrganizationScope.Deleted',
+				'OrganizationScope.Data.Updated',
+				'Identifier.Lockout',
+				'Message.RateLimited',
+				'Grant.LimitExceeded',
+			])
+		).annotate({ description: 'An array of hook events for testing.' }),
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				url: Schema.String,
+				headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				retries: Schema.optionalKey(
+					Schema.Number.annotate({ description: 'Now the retry times is fixed to 3. Keep for backward compatibility.' }).check(
+						Schema.isFinite().annotate({ expected: 'a finite number' })
+					)
+				),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		).annotate({ description: 'The hook configuration for testing.' }),
+		event: Schema.optionalKey(Schema.Json.annotate({ expected: 'JSON value', description: 'Use `events` instead.' })),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateSigningKeyResponse = {
 	readonly tenantId: string
@@ -1239,19 +1349,58 @@ export type UpdateSigningKeyResponse = {
 		| 'Message.RateLimited'
 		| 'Grant.LimitExceeded'
 	>
-	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number }
+	readonly config: { readonly url: string; readonly headers?: { readonly [x: string]: string }; readonly retries?: number } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly signingKey: string
 	readonly enabled: boolean
 	readonly createdAt: number
-}
-export const UpdateSigningKeyResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	name: Schema.String.check(Schema.isMaxLength(256).annotate({ expected: 'a value with a length of at most 256' })),
-	event: Schema.Union(
-		[
+} & { readonly [x: string]: Schema.Json }
+export const UpdateSigningKeyResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		name: Schema.String.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
+		event: Schema.Union(
+			[
+				Schema.Literals([
+					'PostRegister',
+					'PostSignIn',
+					'PostSignInAdaptiveMfaTriggered',
+					'PostResetPassword',
+					'User.Created',
+					'User.Deleted',
+					'User.Data.Updated',
+					'User.SuspensionStatus.Updated',
+					'Role.Created',
+					'Role.Deleted',
+					'Role.Data.Updated',
+					'Role.Scopes.Updated',
+					'Scope.Created',
+					'Scope.Deleted',
+					'Scope.Data.Updated',
+					'Organization.Created',
+					'Organization.Deleted',
+					'Organization.Data.Updated',
+					'Organization.Membership.Updated',
+					'OrganizationRole.Created',
+					'OrganizationRole.Deleted',
+					'OrganizationRole.Data.Updated',
+					'OrganizationRole.Scopes.Updated',
+					'OrganizationScope.Created',
+					'OrganizationScope.Deleted',
+					'OrganizationScope.Data.Updated',
+					'Identifier.Lockout',
+					'Message.RateLimited',
+					'Grant.LimitExceeded',
+				]),
+				Schema.Null,
+			],
+			{ mode: 'oneOf' }
+		),
+		events: Schema.Array(
 			Schema.Literals([
 				'PostRegister',
 				'PostSignIn',
@@ -1282,50 +1431,19 @@ export const UpdateSigningKeyResponse = Schema.Struct({
 				'Identifier.Lockout',
 				'Message.RateLimited',
 				'Grant.LimitExceeded',
-			]),
-			Schema.Null,
-		],
-		{ mode: 'oneOf' }
-	),
-	events: Schema.Array(
-		Schema.Literals([
-			'PostRegister',
-			'PostSignIn',
-			'PostSignInAdaptiveMfaTriggered',
-			'PostResetPassword',
-			'User.Created',
-			'User.Deleted',
-			'User.Data.Updated',
-			'User.SuspensionStatus.Updated',
-			'Role.Created',
-			'Role.Deleted',
-			'Role.Data.Updated',
-			'Role.Scopes.Updated',
-			'Scope.Created',
-			'Scope.Deleted',
-			'Scope.Data.Updated',
-			'Organization.Created',
-			'Organization.Deleted',
-			'Organization.Data.Updated',
-			'Organization.Membership.Updated',
-			'OrganizationRole.Created',
-			'OrganizationRole.Deleted',
-			'OrganizationRole.Data.Updated',
-			'OrganizationRole.Scopes.Updated',
-			'OrganizationScope.Created',
-			'OrganizationScope.Deleted',
-			'OrganizationScope.Data.Updated',
-			'Identifier.Lockout',
-			'Message.RateLimited',
-			'Grant.LimitExceeded',
-		])
-	),
-	config: Schema.Struct({
-		url: Schema.String,
-		headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
-		retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			])
+		),
+		config: Schema.StructWithRest(
+			Schema.Struct({
+				url: Schema.String,
+				headers: Schema.optionalKey(Schema.Record(Schema.String, Schema.String)),
+				retries: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		signingKey: Schema.String.check(Schema.isMaxCodePoints(64).annotate({ expected: 'a string with at most 64 code points' })),
+		enabled: Schema.Boolean,
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	signingKey: Schema.String.check(Schema.isMaxLength(64).annotate({ expected: 'a value with a length of at most 64' })),
-	enabled: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

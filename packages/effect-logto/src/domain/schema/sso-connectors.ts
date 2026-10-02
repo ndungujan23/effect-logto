@@ -17,81 +17,101 @@ export const ListParams = Schema.Struct({
 	),
 })
 
-export type ListResponse = ReadonlyArray<{
-	readonly tenantId: string
-	readonly id: string
-	readonly providerName: 'OIDC' | 'SAML' | 'AzureAD' | 'GoogleWorkspace' | 'Okta' | 'AzureAdOidc'
-	readonly connectorName: string
-	readonly config: { readonly [x: string]: Schema.Json }
-	readonly domains: ReadonlyArray<string>
-	readonly branding: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string }
-	readonly syncProfile: boolean
-	readonly enableTokenStorage: boolean
-	readonly createdAt: number
-	readonly name: string
-	readonly providerType: 'oidc' | 'saml'
-	readonly providerLogo: string
-	readonly providerLogoDark: string
-	readonly providerConfig?: { readonly [x: string]: Schema.Json }
-}>
+export type ListResponse = ReadonlyArray<
+	{
+		readonly tenantId: string
+		readonly id: string
+		readonly providerName: 'OIDC' | 'SAML' | 'AzureAD' | 'GoogleWorkspace' | 'Okta' | 'AzureAdOidc'
+		readonly connectorName: string
+		readonly config: { readonly [x: string]: Schema.Json }
+		readonly domains: ReadonlyArray<string>
+		readonly branding: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string } & {
+			readonly [x: string]: Schema.Json
+		}
+		readonly syncProfile: boolean
+		readonly enableTokenStorage: boolean
+		readonly createdAt: number
+		readonly name: string
+		readonly providerType: 'oidc' | 'saml'
+		readonly providerLogo: string
+		readonly providerLogoDark: string
+		readonly providerConfig?: { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+>
 export const ListResponse = Schema.Array(
-	Schema.Struct({
-		tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		providerName: Schema.Literals(['OIDC', 'SAML', 'AzureAD', 'GoogleWorkspace', 'Okta', 'AzureAdOidc']),
-		connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		),
-		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-		domains: Schema.Array(Schema.String),
-		branding: Schema.Struct({
-			displayName: Schema.optionalKey(Schema.String),
-			logo: Schema.optionalKey(Schema.String),
-			darkLogo: Schema.optionalKey(Schema.String),
+	Schema.StructWithRest(
+		Schema.Struct({
+			tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			providerName: Schema.Literals(['OIDC', 'SAML', 'AzureAD', 'GoogleWorkspace', 'Okta', 'AzureAdOidc']),
+			connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			),
+			config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+			domains: Schema.Array(Schema.String),
+			branding: Schema.StructWithRest(
+				Schema.Struct({
+					displayName: Schema.optionalKey(Schema.String),
+					logo: Schema.optionalKey(Schema.String),
+					darkLogo: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+			syncProfile: Schema.Boolean,
+			enableTokenStorage: Schema.Boolean,
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			name: Schema.String,
+			providerType: Schema.Literals(['oidc', 'saml']),
+			providerLogo: Schema.String,
+			providerLogoDark: Schema.String,
+			providerConfig: Schema.optionalKey(
+				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))
+			),
 		}),
-		syncProfile: Schema.Boolean,
-		enableTokenStorage: Schema.Boolean,
-		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		name: Schema.String,
-		providerType: Schema.Literals(['oidc', 'saml']),
-		providerLogo: Schema.String,
-		providerLogoDark: Schema.String,
-		providerConfig: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-	})
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
 )
 
 export type CreatePayload = {
 	readonly config?: { readonly [x: string]: Schema.Json }
 	readonly domains?: ReadonlyArray<string>
-	readonly branding?: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string }
+	readonly branding?: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly syncProfile?: boolean
 	readonly enableTokenStorage?: boolean
 	readonly providerName: string
 	readonly connectorName: string
-}
-export const CreatePayload = Schema.Struct({
-	config: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
-	),
-	domains: Schema.optionalKey(Schema.Array(Schema.String)),
-	branding: Schema.optionalKey(
-		Schema.Struct({
-			displayName: Schema.optionalKey(Schema.String),
-			logo: Schema.optionalKey(Schema.String),
-			darkLogo: Schema.optionalKey(Schema.String),
-		})
-	),
-	syncProfile: Schema.optionalKey(Schema.Boolean),
-	enableTokenStorage: Schema.optionalKey(Schema.Boolean),
-	providerName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-})
+} & { readonly [x: string]: Schema.Json }
+export const CreatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		config: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
+		),
+		domains: Schema.optionalKey(Schema.Array(Schema.String)),
+		branding: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					displayName: Schema.optionalKey(Schema.String),
+					logo: Schema.optionalKey(Schema.String),
+					darkLogo: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		syncProfile: Schema.optionalKey(Schema.Boolean),
+		enableTokenStorage: Schema.optionalKey(Schema.Boolean),
+		providerName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateResponse = {
 	readonly tenantId: string
@@ -100,33 +120,41 @@ export type CreateResponse = {
 	readonly connectorName: string
 	readonly config: { readonly [x: string]: Schema.Json }
 	readonly domains: ReadonlyArray<string>
-	readonly branding: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string }
+	readonly branding: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly syncProfile: boolean
 	readonly enableTokenStorage: boolean
 	readonly createdAt: number
-}
-export const CreateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	providerName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	domains: Schema.Array(Schema.String),
-	branding: Schema.Struct({
-		displayName: Schema.optionalKey(Schema.String),
-		logo: Schema.optionalKey(Schema.String),
-		darkLogo: Schema.optionalKey(Schema.String),
+} & { readonly [x: string]: Schema.Json }
+export const CreateResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		providerName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		domains: Schema.Array(Schema.String),
+		branding: Schema.StructWithRest(
+			Schema.Struct({
+				displayName: Schema.optionalKey(Schema.String),
+				logo: Schema.optionalKey(Schema.String),
+				darkLogo: Schema.optionalKey(Schema.String),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		syncProfile: Schema.Boolean,
+		enableTokenStorage: Schema.Boolean,
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
 	}),
-	syncProfile: Schema.Boolean,
-	enableTokenStorage: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type GetResponse = {
 	readonly tenantId: string
@@ -135,7 +163,9 @@ export type GetResponse = {
 	readonly connectorName: string
 	readonly config: { readonly [x: string]: Schema.Json }
 	readonly domains: ReadonlyArray<string>
-	readonly branding: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string }
+	readonly branding: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly syncProfile: boolean
 	readonly enableTokenStorage: boolean
 	readonly createdAt: number
@@ -144,61 +174,75 @@ export type GetResponse = {
 	readonly providerLogo: string
 	readonly providerLogoDark: string
 	readonly providerConfig?: { readonly [x: string]: Schema.Json }
-}
-export const GetResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	providerName: Schema.Literals(['OIDC', 'SAML', 'AzureAD', 'GoogleWorkspace', 'Okta', 'AzureAdOidc']),
-	connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	domains: Schema.Array(Schema.String),
-	branding: Schema.Struct({
-		displayName: Schema.optionalKey(Schema.String),
-		logo: Schema.optionalKey(Schema.String),
-		darkLogo: Schema.optionalKey(Schema.String),
+} & { readonly [x: string]: Schema.Json }
+export const GetResponse = Schema.StructWithRest(
+	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		providerName: Schema.Literals(['OIDC', 'SAML', 'AzureAD', 'GoogleWorkspace', 'Okta', 'AzureAdOidc']),
+		connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		domains: Schema.Array(Schema.String),
+		branding: Schema.StructWithRest(
+			Schema.Struct({
+				displayName: Schema.optionalKey(Schema.String),
+				logo: Schema.optionalKey(Schema.String),
+				darkLogo: Schema.optionalKey(Schema.String),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		syncProfile: Schema.Boolean,
+		enableTokenStorage: Schema.Boolean,
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		name: Schema.String,
+		providerType: Schema.Literals(['oidc', 'saml']),
+		providerLogo: Schema.String,
+		providerLogoDark: Schema.String,
+		providerConfig: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
 	}),
-	syncProfile: Schema.Boolean,
-	enableTokenStorage: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	name: Schema.String,
-	providerType: Schema.Literals(['oidc', 'saml']),
-	providerLogo: Schema.String,
-	providerLogoDark: Schema.String,
-	providerConfig: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdatePayload = {
 	readonly config?: { readonly [x: string]: Schema.Json }
 	readonly domains?: ReadonlyArray<string>
-	readonly branding?: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string }
+	readonly branding?: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly syncProfile?: boolean
 	readonly connectorName?: string
 	readonly enableTokenStorage?: boolean
-}
-export const UpdatePayload = Schema.Struct({
-	config: Schema.optionalKey(
-		Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
-	),
-	domains: Schema.optionalKey(Schema.Array(Schema.String)),
-	branding: Schema.optionalKey(
-		Schema.Struct({
-			displayName: Schema.optionalKey(Schema.String),
-			logo: Schema.optionalKey(Schema.String),
-			darkLogo: Schema.optionalKey(Schema.String),
-		})
-	),
-	syncProfile: Schema.optionalKey(Schema.Boolean),
-	connectorName: Schema.optionalKey(
-		Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-		)
-	),
-	enableTokenStorage: Schema.optionalKey(Schema.Boolean),
-})
+} & { readonly [x: string]: Schema.Json }
+export const UpdatePayload = Schema.StructWithRest(
+	Schema.Struct({
+		config: Schema.optionalKey(
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
+		),
+		domains: Schema.optionalKey(Schema.Array(Schema.String)),
+		branding: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					displayName: Schema.optionalKey(Schema.String),
+					logo: Schema.optionalKey(Schema.String),
+					darkLogo: Schema.optionalKey(Schema.String),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
+		syncProfile: Schema.optionalKey(Schema.Boolean),
+		connectorName: Schema.optionalKey(
+			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+			)
+		),
+		enableTokenStorage: Schema.optionalKey(Schema.Boolean),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateResponse = {
 	readonly tenantId: string
@@ -207,7 +251,9 @@ export type UpdateResponse = {
 	readonly connectorName: string
 	readonly config: { readonly [x: string]: Schema.Json }
 	readonly domains: ReadonlyArray<string>
-	readonly branding: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string }
+	readonly branding: { readonly displayName?: string; readonly logo?: string; readonly darkLogo?: string } & {
+		readonly [x: string]: Schema.Json
+	}
 	readonly syncProfile: boolean
 	readonly enableTokenStorage: boolean
 	readonly createdAt: number
@@ -216,61 +262,84 @@ export type UpdateResponse = {
 	readonly providerLogo: string
 	readonly providerLogoDark: string
 	readonly providerConfig?: { readonly [x: string]: Schema.Json }
-}
-export const UpdateResponse = Schema.Struct({
-	tenantId: Schema.String.check(Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })),
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	providerName: Schema.Literals(['OIDC', 'SAML', 'AzureAD', 'GoogleWorkspace', 'Okta', 'AzureAdOidc']),
-	connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(128).annotate({ expected: 'a value with a length of at most 128' })
-	),
-	config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
-	domains: Schema.Array(Schema.String),
-	branding: Schema.Struct({
-		displayName: Schema.optionalKey(Schema.String),
-		logo: Schema.optionalKey(Schema.String),
-		darkLogo: Schema.optionalKey(Schema.String),
-	}),
-	syncProfile: Schema.Boolean,
-	enableTokenStorage: Schema.Boolean,
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	name: Schema.String,
-	providerType: Schema.Literals(['oidc', 'saml']),
-	providerLogo: Schema.String,
-	providerLogoDark: Schema.String,
-	providerConfig: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
-})
-
-export type ListSigningKeysResponse = ReadonlyArray<{
-	readonly id: string
-	readonly certificate: string
-	readonly createdAt: number
-	readonly expiresAt: number
-	readonly active: boolean
-	readonly fingerprints: { readonly sha256: { readonly formatted: string; readonly unformatted: string } }
-}>
-export const ListSigningKeysResponse = Schema.Array(
+} & { readonly [x: string]: Schema.Json }
+export const UpdateResponse = Schema.StructWithRest(
 	Schema.Struct({
+		tenantId: Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
 		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-			Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 		),
-		certificate: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+		providerName: Schema.Literals(['OIDC', 'SAML', 'AzureAD', 'GoogleWorkspace', 'Okta', 'AzureAdOidc']),
+		connectorName: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
+		),
+		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
+		domains: Schema.Array(Schema.String),
+		branding: Schema.StructWithRest(
+			Schema.Struct({
+				displayName: Schema.optionalKey(Schema.String),
+				logo: Schema.optionalKey(Schema.String),
+				darkLogo: Schema.optionalKey(Schema.String),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+		syncProfile: Schema.Boolean,
+		enableTokenStorage: Schema.Boolean,
 		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-		active: Schema.Boolean,
-		fingerprints: Schema.Struct({ sha256: Schema.Struct({ formatted: Schema.String, unformatted: Schema.String }) }),
-	})
+		name: Schema.String,
+		providerType: Schema.Literals(['oidc', 'saml']),
+		providerLogo: Schema.String,
+		providerLogoDark: Schema.String,
+		providerConfig: Schema.optionalKey(Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value', examples: [{}] }))),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 )
 
-export type CreateSigningKeyPayload = { readonly active: boolean }
-export const CreateSigningKeyPayload = Schema.Struct({
-	active: Schema.Boolean.annotate({
-		description: 'Whether the new key should become the active signing key immediately. Defaults to `false` (staged rotation).',
-		default: false,
+export type ListSigningKeysResponse = ReadonlyArray<
+	{
+		readonly id: string
+		readonly certificate: string
+		readonly createdAt: number
+		readonly expiresAt: number
+		readonly active: boolean
+		readonly fingerprints: {
+			readonly sha256: { readonly formatted: string; readonly unformatted: string } & { readonly [x: string]: Schema.Json }
+		} & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+>
+export const ListSigningKeysResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			certificate: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			active: Schema.Boolean,
+			fingerprints: Schema.StructWithRest(
+				Schema.Struct({
+					sha256: Schema.StructWithRest(Schema.Struct({ formatted: Schema.String, unformatted: Schema.String }), [
+						Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+					]),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			),
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
+
+export type CreateSigningKeyPayload = { readonly active: boolean } & { readonly [x: string]: Schema.Json }
+export const CreateSigningKeyPayload = Schema.StructWithRest(
+	Schema.Struct({
+		active: Schema.Boolean.annotate({
+			description: 'Whether the new key should become the active signing key immediately. Defaults to `false` (staged rotation).',
+			default: false,
+		}),
 	}),
-})
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type CreateSigningKeyResponse = {
 	readonly id: string
@@ -278,23 +347,36 @@ export type CreateSigningKeyResponse = {
 	readonly createdAt: number
 	readonly expiresAt: number
 	readonly active: boolean
-	readonly fingerprints: { readonly sha256: { readonly formatted: string; readonly unformatted: string } }
-}
-export const CreateSigningKeyResponse = Schema.Struct({
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	certificate: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	active: Schema.Boolean,
-	fingerprints: Schema.Struct({ sha256: Schema.Struct({ formatted: Schema.String, unformatted: Schema.String }) }),
-})
+	readonly fingerprints: {
+		readonly sha256: { readonly formatted: string; readonly unformatted: string } & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const CreateSigningKeyResponse = Schema.StructWithRest(
+	Schema.Struct({
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		certificate: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		active: Schema.Boolean,
+		fingerprints: Schema.StructWithRest(
+			Schema.Struct({
+				sha256: Schema.StructWithRest(Schema.Struct({ formatted: Schema.String, unformatted: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				]),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type UpdateSigningKeyPayload = { readonly active: boolean }
-export const UpdateSigningKeyPayload = Schema.Struct({
-	active: Schema.Boolean.annotate({ description: 'Whether the key should be the active signing key.' }),
-})
+export type UpdateSigningKeyPayload = { readonly active: boolean } & { readonly [x: string]: Schema.Json }
+export const UpdateSigningKeyPayload = Schema.StructWithRest(
+	Schema.Struct({ active: Schema.Boolean.annotate({ description: 'Whether the key should be the active signing key.' }) }),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
 export type UpdateSigningKeyResponse = {
 	readonly id: string
@@ -302,15 +384,27 @@ export type UpdateSigningKeyResponse = {
 	readonly createdAt: number
 	readonly expiresAt: number
 	readonly active: boolean
-	readonly fingerprints: { readonly sha256: { readonly formatted: string; readonly unformatted: string } }
-}
-export const UpdateSigningKeyResponse = Schema.Struct({
-	id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-		Schema.isMaxLength(21).annotate({ expected: 'a value with a length of at most 21' })
-	),
-	certificate: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
-	createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
-	active: Schema.Boolean,
-	fingerprints: Schema.Struct({ sha256: Schema.Struct({ formatted: Schema.String, unformatted: Schema.String }) }),
-})
+	readonly fingerprints: {
+		readonly sha256: { readonly formatted: string; readonly unformatted: string } & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
+} & { readonly [x: string]: Schema.Json }
+export const UpdateSigningKeyResponse = Schema.StructWithRest(
+	Schema.Struct({
+		id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+		),
+		certificate: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
+		createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+		active: Schema.Boolean,
+		fingerprints: Schema.StructWithRest(
+			Schema.Struct({
+				sha256: Schema.StructWithRest(Schema.Struct({ formatted: Schema.String, unformatted: Schema.String }), [
+					Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+				]),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

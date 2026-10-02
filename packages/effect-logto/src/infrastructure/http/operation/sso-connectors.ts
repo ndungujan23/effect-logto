@@ -17,52 +17,99 @@ import {
 } from '../../../domain/schema/sso-connectors.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeSsoConnectors = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): SsoConnectorsOperations => ({
+export const makeSsoConnectors = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): SsoConnectorsOperations => ({
 	list: options =>
-		HttpClientRequest.get(`/api/sso-connectors`).pipe(
+		HttpClientRequest.get('/api/sso-connectors').pipe(
 			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
 	create: options =>
-		HttpClientRequest.post(`/api/sso-connectors`).pipe(
+		HttpClientRequest.post('/api/sso-connectors').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateResponse), orElse: unexpectedStatus }))
 		),
 	get: (id, options) =>
-		HttpClientRequest.get(`/api/sso-connectors/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/sso-connectors/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	delete: (id, options) =>
-		HttpClientRequest.delete(`/api/sso-connectors/${encodeURIComponent(id)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [id], () => '/api/sso-connectors/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	update: (id, options) =>
-		HttpClientRequest.patch(`/api/sso-connectors/${encodeURIComponent(id)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.patch, [id], () => '/api/sso-connectors/' + __encodePathParam(id) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
 		),
 	listSigningKeys: (id, options) =>
-		HttpClientRequest.get(`/api/sso-connectors/${encodeURIComponent(id)}/signing-keys`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListSigningKeysResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [id], () => '/api/sso-connectors/' + __encodePathParam(id) + '/signing-keys').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListSigningKeysResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createSigningKey: (id, options) =>
-		HttpClientRequest.post(`/api/sso-connectors/${encodeURIComponent(id)}/signing-keys`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateSigningKeyResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [id], () => '/api/sso-connectors/' + __encodePathParam(id) + '/signing-keys').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateSigningKeyResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteSigningKey: (id, keyId, options) =>
-		HttpClientRequest.delete(`/api/sso-connectors/${encodeURIComponent(id)}/signing-keys/${encodeURIComponent(keyId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[id, keyId],
+			() => '/api/sso-connectors/' + __encodePathParam(id) + '/signing-keys/' + __encodePathParam(keyId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updateSigningKey: (id, keyId, options) =>
-		HttpClientRequest.patch(`/api/sso-connectors/${encodeURIComponent(id)}/signing-keys/${encodeURIComponent(keyId)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateSigningKeyResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[id, keyId],
+			() => '/api/sso-connectors/' + __encodePathParam(id) + '/signing-keys/' + __encodePathParam(keyId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateSigningKeyResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 })

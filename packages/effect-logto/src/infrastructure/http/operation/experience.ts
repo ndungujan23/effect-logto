@@ -36,50 +36,57 @@ import {
 } from '../../../domain/schema/experience.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): ExperienceOperations => ({
+export const makeExperience = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): ExperienceOperations => ({
 	initInteraction: options =>
-		HttpClientRequest.put(`/api/experience`).pipe(
+		HttpClientRequest.put('/api/experience').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	updateInteractionEvent: options =>
-		HttpClientRequest.put(`/api/experience/interaction-event`).pipe(
+		HttpClientRequest.put('/api/experience/interaction-event').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	identifyUser: options =>
-		HttpClientRequest.post(`/api/experience/identification`).pipe(
+		HttpClientRequest.post('/api/experience/identification').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	submitInteraction: options =>
-		HttpClientRequest.post(`/api/experience/submit`).pipe(
+		HttpClientRequest.post('/api/experience/submit').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(SubmitInteractionResponse), orElse: unexpectedStatus })
 			)
 		),
 	getInteraction: options =>
-		HttpClientRequest.get(`/api/experience/interaction`).pipe(
+		HttpClientRequest.get('/api/experience/interaction').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetInteractionResponse), orElse: unexpectedStatus })
 			)
 		),
 	createPasswordVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/password`).pipe(
+		HttpClientRequest.post('/api/experience/verification/password').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreatePasswordVerificationResponse), orElse: unexpectedStatus })
 			)
 		),
 	createAndSendVerificationCode: options =>
-		HttpClientRequest.post(`/api/experience/verification/verification-code`).pipe(
+		HttpClientRequest.post('/api/experience/verification/verification-code').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateAndSendVerificationCodeResponse), orElse: unexpectedStatus })
 			)
 		),
 	verifyVerificationCodeVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/verification-code/verify`).pipe(
+		HttpClientRequest.post('/api/experience/verification/verification-code/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({
@@ -89,62 +96,100 @@ export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, 
 			)
 		),
 	createAndSendMfaVerificationCode: options =>
-		HttpClientRequest.post(`/api/experience/verification/mfa-verification-code`).pipe(
+		HttpClientRequest.post('/api/experience/verification/mfa-verification-code').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateAndSendMfaVerificationCodeResponse), orElse: unexpectedStatus })
 			)
 		),
 	verifyMfaVerificationCode: options =>
-		HttpClientRequest.post(`/api/experience/verification/mfa-verification-code/verify`).pipe(
+		HttpClientRequest.post('/api/experience/verification/mfa-verification-code/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyMfaVerificationCodeResponse), orElse: unexpectedStatus })
 			)
 		),
 	createSocialVerification: (connectorId, options) =>
-		HttpClientRequest.post(`/api/experience/verification/social/${encodeURIComponent(connectorId)}/authorization-uri`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateSocialVerificationResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.post,
+			[connectorId],
+			() => '/api/experience/verification/social/' + __encodePathParam(connectorId) + '/authorization-uri'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateSocialVerificationResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	verifySocialVerification: (connectorId, options) =>
-		HttpClientRequest.post(`/api/experience/verification/social/${encodeURIComponent(connectorId)}/verify`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifySocialVerificationResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.post,
+			[connectorId],
+			() => '/api/experience/verification/social/' + __encodePathParam(connectorId) + '/verify'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifySocialVerificationResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	createEnterpriseSsoVerification: (connectorId, options) =>
-		HttpClientRequest.post(`/api/experience/verification/sso/${encodeURIComponent(connectorId)}/authorization-uri`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateEnterpriseSsoVerificationResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.post,
+			[connectorId],
+			() => '/api/experience/verification/sso/' + __encodePathParam(connectorId) + '/authorization-uri'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(CreateEnterpriseSsoVerificationResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	verifyEnterpriseSsoVerification: (connectorId, options) =>
-		HttpClientRequest.post(`/api/experience/verification/sso/${encodeURIComponent(connectorId)}/verify`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyEnterpriseSsoVerificationResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.post,
+			[connectorId],
+			() => '/api/experience/verification/sso/' + __encodePathParam(connectorId) + '/verify'
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'2xx': decodeSuccess(VerifyEnterpriseSsoVerificationResponse),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	createTotpSecret: options =>
-		HttpClientRequest.post(`/api/experience/verification/totp/secret`).pipe(
+		HttpClientRequest.post('/api/experience/verification/totp/secret').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(CreateTotpSecretResponse), orElse: unexpectedStatus })
 			)
 		),
 	verifyTotpVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/totp/verify`).pipe(
+		HttpClientRequest.post('/api/experience/verification/totp/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyTotpVerificationResponse), orElse: unexpectedStatus })
 			)
 		),
 	createWebAuthnRegistrationVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/web-authn/registration`).pipe(
+		HttpClientRequest.post('/api/experience/verification/web-authn/registration').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({
 					'2xx': decodeSuccess(CreateWebAuthnRegistrationVerificationResponse),
@@ -153,7 +198,7 @@ export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, 
 			)
 		),
 	verifyWebAuthnRegistrationVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/web-authn/registration/verify`).pipe(
+		HttpClientRequest.post('/api/experience/verification/web-authn/registration/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({
@@ -163,7 +208,7 @@ export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, 
 			)
 		),
 	createWebAuthnAuthenticationVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/web-authn/authentication`).pipe(
+		HttpClientRequest.post('/api/experience/verification/web-authn/authentication').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({
 					'2xx': decodeSuccess(CreateWebAuthnAuthenticationVerificationResponse),
@@ -172,7 +217,7 @@ export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, 
 			)
 		),
 	verifyWebAuthnAuthenticationVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/web-authn/authentication/verify`).pipe(
+		HttpClientRequest.post('/api/experience/verification/web-authn/authentication/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({
@@ -182,7 +227,7 @@ export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, 
 			)
 		),
 	createSignInPasskeyAuthenticationWithIdentifier: options =>
-		HttpClientRequest.post(`/api/experience/verification/sign-in-passkey/authentication`).pipe(
+		HttpClientRequest.post('/api/experience/verification/sign-in-passkey/authentication').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({
@@ -192,7 +237,7 @@ export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, 
 			)
 		),
 	verifySignInPasskeyAuthentication: options =>
-		HttpClientRequest.post(`/api/experience/verification/sign-in-passkey/authentication/verify`).pipe(
+		HttpClientRequest.post('/api/experience/verification/sign-in-passkey/authentication/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({
@@ -202,20 +247,20 @@ export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, 
 			)
 		),
 	generateBackupCodes: options =>
-		HttpClientRequest.post(`/api/experience/verification/backup-code/generate`).pipe(
+		HttpClientRequest.post('/api/experience/verification/backup-code/generate').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GenerateBackupCodesResponse), orElse: unexpectedStatus })
 			)
 		),
 	verifyBackupCode: options =>
-		HttpClientRequest.post(`/api/experience/verification/backup-code/verify`).pipe(
+		HttpClientRequest.post('/api/experience/verification/backup-code/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyBackupCodeResponse), orElse: unexpectedStatus })
 			)
 		),
 	createNewPasswordIdentityVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/new-password-identity`).pipe(
+		HttpClientRequest.post('/api/experience/verification/new-password-identity').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({
@@ -225,64 +270,64 @@ export const makeExperience = ({ withResponse, decodeSuccess, unexpectedStatus, 
 			)
 		),
 	verifyOneTimeTokenVerification: options =>
-		HttpClientRequest.post(`/api/experience/verification/one-time-token/verify`).pipe(
+		HttpClientRequest.post('/api/experience/verification/one-time-token/verify').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(VerifyOneTimeTokenVerificationResponse), orElse: unexpectedStatus })
 			)
 		),
 	addUserProfile: options =>
-		HttpClientRequest.post(`/api/experience/profile`).pipe(
+		HttpClientRequest.post('/api/experience/profile').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	uploadAvatar: options =>
-		HttpClientRequest.post(`/api/experience/user-assets/avatar`).pipe(
-			HttpClientRequest.bodyFormData(options.payload as any),
+		HttpClientRequest.post('/api/experience/user-assets/avatar').pipe(
+			HttpClientRequest.bodyFormDataRecord(options.payload as any),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UploadAvatarResponse), orElse: unexpectedStatus })
 			)
 		),
 	resetUserPassword: options =>
-		HttpClientRequest.put(`/api/experience/profile/password`).pipe(
+		HttpClientRequest.put('/api/experience/profile/password').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	markMfaEnabled: options =>
-		HttpClientRequest.post(`/api/experience/profile/mfa/mfa-enabled`).pipe(
+		HttpClientRequest.post('/api/experience/profile/mfa/mfa-enabled').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	skipMfaBindingFlow: options =>
-		HttpClientRequest.post(`/api/experience/profile/mfa/mfa-skipped`).pipe(
+		HttpClientRequest.post('/api/experience/profile/mfa/mfa-skipped').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	skipMfaSuggestion: options =>
-		HttpClientRequest.post(`/api/experience/profile/mfa/mfa-suggestion-skipped`).pipe(
+		HttpClientRequest.post('/api/experience/profile/mfa/mfa-suggestion-skipped').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	skipPasskeyBinding: options =>
-		HttpClientRequest.post(`/api/experience/profile/mfa/passkey-skipped`).pipe(
+		HttpClientRequest.post('/api/experience/profile/mfa/passkey-skipped').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	bindPasskey: options =>
-		HttpClientRequest.post(`/api/experience/profile/mfa/passkey`).pipe(
+		HttpClientRequest.post('/api/experience/profile/mfa/passkey').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	bindMfaVerification: options =>
-		HttpClientRequest.post(`/api/experience/profile/mfa`).pipe(
+		HttpClientRequest.post('/api/experience/profile/mfa').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	getEnabledSsoConnectors: options =>
-		HttpClientRequest.get(`/api/experience/sso-connectors`).pipe(
+		HttpClientRequest.get('/api/experience/sso-connectors').pipe(
 			HttpClientRequest.setUrlParams({ email: options.params['email'] as any }),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetEnabledSsoConnectorsResponse), orElse: unexpectedStatus })
 			)
 		),
 	createSignInPasskeyAuthentication: options =>
-		HttpClientRequest.post(`/api/experience/preflight/sign-in-passkey/authentication`).pipe(
+		HttpClientRequest.post('/api/experience/preflight/sign-in-passkey/authentication').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({
 					'2xx': decodeSuccess(CreateSignInPasskeyAuthenticationResponse),

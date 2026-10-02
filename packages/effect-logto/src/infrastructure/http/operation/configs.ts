@@ -32,112 +32,167 @@ import {
 } from '../../../domain/schema/configs.ts'
 import type { Transport } from '../transport.ts'
 
-export const makeConfigs = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): ConfigsOperations => ({
+export const makeConfigs = ({
+	withResponse,
+	decodeSuccess,
+	unexpectedStatus,
+	searchParams,
+	__makePathRequest,
+	__encodePathParam,
+}: Transport): ConfigsOperations => ({
 	getAdminConsoleConfig: options =>
-		HttpClientRequest.get(`/api/configs/admin-console`).pipe(
+		HttpClientRequest.get('/api/configs/admin-console').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetAdminConsoleConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateAdminConsoleConfig: options =>
-		HttpClientRequest.patch(`/api/configs/admin-console`).pipe(
+		HttpClientRequest.patch('/api/configs/admin-console').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateAdminConsoleConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	getOidcSessionConfig: options =>
-		HttpClientRequest.get(`/api/configs/oidc/session`).pipe(
+		HttpClientRequest.get('/api/configs/oidc/session').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetOidcSessionConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateOidcSessionConfig: options =>
-		HttpClientRequest.patch(`/api/configs/oidc/session`).pipe(
+		HttpClientRequest.patch('/api/configs/oidc/session').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateOidcSessionConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	getOidcKeys: (keyType, options) =>
-		HttpClientRequest.get(`/api/configs/oidc/${encodeURIComponent(keyType)}`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetOidcKeysResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [keyType], () => '/api/configs/oidc/' + __encodePathParam(keyType) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetOidcKeysResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	deleteOidcKey: (keyType, keyId, options) =>
-		HttpClientRequest.delete(`/api/configs/oidc/${encodeURIComponent(keyType)}/${encodeURIComponent(keyId)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[keyType, keyId],
+			() => '/api/configs/oidc/' + __encodePathParam(keyType) + '/' + __encodePathParam(keyId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	rotateOidcKeys: (keyType, options) =>
-		HttpClientRequest.post(`/api/configs/oidc/${encodeURIComponent(keyType)}/rotate`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(RotateOidcKeysResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.post, [keyType], () => '/api/configs/oidc/' + __encodePathParam(keyType) + '/rotate').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(RotateOidcKeysResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	getJwtCustomizer: (tokenTypePath, options) =>
-		HttpClientRequest.get(`/api/configs/jwt-customizer/${encodeURIComponent(tokenTypePath)}`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetJwtCustomizerResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.get,
+			[tokenTypePath],
+			() => '/api/configs/jwt-customizer/' + __encodePathParam(tokenTypePath) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetJwtCustomizerResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	upsertJwtCustomizer: (tokenTypePath, options) =>
-		HttpClientRequest.put(`/api/configs/jwt-customizer/${encodeURIComponent(tokenTypePath)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({
-					'200': decodeSuccess(UpsertJwtCustomizerResponse200),
-					'201': decodeSuccess(UpsertJwtCustomizerResponse201),
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(
+			HttpClientRequest.put,
+			[tokenTypePath],
+			() => '/api/configs/jwt-customizer/' + __encodePathParam(tokenTypePath) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'200': decodeSuccess(UpsertJwtCustomizerResponse200),
+							'201': decodeSuccess(UpsertJwtCustomizerResponse201),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	deleteJwtCustomizer: (tokenTypePath, options) =>
-		HttpClientRequest.delete(`/api/configs/jwt-customizer/${encodeURIComponent(tokenTypePath)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[tokenTypePath],
+			() => '/api/configs/jwt-customizer/' + __encodePathParam(tokenTypePath) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updateJwtCustomizer: (tokenTypePath, options) =>
-		HttpClientRequest.patch(`/api/configs/jwt-customizer/${encodeURIComponent(tokenTypePath)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateJwtCustomizerResponse), orElse: unexpectedStatus })
+		__makePathRequest(
+			HttpClientRequest.patch,
+			[tokenTypePath],
+			() => '/api/configs/jwt-customizer/' + __encodePathParam(tokenTypePath) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateJwtCustomizerResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	listJwtCustomizers: options =>
-		HttpClientRequest.get(`/api/configs/jwt-customizer`).pipe(
+		HttpClientRequest.get('/api/configs/jwt-customizer').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListJwtCustomizersResponse), orElse: unexpectedStatus })
 			)
 		),
 	testJwtCustomizer: options =>
-		HttpClientRequest.post(`/api/configs/jwt-customizer/test`).pipe(
+		HttpClientRequest.post('/api/configs/jwt-customizer/test').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(TestJwtCustomizerResponse), orElse: unexpectedStatus })
 			)
 		),
 	getIdTokenConfig: options =>
-		HttpClientRequest.get(`/api/configs/id-token`).pipe(
+		HttpClientRequest.get('/api/configs/id-token').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetIdTokenConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	upsertIdTokenConfig: options =>
-		HttpClientRequest.put(`/api/configs/id-token`).pipe(
+		HttpClientRequest.put('/api/configs/id-token').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpsertIdTokenConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	listActions: options =>
-		HttpClientRequest.get(`/api/configs/actions`).pipe(
+		HttpClientRequest.get('/api/configs/actions').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListActionsResponse), orElse: unexpectedStatus })
 			)
 		),
 	testAction: options =>
-		HttpClientRequest.post(`/api/configs/actions/test`).pipe(
+		HttpClientRequest.post('/api/configs/actions/test').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({
@@ -148,41 +203,57 @@ export const makeConfigs = ({ withResponse, decodeSuccess, unexpectedStatus, sea
 			)
 		),
 	getAction: (actionType, options) =>
-		HttpClientRequest.get(`/api/configs/actions/${encodeURIComponent(actionType)}`).pipe(
-			withResponse(options?.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetActionResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.get, [actionType], () => '/api/configs/actions/' + __encodePathParam(actionType) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetActionResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	upsertAction: (actionType, options) =>
-		HttpClientRequest.put(`/api/configs/actions/${encodeURIComponent(actionType)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({
-					'200': decodeSuccess(UpsertActionResponse200),
-					'201': decodeSuccess(UpsertActionResponse201),
-					orElse: unexpectedStatus,
-				})
+		__makePathRequest(HttpClientRequest.put, [actionType], () => '/api/configs/actions/' + __encodePathParam(actionType) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({
+							'200': decodeSuccess(UpsertActionResponse200),
+							'201': decodeSuccess(UpsertActionResponse201),
+							orElse: unexpectedStatus,
+						})
+					)
+				)
 			)
 		),
 	deleteAction: (actionType, options) =>
-		HttpClientRequest.delete(`/api/configs/actions/${encodeURIComponent(actionType)}`).pipe(
-			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		__makePathRequest(HttpClientRequest.delete, [actionType], () => '/api/configs/actions/' + __encodePathParam(actionType) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
 		),
 	updateAction: (actionType, options) =>
-		HttpClientRequest.patch(`/api/configs/actions/${encodeURIComponent(actionType)}`).pipe(
-			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(
-				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateActionResponse), orElse: unexpectedStatus })
+		__makePathRequest(HttpClientRequest.patch, [actionType], () => '/api/configs/actions/' + __encodePathParam(actionType) + '').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					HttpClientRequest.bodyJsonUnsafe(options.payload),
+					withResponse(options.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateActionResponse), orElse: unexpectedStatus })
+					)
+				)
 			)
 		),
 	getCimdConfig: options =>
-		HttpClientRequest.get(`/api/configs/cimd`).pipe(
+		HttpClientRequest.get('/api/configs/cimd').pipe(
 			withResponse(options?.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetCimdConfigResponse), orElse: unexpectedStatus })
 			)
 		),
 	updateCimdConfig: options =>
-		HttpClientRequest.patch(`/api/configs/cimd`).pipe(
+		HttpClientRequest.patch('/api/configs/cimd').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
 			withResponse(options.config)(
 				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(UpdateCimdConfigResponse), orElse: unexpectedStatus })
