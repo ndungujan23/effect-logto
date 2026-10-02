@@ -14,10 +14,10 @@ import * as Connectors from '../src/domain/schema/connectors.ts'
 import * as Hooks from '../src/domain/schema/hooks.ts'
 import * as Users from '../src/domain/schema/users.ts'
 
-/** The element schema of a `Schema.Array(...)` list response. */
-const element = (schema: any) => schema.value
+/** The element schema of a `Schema.Array(...)` list response — returns its inner Struct so `.fields` is reachable. */
+const element = (schema: any) => schema.value.schema
 
-const accepts = (schema: Schema.Codec<any, any>, value: unknown) => Result.isSuccess(Schema.decodeUnknownResult(schema)(value))
+const accepts = (schema: Schema.ConstraintDecoder<unknown>, value: unknown) => Result.isSuccess(Schema.decodeUnknownResult(schema)(value))
 
 describe('nullable enums (OpenAPI 3.0 `nullable: true` beside `enum`)', () => {
 	test.each([
@@ -34,7 +34,7 @@ describe('nullable enums (OpenAPI 3.0 `nullable: true` beside `enum`)', () => {
 })
 
 describe('redirect URI lists', () => {
-	const { redirectUris, postLogoutRedirectUris } = element(Applications.ListResponse).fields.oidcClientMetadata.fields
+	const { redirectUris, postLogoutRedirectUris } = element(Applications.ListResponse).fields.oidcClientMetadata.schema.fields
 
 	test.each([
 		['redirectUris', redirectUris],

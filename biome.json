@@ -37,7 +37,7 @@
 				"useSingleJsDocAsterisk": "off",
 				"noInvalidUseBeforeDeclaration": "off"
 			},
-			"style": {"noNonNullAssertion": "off"}
+			"style": {"noNonNullAssertion": "off", "useTemplate": "off", "noUnusedTemplateLiteral": "off"}
 		}
 	},
 	"javascript": {
