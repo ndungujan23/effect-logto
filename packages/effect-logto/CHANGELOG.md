@@ -1,5 +1,15 @@
 # effect-logto
 
+## 0.2.0
+
+### Minor Changes
+
+- 455fa7b: Update peer dependency to Effect v4
+
+### Patch Changes
+
+- 083f4db: Update generated API schemas and operations
+
 ## 0.1.0
 
 ### Minor Changes
