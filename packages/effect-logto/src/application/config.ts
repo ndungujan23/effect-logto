@@ -1,6 +1,6 @@
 import type * as Schema from 'effect/Schema'
-import type * as HttpClientError from 'effect/unstable/http/HttpClientError'
-import type * as HttpClientResponse from 'effect/unstable/http/HttpClientResponse'
+import type * as HttpClientError from 'effect/http/HttpClientError'
+import type * as HttpClientResponse from 'effect/http/HttpClientResponse'
 
 import type { LogtoApiError, LogtoAuthError } from '../domain/error.ts'
 

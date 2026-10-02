@@ -14,20 +14,20 @@
     },
     "packages/effect-logto": {
       "name": "effect-logto",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.5",
-        "@effect/openapi-generator": "4.0.0-rc.112",
+        "@effect/openapi-generator": "^4.0.0",
         "@types/bun": "^1.3.14",
         "@types/node": "^24.13.5",
         "@vitest/coverage-v8": "catalog:",
-        "effect": "4.0.0-rc.115",
+        "effect": "^4.0.0",
         "publint": "^0.3.24",
         "typescript-api": "npm:typescript@6.0.3",
         "vitest": "catalog:",
       },
       "peerDependencies": {
-        "effect": "^4.0.0-rc.115",
+        "effect": "^4.0.0",
       },
     },
   },
@@ -108,7 +108,7 @@
 
     "@colors/colors": ["@colors/colors@1.5.0", "", {}, "sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ=="],
 
-    "@effect/openapi-generator": ["@effect/openapi-generator@4.0.0-rc.112", "", { "dependencies": { "swagger2openapi": "^7.0.8" }, "peerDependencies": { "@effect/platform-node": "^4.0.0-rc.112", "effect": "^4.0.0-rc.112" }, "bin": { "openapigen": "./dist/bin.js" } }, "sha512-ZgAkEP2/8qPZKgnI5AqmBgqhrZsdMDKZXJoKn29xgElZUWCvHhdE6eSUfFtkQBRE5kQcATXOZajHl+S/Pg+8Dw=="],
+    "@effect/openapi-generator": ["@effect/openapi-generator@4.0.0", "", { "dependencies": { "swagger2openapi": "^7.0.8" }, "peerDependencies": { "@effect/platform-node": "^4.0.0", "effect": "^4.0.0" }, "bin": { "openapigen": "./dist/bin.js" } }, "sha512-nGs3wmlMZ064G35004MLWOPWjf0AfXSqojFE2d5yIz3g4h7fqWusveoBdUSCJCAPiinXN2Qt4nUXLCcoDs4JSQ=="],
 
     "@effect/platform-node": ["@effect/platform-node@4.0.0-rc.115", "", { "dependencies": { "@effect/platform-node-shared": "^4.0.0-rc.115", "undici": "^8.10.2" }, "peerDependencies": { "effect": "^4.0.0-rc.115", "redis": ">=5.0.0 <7.0.0" } }, "sha512-mW03Wjq2FiTL5oi9yOkaKpCyUNBaduKgTk7qMHNELvC21Jq2qOAfdsfH+p+s2zmpB9w2RSa+ApODv4WjO9wQfw=="],
 
@@ -358,7 +358,7 @@
 
     "detect-libc": ["detect-libc@2.1.2", "", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 
-    "effect": ["effect@4.0.0-rc.115", "", {}, "sha512-ogYulZ5ffeOzrJqQrG0XOkDO5lKn2s9KNHhoxJy/6wKUkF0i12dlVXWA9TgsgQ+zV/JzizyG0+XMPepZEQX6vw=="],
+    "effect": ["effect@4.0.0", "", {}, "sha512-ooc1TG5t+FfzgYnFz2ff6BBKyZ7EwBRVXC7c4RhQUAD6/TZ2gTXXMeb4WX7a19ozQo4J73/QW+S00YAIresoMQ=="],
 
     "effect-logto": ["effect-logto@workspace:packages/effect-logto"],
 

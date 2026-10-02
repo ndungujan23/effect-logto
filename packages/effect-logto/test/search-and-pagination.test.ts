@@ -1,8 +1,8 @@
 import * as Exit from 'effect/Exit'
 import * as Option from 'effect/Option'
 import * as Stream from 'effect/Stream'
-import * as HttpClientRequest from 'effect/unstable/http/HttpClientRequest'
-import * as HttpClientResponse from 'effect/unstable/http/HttpClientResponse'
+import * as HttpClientRequest from 'effect/http/HttpClientRequest'
+import * as HttpClientResponse from 'effect/http/HttpClientResponse'
 import { describe, expect, test } from 'vitest'
 
 import { Pagination, UserSearch } from '../src/index.ts'

@@ -1,8 +1,8 @@
 import * as Effect from 'effect/Effect'
 import * as Schema from 'effect/Schema'
-import type * as HttpClient from 'effect/unstable/http/HttpClient'
-import type * as HttpClientRequest from 'effect/unstable/http/HttpClientRequest'
-import * as HttpClientResponse from 'effect/unstable/http/HttpClientResponse'
+import type * as HttpClient from 'effect/http/HttpClient'
+import type * as HttpClientRequest from 'effect/http/HttpClientRequest'
+import * as HttpClientResponse from 'effect/http/HttpClientResponse'
 
 import type { OperationConfig } from '../../application/config.ts'
 import { LogtoApiError } from '../../domain/error.ts'

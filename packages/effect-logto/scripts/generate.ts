@@ -405,8 +405,8 @@ ${members.join('\n')}
 	const adapterRefs = resource.operations.flatMap(operation => schemaRefs(operation.implementation))
 	await write(
 		adapterPath,
-		`${header}${adapterText.includes('Effect.') ? "import * as Effect from 'effect/Effect';\n" : ''}import * as HttpClientRequest from 'effect/unstable/http/HttpClientRequest';
-import * as HttpClientResponse from 'effect/unstable/http/HttpClientResponse';
+		`${header}${adapterText.includes('Effect.') ? "import * as Effect from 'effect/Effect';\n" : ''}import * as HttpClientRequest from 'effect/http/HttpClientRequest';
+import * as HttpClientResponse from 'effect/http/HttpClientResponse';
 
 ${namedImport([interfaceName(resource.key)], adapterPath, portPath, true)}${importsFor(adapterRefs, resource.key, adapterPath, false)}${namedImport(['Transport'], adapterPath, transportFile, true)}
 export const ${factoryName(resource.key)} = ({ withResponse, decodeSuccess, unexpectedStatus, searchParams }: Transport): ${interfaceName(resource.key)} => ({

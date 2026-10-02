@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect'
 import * as Option from 'effect/Option'
 import * as Stream from 'effect/Stream'
-import type * as HttpClientResponse from 'effect/unstable/http/HttpClientResponse'
+import type * as HttpClientResponse from 'effect/http/HttpClientResponse'
 
 /** Logto reports the total size of a paginated collection in this response header. */
 export const TOTAL_HEADER = 'total-number'

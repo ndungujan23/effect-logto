@@ -13,7 +13,7 @@
  * const profile = yield* account.myAccount.getProfile(undefined)
  * ```
  */
-import type * as HttpClient from 'effect/unstable/http/HttpClient'
+import type * as HttpClient from 'effect/http/HttpClient'
 
 import type { LogtoAccountApi, LogtoExperienceApi, LogtoManagementApi, LogtoPublicApi } from './application/operation/index.ts'
 import { makeAccountApi, makeExperienceApi, makeManagementApi, makePublicApi } from './infrastructure/http/operation/index.ts'

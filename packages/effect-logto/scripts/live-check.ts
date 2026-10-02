@@ -22,7 +22,7 @@
 import * as Effect from 'effect/Effect'
 import * as Redacted from 'effect/Redacted'
 import * as Stream from 'effect/Stream'
-import * as FetchHttpClient from 'effect/unstable/http/FetchHttpClient'
+import * as FetchHttpClient from 'effect/http/FetchHttpClient'
 
 import { LogtoApiError, LogtoAuthError, LogtoManagement, LogtoTenant, Pagination, UserSearch } from '../src/index.ts'
 

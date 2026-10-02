@@ -20,7 +20,7 @@
 		"rules": {
 			"preset": "recommended",
 			"a11y": {"recommended": false, "useButtonType": "off", "noSvgWithoutTitle": "off"},
-			"complexity": {"useArrowFunction": "on", "noBannedTypes": "info"},
+			"complexity": {"useArrowFunction": "on", "noBannedTypes": "info", "useLiteralKeys": "off"},
 			"suspicious": {
 				"noArrayIndexKey": "off",
 				"noDocumentCookie": "warn",
