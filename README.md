@@ -20,7 +20,7 @@ npm install effect-logto effect
 
 ```ts
 import { Effect, Redacted } from 'effect'
-import { FetchHttpClient } from 'effect/unstable/http'
+import * as FetchHttpClient from 'effect/http/FetchHttpClient'
 import { LogtoManagement, LogtoTenant } from 'effect-logto'
 
 // Logto Cloud
