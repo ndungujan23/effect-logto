@@ -24,7 +24,6 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
       - run: bun install --frozen-lockfile
 
       # With pending changesets: opens/updates a "Version Packages" PR.
@@ -37,3 +36,5 @@ jobs:
           title: 'chore: version packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
