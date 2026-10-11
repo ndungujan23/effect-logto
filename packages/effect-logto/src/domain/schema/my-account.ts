@@ -63,7 +63,7 @@ export const GetProfileResponse = Schema.StructWithRest(
 	Schema.Struct({
 		id: Schema.optionalKey(
 			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 			)
 		),
 		username: Schema.optionalKey(
@@ -181,7 +181,7 @@ export const GetProfileResponse = Schema.StructWithRest(
 						),
 						userId: Schema.String.check(
 							Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-						).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })),
+						).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 						issuer: Schema.String.check(
 							Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
 						).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
@@ -223,7 +223,9 @@ export const UpdateProfilePayload = Schema.StructWithRest(
 		username: Schema.optionalKey(
 			Schema.Union([
 				Schema.String.check(
-					Schema.isPattern(/^[A-Z_a-z]\w*$/u).annotate({ expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$' })
+					Schema.isPattern(new RegExp('^[A-Z_a-z]\\w*$', 'u')).annotate({
+						expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$',
+					})
 				),
 				Schema.Null,
 			]).annotate({ description: 'The new username for the user, must be a valid username and unique.', format: 'regex' })
@@ -298,7 +300,7 @@ export const UpdateProfileResponse = Schema.StructWithRest(
 	Schema.Struct({
 		id: Schema.optionalKey(
 			Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 			)
 		),
 		username: Schema.optionalKey(
@@ -416,7 +418,7 @@ export const UpdateProfileResponse = Schema.StructWithRest(
 						),
 						userId: Schema.String.check(
 							Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-						).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })),
+						).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 						issuer: Schema.String.check(
 							Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
 						).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),
@@ -726,7 +728,9 @@ export type UpdatePrimaryEmailPayload = { readonly email: string; readonly newId
 export const UpdatePrimaryEmailPayload = Schema.StructWithRest(
 	Schema.Struct({
 		email: Schema.String.annotate({ description: 'The new email for the user.', format: 'regex' }).check(
-			Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+			Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
+				expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
+			})
 		),
 		newIdentifierVerificationRecordId: Schema.String.annotate({
 			description: 'The identifier verification record ID for the new email ownership verification.',
@@ -741,7 +745,7 @@ export type UpdatePrimaryPhonePayload = { readonly phone: string; readonly newId
 export const UpdatePrimaryPhonePayload = Schema.StructWithRest(
 	Schema.Struct({
 		phone: Schema.String.annotate({ description: 'The new phone for the user.', format: 'regex' }).check(
-			Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+			Schema.isPattern(new RegExp('^\\d+$', 'u')).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
 		),
 		newIdentifierVerificationRecordId: Schema.String.annotate({
 			description: 'The identifier verification record ID for the new phone ownership verification.',
@@ -935,6 +939,7 @@ export type GetSessionsResponse = {
 										| 'MfaVerification'
 										| 'BindMfa'
 									readonly verified: boolean
+									readonly userId?: string
 									readonly type: string
 									readonly identifier: { readonly type: string; readonly value: string } & {
 										readonly [x: string]: Schema.Json
@@ -953,6 +958,7 @@ export type GetSessionsResponse = {
 										| 'MfaVerification'
 										| 'BindMfa'
 									readonly verified: boolean
+									readonly userId?: string
 									readonly type: string
 									readonly identifier: { readonly type: string; readonly value: string } & {
 										readonly [x: string]: Schema.Json
@@ -971,6 +977,7 @@ export type GetSessionsResponse = {
 										| 'MfaVerification'
 										| 'BindMfa'
 									readonly verified: boolean
+									readonly userId?: string
 									readonly type: string
 									readonly identifier: { readonly type: string; readonly value: string } & {
 										readonly [x: string]: Schema.Json
@@ -989,6 +996,7 @@ export type GetSessionsResponse = {
 										| 'MfaVerification'
 										| 'BindMfa'
 									readonly verified: boolean
+									readonly userId?: string
 									readonly type: string
 									readonly identifier: { readonly type: string; readonly value: string } & {
 										readonly [x: string]: Schema.Json
@@ -1142,6 +1150,7 @@ export const GetSessionsResponse = Schema.StructWithRest(
 														'BindMfa',
 													]),
 													verified: Schema.Boolean,
+													userId: Schema.optionalKey(Schema.String),
 													type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
 													identifier: Schema.StructWithRest(
 														Schema.Struct({
@@ -1168,6 +1177,7 @@ export const GetSessionsResponse = Schema.StructWithRest(
 														'BindMfa',
 													]),
 													verified: Schema.Boolean,
+													userId: Schema.optionalKey(Schema.String),
 													type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
 													identifier: Schema.StructWithRest(
 														Schema.Struct({
@@ -1194,6 +1204,7 @@ export const GetSessionsResponse = Schema.StructWithRest(
 														'BindMfa',
 													]),
 													verified: Schema.Boolean,
+													userId: Schema.optionalKey(Schema.String),
 													type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
 													identifier: Schema.StructWithRest(
 														Schema.Struct({
@@ -1220,6 +1231,7 @@ export const GetSessionsResponse = Schema.StructWithRest(
 														'BindMfa',
 													]),
 													verified: Schema.Boolean,
+													userId: Schema.optionalKey(Schema.String),
 													type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
 													identifier: Schema.StructWithRest(
 														Schema.Struct({
@@ -1380,6 +1392,39 @@ export const GetSessionsResponse = Schema.StructWithRest(
 
 export type DeleteSessionByIdParams = { readonly revokeGrantsTarget?: 'all' | 'firstParty' }
 export const DeleteSessionByIdParams = Schema.Struct({ revokeGrantsTarget: Schema.optionalKey(Schema.Literals(['all', 'firstParty'])) })
+
+export type GetTrustedDevicesResponse = ReadonlyArray<
+	{
+		readonly id: string
+		readonly userAgent: string | null
+		readonly country: string | null
+		readonly city: string | null
+		readonly createdAt: number
+		readonly lastUsedAt: number
+		readonly expiresAt: number
+		readonly isCurrent: boolean
+	} & { readonly [x: string]: Schema.Json }
+>
+export const GetTrustedDevicesResponse = Schema.Array(
+	Schema.StructWithRest(
+		Schema.Struct({
+			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
+				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
+			),
+			userAgent: Schema.Union([Schema.String, Schema.Null]),
+			country: Schema.Union([
+				Schema.String.check(Schema.isMaxCodePoints(16).annotate({ expected: 'a string with at most 16 code points' })),
+				Schema.Null,
+			]),
+			city: Schema.Union([Schema.String, Schema.Null]),
+			createdAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			lastUsedAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			expiresAt: Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' })),
+			isCurrent: Schema.Boolean,
+		}),
+		[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+	)
+)
 
 export type GetGrantsParams = { readonly appType?: 'firstParty' | 'thirdParty' }
 export const GetGrantsParams = Schema.Struct({ appType: Schema.optionalKey(Schema.Literals(['firstParty', 'thirdParty'])) })

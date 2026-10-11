@@ -191,9 +191,14 @@ Each check prints `✔` or `✘` together with the decoded values. A schema mism
 
 ```sh
 bun install
-bun run check      # lint, typecheck, test, build, and validate the published package (publint + attw)
+bun run check      # lint, format, typecheck (uncheck), test, build, and validate the published package (publint + attw)
+bun run fix        # apply oxlint fixes and oxfmt formatting
 bun run changeset  # describe your change for the changelog; required for any user-facing change
 ```
+
+Linting and formatting are handled by [oxlint](https://oxc.rs) and oxfmt, run together with `tsc` and `sherif` through [uncheck](https://github.com/middleapi/uncheck) (`bun run lint:check` / `bun run fix`).
+
+After building, `bun run smoke --effect <version>` (in `packages/effect-logto`) installs the packed tarball into a clean project next to that Effect version and runs it under plain Node. CI does this for the lowest and the newest Effect the peer range admits.
 
 Tests use Vitest on Node against a scripted in-memory Logto (`test/support/fake-logto.ts`) and therefore need neither network access nor a running Logto instance.
 

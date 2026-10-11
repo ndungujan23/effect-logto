@@ -20,6 +20,7 @@ export type GetSettingsResponse = {
 		readonly mfa?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly passkey?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly session?: 'Off' | 'ReadOnly' | 'Edit'
+		readonly trustedDevice?: 'Off' | 'ReadOnly' | 'Edit'
 	} & { readonly [x: string]: Schema.Json }
 	readonly webauthnRelatedOrigins: ReadonlyArray<string>
 	readonly deleteAccountUrl: string | null
@@ -47,6 +48,7 @@ export const GetSettingsResponse = Schema.StructWithRest(
 				mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 				passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 				session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				trustedDevice: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),
@@ -83,6 +85,7 @@ export type UpdateSettingsPayload = {
 		readonly mfa?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly passkey?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly session?: 'Off' | 'ReadOnly' | 'Edit'
+		readonly trustedDevice?: 'Off' | 'ReadOnly' | 'Edit'
 	} & { readonly [x: string]: Schema.Json }
 	readonly webauthnRelatedOrigins?: ReadonlyArray<string>
 	readonly deleteAccountUrl?: { readonly [x: string]: Schema.Json } | null
@@ -107,6 +110,7 @@ export const UpdateSettingsPayload = Schema.StructWithRest(
 					mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 					passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 					session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+					trustedDevice: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 				}),
 				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 			).annotate({ description: 'The fields settings for the account API.' })
@@ -154,6 +158,7 @@ export type UpdateSettingsResponse = {
 		readonly mfa?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly passkey?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly session?: 'Off' | 'ReadOnly' | 'Edit'
+		readonly trustedDevice?: 'Off' | 'ReadOnly' | 'Edit'
 	} & { readonly [x: string]: Schema.Json }
 	readonly webauthnRelatedOrigins: ReadonlyArray<string>
 	readonly deleteAccountUrl: string | null
@@ -181,6 +186,7 @@ export const UpdateSettingsResponse = Schema.StructWithRest(
 				mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 				passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 				session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				trustedDevice: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),

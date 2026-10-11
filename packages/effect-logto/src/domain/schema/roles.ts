@@ -71,7 +71,7 @@ export const ListResponse = Schema.Array(
 				Schema.StructWithRest(
 					Schema.Struct({
 						id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-							Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })
+							Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 						),
 						avatar: Schema.Union([
 							Schema.String.check(
@@ -318,7 +318,7 @@ export const ListUsersResponse = Schema.Array(
 	Schema.StructWithRest(
 		Schema.Struct({
 			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 			),
 			username: Schema.Union([
 				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
@@ -415,7 +415,7 @@ export const ListUsersResponse = Schema.Array(
 							).check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
 							userId: Schema.String.check(
 								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-							).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })),
+							).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 							issuer: Schema.String.check(
 								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
 							).check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })),

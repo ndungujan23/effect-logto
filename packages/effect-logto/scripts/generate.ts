@@ -254,7 +254,22 @@ const assertAbsent = (text: string, pattern: RegExp, context: string) => {
 /** Logto's `search_params` is a bag of repeatable `search.*` / `mode.*` keys, not a record. */
 const SEARCH_PARAMS_TYPE = /readonly "search_params"\?: \{ readonly \[x: string\]: string \}/g
 const SEARCH_PARAMS_SCHEMA = /"search_params": Schema\.optionalKey\(Schema\.Record\(Schema\.String, Schema\.String\)\)/g
-const SEARCH_PARAMS_URL = /(, )?"search_params": options\?\.params\?\.\["search_params"\] as any \}\),/g
+const SEARCH_PARAMS_ENTRY = /(, )?"search_params": options\?\.params\?\.\["search_params"\] as any(, )?/
+const SEARCH_PARAMS_REWRITTEN = 'HttpClientRequest.appendUrlParams(searchParams('
+
+/**
+ * Pulls `search_params` out of the generated `setUrlParams({...})` object, wherever it sits among the
+ * other query parameters, and forwards it as repeatable `search.*` / `mode.*` keys instead.
+ */
+const rewriteSearchParamsUrl = (text: string) => {
+	const entry = SEARCH_PARAMS_ENTRY.exec(text)
+	if (!entry) return text
+	const close = text.indexOf(' }),', entry.index)
+	if (close === -1) return text
+	const separator = entry[1] && entry[2] ? ', ' : ''
+	const params = text.slice(0, entry.index) + separator + text.slice(entry.index + entry[0].length, close)
+	return `${params} }),\n    ${SEARCH_PARAMS_REWRITTEN}options?.params?.["search_params"])),${text.slice(close + ' }),'.length)}`
+}
 
 const rewriteSchema = (text: string) =>
 	rename(
@@ -264,15 +279,14 @@ const rewriteSchema = (text: string) =>
 	)
 
 const rewriteImplementation = (operation: OperationDecl) => {
-	const text = operation.implementation
+	const text = rewriteSearchParamsUrl(operation.implementation)
 		// Undocumented error statuses fall through to `unexpectedStatus`, which decodes Logto's error body.
 		.replace(/^\s*"[45]\d\d": decodeVoidError\("[45]\d\d"\),?\n/gm, '')
-		.replace(SEARCH_PARAMS_URL, ' }),\n    HttpClientRequest.appendUrlParams(searchParams(options?.params?.["search_params"])),')
 		// Path parameters are interpolated raw by the generator; an id containing `/`, `?`, `#` or `..` would
 		// otherwise address a different endpoint.
 		.replace(/(HttpClientRequest\.\w+\(`)([^`]*)`/g, (_, call: string, path: string) => {
 			assertAbsent(path.replace(/\$\{\w+\}/g, ''), /\$\{/, operation.id)
-			// biome-ignore lint/suspicious/noTemplateCurlyInString: emits a template literal into generated code
+			// oxlint-disable-next-line no-template-curly-in-string -- emits a template literal into generated code
 			return `${call}${path.replace(/\$\{(\w+)\}/g, '${encodeURIComponent($1)}')}\``
 		})
 	assertAbsent(text, /decodeVoidError|decodeError|LogtoClientError|search_params"\] as any/, operation.id)
@@ -471,15 +485,15 @@ ${bySurface(surface)
 // 6. format + report
 // ---------------------------------------------------------------------------------------------
 
-// Formats and applies Biome's safe lint fixes (regex literals, literal keys) to the generated code.
-const biome = Bun.spawnSync(['bunx', 'biome', 'check', '--write', '--diagnostic-level=error', ...Object.values(dirs)], {
+// Formats the generated code with oxfmt (the repo's formatter, configured in oxfmt.config.ts).
+const format = Bun.spawnSync(['bunx', 'oxfmt', '--write', ...Object.values(dirs)], {
 	cwd: join(root, '../..'),
 	stdout: 'inherit',
 	stderr: 'inherit',
 })
-if (biome.exitCode !== 0) throw new Error(`biome exited with ${biome.exitCode}`)
+if (format.exitCode !== 0) throw new Error(`oxfmt exited with ${format.exitCode}`)
 
-const searchRewrites = count(source, SEARCH_PARAMS_URL)
+const searchRewrites = count(source, new RegExp(SEARCH_PARAMS_ENTRY, 'g'))
 console.log(
 	`✔ ${operations.length} operations in ${resources.size} resources, ${schemas.size} schemas (${schemasByOwner.get(SHARED)?.length ?? 0} shared, ${renames.size} renamed), ${searchRewrites} search-enabled lists`
 )

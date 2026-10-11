@@ -12,7 +12,9 @@ export type ListParams = {
 export const ListParams = Schema.Struct({
 	email: Schema.optionalKey(
 		Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+			Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
+				expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
+			})
 		)
 	),
 	status: Schema.optionalKey(Schema.Literals(['active', 'consumed', 'revoked', 'expired'])),

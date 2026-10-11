@@ -213,6 +213,7 @@ export type GetSignInExperienceConfigResponse = {
 		readonly organizationRequiredMfaPolicy?: 'NoPrompt' | 'Mandatory'
 	} & { readonly [x: string]: Schema.Json }
 	readonly adaptiveMfa: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
+	readonly trustedDevice: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
 	readonly singleSignOnEnabled: boolean
 	readonly supportEmail: string | null
 	readonly supportWebsiteUrl: string | null
@@ -232,7 +233,6 @@ export type GetSignInExperienceConfigResponse = {
 				readonly [x: string]: Schema.Json
 		  })
 	readonly usernamePolicy: { readonly [x: string]: Schema.Json }
-	readonly trustedDevice?: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
 	readonly socialConnectors: ReadonlyArray<
 		{
 			readonly id: string
@@ -262,8 +262,9 @@ export type GetSignInExperienceConfigResponse = {
 		readonly connectorId: string
 	} & { readonly [x: string]: Schema.Json }
 	readonly captchaConfig?: {
-		readonly type: 'RecaptchaEnterprise' | 'Turnstile'
+		readonly type: 'RecaptchaEnterprise' | 'Turnstile' | 'Cap'
 		readonly siteKey: string
+		readonly endpoint?: string
 		readonly domain?: string
 		readonly mode?: 'invisible' | 'checkbox'
 	} & { readonly [x: string]: Schema.Json }
@@ -375,13 +376,13 @@ export const GetSignInExperienceConfigResponse = Schema.StructWithRest(
 		color: Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+					Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 					})
 				),
 				isDarkModeEnabled: Schema.Boolean,
 				darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+					Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 					})
 				),
@@ -667,6 +668,13 @@ export const GetSignInExperienceConfigResponse = Schema.StructWithRest(
 		adaptiveMfa: Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
 			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
 		]),
+		trustedDevice: Schema.StructWithRest(
+			Schema.Struct({
+				enabled: Schema.optionalKey(Schema.Boolean),
+				durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 		singleSignOnEnabled: Schema.Boolean,
 		supportEmail: Schema.Union([Schema.String, Schema.Null]),
 		supportWebsiteUrl: Schema.Union([Schema.String, Schema.Null]),
@@ -723,15 +731,6 @@ export const GetSignInExperienceConfigResponse = Schema.StructWithRest(
 		usernamePolicy: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 			description: 'Validator function',
 		}),
-		trustedDevice: Schema.optionalKey(
-			Schema.StructWithRest(
-				Schema.Struct({
-					enabled: Schema.optionalKey(Schema.Boolean),
-					durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				}),
-				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-			)
-		),
 		socialConnectors: Schema.Array(
 			Schema.StructWithRest(
 				Schema.Struct({
@@ -781,8 +780,9 @@ export const GetSignInExperienceConfigResponse = Schema.StructWithRest(
 		captchaConfig: Schema.optionalKey(
 			Schema.StructWithRest(
 				Schema.Struct({
-					type: Schema.Literals(['RecaptchaEnterprise', 'Turnstile']),
+					type: Schema.Literals(['RecaptchaEnterprise', 'Turnstile', 'Cap']),
 					siteKey: Schema.String,
+					endpoint: Schema.optionalKey(Schema.String),
 					domain: Schema.optionalKey(Schema.String),
 					mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
 				}),
@@ -1324,6 +1324,7 @@ export type GetExperienceResponse = {
 		readonly organizationRequiredMfaPolicy?: 'NoPrompt' | 'Mandatory'
 	} & { readonly [x: string]: Schema.Json }
 	readonly adaptiveMfa: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
+	readonly trustedDevice: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
 	readonly singleSignOnEnabled: boolean
 	readonly supportEmail: string | null
 	readonly supportWebsiteUrl: string | null
@@ -1343,7 +1344,6 @@ export type GetExperienceResponse = {
 				readonly [x: string]: Schema.Json
 		  })
 	readonly usernamePolicy: { readonly [x: string]: Schema.Json }
-	readonly trustedDevice?: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
 	readonly socialConnectors: ReadonlyArray<
 		{
 			readonly id: string
@@ -1373,8 +1373,9 @@ export type GetExperienceResponse = {
 		readonly connectorId: string
 	} & { readonly [x: string]: Schema.Json }
 	readonly captchaConfig?: {
-		readonly type: 'RecaptchaEnterprise' | 'Turnstile'
+		readonly type: 'RecaptchaEnterprise' | 'Turnstile' | 'Cap'
 		readonly siteKey: string
+		readonly endpoint?: string
 		readonly domain?: string
 		readonly mode?: 'invisible' | 'checkbox'
 	} & { readonly [x: string]: Schema.Json }
@@ -1486,13 +1487,13 @@ export const GetExperienceResponse = Schema.StructWithRest(
 		color: Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+					Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 					})
 				),
 				isDarkModeEnabled: Schema.Boolean,
 				darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+					Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 					})
 				),
@@ -1778,6 +1779,13 @@ export const GetExperienceResponse = Schema.StructWithRest(
 		adaptiveMfa: Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
 			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
 		]),
+		trustedDevice: Schema.StructWithRest(
+			Schema.Struct({
+				enabled: Schema.optionalKey(Schema.Boolean),
+				durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 		singleSignOnEnabled: Schema.Boolean,
 		supportEmail: Schema.Union([Schema.String, Schema.Null]),
 		supportWebsiteUrl: Schema.Union([Schema.String, Schema.Null]),
@@ -1834,15 +1842,6 @@ export const GetExperienceResponse = Schema.StructWithRest(
 		usernamePolicy: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 			description: 'Validator function',
 		}),
-		trustedDevice: Schema.optionalKey(
-			Schema.StructWithRest(
-				Schema.Struct({
-					enabled: Schema.optionalKey(Schema.Boolean),
-					durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
-				}),
-				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
-			)
-		),
 		socialConnectors: Schema.Array(
 			Schema.StructWithRest(
 				Schema.Struct({
@@ -1892,8 +1891,9 @@ export const GetExperienceResponse = Schema.StructWithRest(
 		captchaConfig: Schema.optionalKey(
 			Schema.StructWithRest(
 				Schema.Struct({
-					type: Schema.Literals(['RecaptchaEnterprise', 'Turnstile']),
+					type: Schema.Literals(['RecaptchaEnterprise', 'Turnstile', 'Cap']),
 					siteKey: Schema.String,
+					endpoint: Schema.optionalKey(Schema.String),
 					domain: Schema.optionalKey(Schema.String),
 					mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
 				}),
@@ -2231,6 +2231,7 @@ export type GetAccountCenterResponse = {
 		readonly mfa?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly passkey?: 'Off' | 'ReadOnly' | 'Edit'
 		readonly session?: 'Off' | 'ReadOnly' | 'Edit'
+		readonly trustedDevice?: 'Off' | 'ReadOnly' | 'Edit'
 	} & { readonly [x: string]: Schema.Json }
 	readonly webauthnRelatedOrigins: ReadonlyArray<string>
 	readonly deleteAccountUrl: string | null
@@ -2258,6 +2259,7 @@ export const GetAccountCenterResponse = Schema.StructWithRest(
 				mfa: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 				passkey: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 				session: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
+				trustedDevice: Schema.optionalKey(Schema.Literals(['Off', 'ReadOnly', 'Edit'])),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 		),

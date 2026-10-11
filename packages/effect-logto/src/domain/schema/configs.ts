@@ -324,6 +324,7 @@ export type GetJwtCustomizerResponse =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -342,6 +343,7 @@ export type GetJwtCustomizerResponse =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -360,6 +362,7 @@ export type GetJwtCustomizerResponse =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -378,6 +381,7 @@ export type GetJwtCustomizerResponse =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -642,7 +646,7 @@ export const GetJwtCustomizerResponse = Schema.Union(
 									id: Schema.optionalKey(
 										Schema.String.check(
 											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+										).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
 									),
 									username: Schema.optionalKey(
 										Schema.Union([
@@ -1023,6 +1027,7 @@ export const GetJwtCustomizerResponse = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -1054,6 +1059,7 @@ export const GetJwtCustomizerResponse = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -1085,6 +1091,7 @@ export const GetJwtCustomizerResponse = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -1116,6 +1123,7 @@ export const GetJwtCustomizerResponse = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -1960,6 +1968,7 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -1978,6 +1987,7 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -1996,6 +2006,7 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -2014,6 +2025,7 @@ export type UpsertJwtCustomizerResponse200 =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -2278,7 +2290,7 @@ export const UpsertJwtCustomizerResponse200 = Schema.Union(
 									id: Schema.optionalKey(
 										Schema.String.check(
 											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+										).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
 									),
 									username: Schema.optionalKey(
 										Schema.Union([
@@ -2659,6 +2671,7 @@ export const UpsertJwtCustomizerResponse200 = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -2690,6 +2703,7 @@ export const UpsertJwtCustomizerResponse200 = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -2721,6 +2735,7 @@ export const UpsertJwtCustomizerResponse200 = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -2752,6 +2767,7 @@ export const UpsertJwtCustomizerResponse200 = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -3548,6 +3564,7 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -3566,6 +3583,7 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -3584,6 +3602,7 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -3602,6 +3621,7 @@ export type UpsertJwtCustomizerResponse201 =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -3866,7 +3886,7 @@ export const UpsertJwtCustomizerResponse201 = Schema.Union(
 									id: Schema.optionalKey(
 										Schema.String.check(
 											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+										).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
 									),
 									username: Schema.optionalKey(
 										Schema.Union([
@@ -4247,6 +4267,7 @@ export const UpsertJwtCustomizerResponse201 = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -4278,6 +4299,7 @@ export const UpsertJwtCustomizerResponse201 = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -4309,6 +4331,7 @@ export const UpsertJwtCustomizerResponse201 = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -4340,6 +4363,7 @@ export const UpsertJwtCustomizerResponse201 = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -5184,6 +5208,7 @@ export type UpdateJwtCustomizerResponse =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -5202,6 +5227,7 @@ export type UpdateJwtCustomizerResponse =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -5220,6 +5246,7 @@ export type UpdateJwtCustomizerResponse =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -5238,6 +5265,7 @@ export type UpdateJwtCustomizerResponse =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -5502,7 +5530,7 @@ export const UpdateJwtCustomizerResponse = Schema.Union(
 									id: Schema.optionalKey(
 										Schema.String.check(
 											Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-										).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+										).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
 									),
 									username: Schema.optionalKey(
 										Schema.Union([
@@ -5883,6 +5911,7 @@ export const UpdateJwtCustomizerResponse = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -5914,6 +5943,7 @@ export const UpdateJwtCustomizerResponse = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -5945,6 +5975,7 @@ export const UpdateJwtCustomizerResponse = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -5976,6 +6007,7 @@ export const UpdateJwtCustomizerResponse = Schema.Union(
 																	'BindMfa',
 																]),
 																verified: Schema.Boolean,
+																userId: Schema.optionalKey(Schema.String),
 																type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
 																identifier: Schema.StructWithRest(
 																	Schema.Struct({
@@ -6776,6 +6808,7 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'MfaVerification'
 										| 'BindMfa'
 									readonly verified: boolean
+									readonly userId?: string
 									readonly type: string
 									readonly identifier: { readonly type: string; readonly value: string } & {
 										readonly [x: string]: Schema.Json
@@ -6794,6 +6827,7 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'MfaVerification'
 										| 'BindMfa'
 									readonly verified: boolean
+									readonly userId?: string
 									readonly type: string
 									readonly identifier: { readonly type: string; readonly value: string } & {
 										readonly [x: string]: Schema.Json
@@ -6812,6 +6846,7 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'MfaVerification'
 										| 'BindMfa'
 									readonly verified: boolean
+									readonly userId?: string
 									readonly type: string
 									readonly identifier: { readonly type: string; readonly value: string } & {
 										readonly [x: string]: Schema.Json
@@ -6830,6 +6865,7 @@ export type ListJwtCustomizersResponse = ReadonlyArray<
 										| 'MfaVerification'
 										| 'BindMfa'
 									readonly verified: boolean
+									readonly userId?: string
 									readonly type: string
 									readonly identifier: { readonly type: string; readonly value: string } & {
 										readonly [x: string]: Schema.Json
@@ -7104,8 +7140,8 @@ export const ListJwtCustomizersResponse = Schema.Array(
 													Schema.String.check(
 														Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
 													).check(
-														Schema.isMaxCodePoints(12).annotate({
-															expected: 'a string with at most 12 code points',
+														Schema.isMaxCodePoints(128).annotate({
+															expected: 'a string with at most 128 code points',
 														})
 													)
 												),
@@ -7536,6 +7572,7 @@ export const ListJwtCustomizersResponse = Schema.Array(
 																				'BindMfa',
 																			]),
 																			verified: Schema.Boolean,
+																			userId: Schema.optionalKey(Schema.String),
 																			type: Schema.String.annotate({
 																				format: '"EmailVerificationCode"',
 																			}),
@@ -7574,6 +7611,7 @@ export const ListJwtCustomizersResponse = Schema.Array(
 																				'BindMfa',
 																			]),
 																			verified: Schema.Boolean,
+																			userId: Schema.optionalKey(Schema.String),
 																			type: Schema.String.annotate({
 																				format: '"PhoneVerificationCode"',
 																			}),
@@ -7612,6 +7650,7 @@ export const ListJwtCustomizersResponse = Schema.Array(
 																				'BindMfa',
 																			]),
 																			verified: Schema.Boolean,
+																			userId: Schema.optionalKey(Schema.String),
 																			type: Schema.String.annotate({
 																				format: '"MfaEmailVerificationCode"',
 																			}),
@@ -7650,6 +7689,7 @@ export const ListJwtCustomizersResponse = Schema.Array(
 																				'BindMfa',
 																			]),
 																			verified: Schema.Boolean,
+																			userId: Schema.optionalKey(Schema.String),
 																			type: Schema.String.annotate({
 																				format: '"MfaPhoneVerificationCode"',
 																			}),
@@ -8630,6 +8670,7 @@ export type TestJwtCustomizerPayload =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -8648,6 +8689,7 @@ export type TestJwtCustomizerPayload =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -8666,6 +8708,7 @@ export type TestJwtCustomizerPayload =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -8684,6 +8727,7 @@ export type TestJwtCustomizerPayload =
 									| 'MfaVerification'
 									| 'BindMfa'
 								readonly verified: boolean
+								readonly userId?: string
 								readonly type: string
 								readonly identifier: { readonly type: string; readonly value: string } & {
 									readonly [x: string]: Schema.Json
@@ -8950,7 +8994,7 @@ export const TestJwtCustomizerPayload = Schema.Union(
 								id: Schema.optionalKey(
 									Schema.String.check(
 										Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-									).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' }))
+									).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' }))
 								),
 								username: Schema.optionalKey(
 									Schema.Union([
@@ -9326,6 +9370,7 @@ export const TestJwtCustomizerPayload = Schema.Union(
 																'BindMfa',
 															]),
 															verified: Schema.Boolean,
+															userId: Schema.optionalKey(Schema.String),
 															type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
 															identifier: Schema.StructWithRest(
 																Schema.Struct({
@@ -9357,6 +9402,7 @@ export const TestJwtCustomizerPayload = Schema.Union(
 																'BindMfa',
 															]),
 															verified: Schema.Boolean,
+															userId: Schema.optionalKey(Schema.String),
 															type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
 															identifier: Schema.StructWithRest(
 																Schema.Struct({
@@ -9388,6 +9434,7 @@ export const TestJwtCustomizerPayload = Schema.Union(
 																'BindMfa',
 															]),
 															verified: Schema.Boolean,
+															userId: Schema.optionalKey(Schema.String),
 															type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
 															identifier: Schema.StructWithRest(
 																Schema.Struct({
@@ -9419,6 +9466,7 @@ export const TestJwtCustomizerPayload = Schema.Union(
 																'BindMfa',
 															]),
 															verified: Schema.Boolean,
+															userId: Schema.optionalKey(Schema.String),
 															type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
 															identifier: Schema.StructWithRest(
 																Schema.Struct({
@@ -10302,17 +10350,50 @@ export const UpdateActionResponse = Schema.StructWithRest(
 	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 )
 
-export type GetCimdConfigResponse = { readonly enabled: boolean } & { readonly [x: string]: Schema.Json }
-export const GetCimdConfigResponse = Schema.StructWithRest(Schema.Struct({ enabled: Schema.Boolean }), [
-	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
-])
+export type GetCimdConfigResponse = { readonly enabled: boolean; readonly addConsentPromptForOfflineAccess?: boolean } & {
+	readonly [x: string]: Schema.Json
+}
+export const GetCimdConfigResponse = Schema.StructWithRest(
+	Schema.Struct({
+		enabled: Schema.Boolean,
+		addConsentPromptForOfflineAccess: Schema.optionalKey(
+			Schema.Boolean.annotate({
+				description:
+					'Experimental. When enabled, Logto adds `consent` to the `prompt` parameter of CIMD authorization requests that include the `offline_access` scope without it, so the client can receive a refresh token. Requests with `prompt=none` are not changed. Defaults to `false`.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type UpdateCimdConfigPayload = { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
-export const UpdateCimdConfigPayload = Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
-	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
-])
+export type UpdateCimdConfigPayload = { readonly enabled?: boolean; readonly addConsentPromptForOfflineAccess?: boolean } & {
+	readonly [x: string]: Schema.Json
+}
+export const UpdateCimdConfigPayload = Schema.StructWithRest(
+	Schema.Struct({
+		enabled: Schema.optionalKey(Schema.Boolean.annotate({ description: 'Whether CIMD is enabled for the tenant.' })),
+		addConsentPromptForOfflineAccess: Schema.optionalKey(
+			Schema.Boolean.annotate({
+				description:
+					'Experimental. When enabled, Logto adds `consent` to the `prompt` parameter of CIMD authorization requests that include the `offline_access` scope without it, so the client can receive a refresh token. Requests with `prompt=none` are not changed. Defaults to `false`.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
 
-export type UpdateCimdConfigResponse = { readonly enabled: boolean } & { readonly [x: string]: Schema.Json }
-export const UpdateCimdConfigResponse = Schema.StructWithRest(Schema.Struct({ enabled: Schema.Boolean }), [
-	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
-])
+export type UpdateCimdConfigResponse = { readonly enabled: boolean; readonly addConsentPromptForOfflineAccess?: boolean } & {
+	readonly [x: string]: Schema.Json
+}
+export const UpdateCimdConfigResponse = Schema.StructWithRest(
+	Schema.Struct({
+		enabled: Schema.Boolean,
+		addConsentPromptForOfflineAccess: Schema.optionalKey(
+			Schema.Boolean.annotate({
+				description:
+					'Experimental. When enabled, Logto adds `consent` to the `prompt` parameter of CIMD authorization requests that include the `offline_access` scope without it, so the client can receive a refresh token. Requests with `prompt=none` are not changed. Defaults to `false`.',
+			})
+		),
+	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)

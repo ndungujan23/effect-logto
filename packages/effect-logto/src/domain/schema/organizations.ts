@@ -28,6 +28,7 @@ export type ListResponse = ReadonlyArray<
 		readonly description: string | null
 		readonly customData: { readonly [x: string]: Schema.Json }
 		readonly isMfaRequired: boolean
+		readonly isTrustedDeviceAllowed: boolean
 		readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
 			readonly [x: string]: Schema.Json
 		}
@@ -63,11 +64,12 @@ export const ListResponse = Schema.Array(
 				description: 'arbitrary',
 			}),
 			isMfaRequired: Schema.Boolean,
+			isTrustedDeviceAllowed: Schema.Boolean,
 			color: Schema.StructWithRest(
 				Schema.Struct({
 					primaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -75,7 +77,7 @@ export const ListResponse = Schema.Array(
 					isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 					darkPrimaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -101,7 +103,7 @@ export const ListResponse = Schema.Array(
 						Schema.Struct({
 							id: Schema.String.check(
 								Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })
-							).check(Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })),
+							).check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 							avatar: Schema.Union([
 								Schema.String.check(
 									Schema.isMaxCodePoints(2048).annotate({ expected: 'a string with at most 2048 code points' })
@@ -130,6 +132,7 @@ export type CreatePayload = {
 	readonly description?: string | null
 	readonly customData?: { readonly [x: string]: Schema.Json }
 	readonly isMfaRequired?: boolean
+	readonly isTrustedDeviceAllowed?: boolean
 	readonly color?: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
 		readonly [x: string]: Schema.Json
 	}
@@ -160,12 +163,13 @@ export const CreatePayload = Schema.StructWithRest(
 			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
 		),
 		isMfaRequired: Schema.optionalKey(Schema.Boolean),
+		isTrustedDeviceAllowed: Schema.optionalKey(Schema.Boolean),
 		color: Schema.optionalKey(
 			Schema.StructWithRest(
 				Schema.Struct({
 					primaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -173,7 +177,7 @@ export const CreatePayload = Schema.StructWithRest(
 					isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 					darkPrimaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -206,6 +210,7 @@ export type CreateResponse = {
 	readonly description: string | null
 	readonly customData: { readonly [x: string]: Schema.Json }
 	readonly isMfaRequired: boolean
+	readonly isTrustedDeviceAllowed: boolean
 	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
 		readonly [x: string]: Schema.Json
 	}
@@ -233,11 +238,12 @@ export const CreateResponse = Schema.StructWithRest(
 		]),
 		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
 		isMfaRequired: Schema.Boolean,
+		isTrustedDeviceAllowed: Schema.Boolean,
 		color: Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -245,7 +251,7 @@ export const CreateResponse = Schema.StructWithRest(
 				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 				darkPrimaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -275,6 +281,7 @@ export type GetResponse = {
 	readonly description: string | null
 	readonly customData: { readonly [x: string]: Schema.Json }
 	readonly isMfaRequired: boolean
+	readonly isTrustedDeviceAllowed: boolean
 	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
 		readonly [x: string]: Schema.Json
 	}
@@ -302,11 +309,12 @@ export const GetResponse = Schema.StructWithRest(
 		]),
 		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
 		isMfaRequired: Schema.Boolean,
+		isTrustedDeviceAllowed: Schema.Boolean,
 		color: Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -314,7 +322,7 @@ export const GetResponse = Schema.StructWithRest(
 				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 				darkPrimaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -343,6 +351,7 @@ export type UpdatePayload = {
 	readonly description?: string | null
 	readonly customData?: { readonly [x: string]: Schema.Json }
 	readonly isMfaRequired?: boolean
+	readonly isTrustedDeviceAllowed?: boolean
 	readonly color?: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
 		readonly [x: string]: Schema.Json
 	}
@@ -375,12 +384,13 @@ export const UpdatePayload = Schema.StructWithRest(
 			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' })
 		),
 		isMfaRequired: Schema.optionalKey(Schema.Boolean),
+		isTrustedDeviceAllowed: Schema.optionalKey(Schema.Boolean),
 		color: Schema.optionalKey(
 			Schema.StructWithRest(
 				Schema.Struct({
 					primaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -388,7 +398,7 @@ export const UpdatePayload = Schema.StructWithRest(
 					isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 					darkPrimaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -421,6 +431,7 @@ export type UpdateResponse = {
 	readonly description: string | null
 	readonly customData: { readonly [x: string]: Schema.Json }
 	readonly isMfaRequired: boolean
+	readonly isTrustedDeviceAllowed: boolean
 	readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
 		readonly [x: string]: Schema.Json
 	}
@@ -448,11 +459,12 @@ export const UpdateResponse = Schema.StructWithRest(
 		]),
 		customData: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({ description: 'arbitrary' }),
 		isMfaRequired: Schema.Boolean,
+		isTrustedDeviceAllowed: Schema.Boolean,
 		color: Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -460,7 +472,7 @@ export const UpdateResponse = Schema.StructWithRest(
 				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 				darkPrimaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -554,7 +566,7 @@ export const ListUsersResponse = Schema.Array(
 	Schema.StructWithRest(
 		Schema.Struct({
 			id: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
-				Schema.isMaxCodePoints(12).annotate({ expected: 'a string with at most 12 code points' })
+				Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })
 			),
 			username: Schema.Union([
 				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),

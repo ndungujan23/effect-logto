@@ -11,14 +11,14 @@ import type { CreateSamlAuthnFormUrlEncoded, GetSamlAuthnParams } from '../../do
  */
 export interface SamlApplicationsAuthFlowOperations {
 	/**
-	 * Process SAML authentication request using HTTP Redirect binding.
+	 * Process SAML authentication request using HTTP Redirect binding. The application policy or ForceAuthn can require fresh authentication; otherwise an existing session may be reused. The response assertion preserves the actual authentication time. When authnRequestConfig.requireSignedAuthnRequests is true, the request must be signed using the configured service provider signing certificate.
 	 */
 	readonly getSamlAuthn: <Config extends OperationConfig>(
 		id: string,
 		options: { readonly params: GetSamlAuthnParams; readonly config?: Config | undefined }
 	) => Effect.Effect<WithOptionalResponse<void, Config>, LogtoError>
 	/**
-	 * Process SAML authentication request using HTTP POST binding.
+	 * Process SAML authentication request using HTTP POST binding. The application policy or ForceAuthn can require fresh authentication; otherwise an existing session may be reused. The response assertion preserves the actual authentication time. When authnRequestConfig.requireSignedAuthnRequests is true, the request must be signed using the configured service provider signing certificate.
 	 */
 	readonly createSamlAuthn: <Config extends OperationConfig>(
 		id: string,

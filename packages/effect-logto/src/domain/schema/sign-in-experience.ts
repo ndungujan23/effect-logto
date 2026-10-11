@@ -207,6 +207,7 @@ export type GetResponse = {
 		readonly organizationRequiredMfaPolicy?: 'NoPrompt' | 'Mandatory'
 	} & { readonly [x: string]: Schema.Json }
 	readonly adaptiveMfa: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
+	readonly trustedDevice: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
 	readonly singleSignOnEnabled: boolean
 	readonly supportEmail: string | null
 	readonly supportWebsiteUrl: string | null
@@ -243,13 +244,13 @@ export const GetResponse = Schema.StructWithRest(
 		color: Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+					Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 					})
 				),
 				isDarkModeEnabled: Schema.Boolean,
 				darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+					Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 					})
 				),
@@ -562,6 +563,13 @@ export const GetResponse = Schema.StructWithRest(
 		adaptiveMfa: Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
 			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
 		]).annotate({ description: 'Adaptive MFA settings.' }),
+		trustedDevice: Schema.StructWithRest(
+			Schema.Struct({
+				enabled: Schema.optionalKey(Schema.Boolean),
+				durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 		singleSignOnEnabled: Schema.Boolean,
 		supportEmail: Schema.Union([Schema.String, Schema.Null]).annotate({
 			description: 'The support email address to display on the error pages.',
@@ -869,6 +877,7 @@ export type UpdatePayload = {
 		readonly organizationRequiredMfaPolicy?: 'NoPrompt' | 'Mandatory'
 	} & { readonly [x: string]: Schema.Json }
 	readonly adaptiveMfa?: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
+	readonly trustedDevice?: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
 	readonly singleSignOnEnabled?: boolean
 	readonly captchaPolicy?: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
 	readonly sentinelPolicy?: { readonly maxAttempts?: number; readonly lockoutDuration?: number } & { readonly [x: string]: Schema.Json }
@@ -907,13 +916,13 @@ export const UpdatePayload = Schema.StructWithRest(
 			Schema.StructWithRest(
 				Schema.Struct({
 					primaryColor: Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					),
 					isDarkModeEnabled: Schema.Boolean,
 					darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					),
@@ -1241,6 +1250,15 @@ export const UpdatePayload = Schema.StructWithRest(
 			Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
 				Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
 			]).annotate({ description: 'Adaptive MFA settings. Only effective when developer features are enabled.' })
+		),
+		trustedDevice: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					enabled: Schema.optionalKey(Schema.Boolean),
+					durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
 		),
 		singleSignOnEnabled: Schema.optionalKey(Schema.Boolean),
 		captchaPolicy: Schema.optionalKey(
@@ -1587,6 +1605,7 @@ export type UpdateResponse = {
 		readonly organizationRequiredMfaPolicy?: 'NoPrompt' | 'Mandatory'
 	} & { readonly [x: string]: Schema.Json }
 	readonly adaptiveMfa: { readonly enabled?: boolean } & { readonly [x: string]: Schema.Json }
+	readonly trustedDevice: { readonly enabled?: boolean; readonly durationDays?: number } & { readonly [x: string]: Schema.Json }
 	readonly singleSignOnEnabled: boolean
 	readonly supportEmail: string | null
 	readonly supportWebsiteUrl: string | null
@@ -1623,13 +1642,13 @@ export const UpdateResponse = Schema.StructWithRest(
 		color: Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+					Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 					})
 				),
 				isDarkModeEnabled: Schema.Boolean,
 				darkPrimaryColor: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+					Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 						expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 					})
 				),
@@ -1915,6 +1934,13 @@ export const UpdateResponse = Schema.StructWithRest(
 		adaptiveMfa: Schema.StructWithRest(Schema.Struct({ enabled: Schema.optionalKey(Schema.Boolean) }), [
 			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
 		]),
+		trustedDevice: Schema.StructWithRest(
+			Schema.Struct({
+				enabled: Schema.optionalKey(Schema.Boolean),
+				durationDays: Schema.optionalKey(Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))),
+			}),
+			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+		),
 		singleSignOnEnabled: Schema.Boolean,
 		supportEmail: Schema.Union([Schema.String, Schema.Null]),
 		supportWebsiteUrl: Schema.Union([Schema.String, Schema.Null]),

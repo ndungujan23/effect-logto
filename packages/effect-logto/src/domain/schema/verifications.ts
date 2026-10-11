@@ -37,7 +37,7 @@ export const CreateByVerificationCodePayload = Schema.StructWithRest(
 						value: Schema.String.annotate({ format: 'regex' })
 							.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
 							.check(
-								Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({
+								Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
 									expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
 								})
 							),
@@ -48,7 +48,7 @@ export const CreateByVerificationCodePayload = Schema.StructWithRest(
 					Schema.Struct({
 						type: Schema.String.annotate({ format: '"phone"' }),
 						value: Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+							Schema.isPattern(new RegExp('^\\d+$', 'u')).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
 						),
 					}),
 					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
@@ -94,7 +94,7 @@ export const VerifyByVerificationCodePayload = Schema.StructWithRest(
 						value: Schema.String.annotate({ format: 'regex' })
 							.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
 							.check(
-								Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({
+								Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
 									expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
 								})
 							),
@@ -105,7 +105,7 @@ export const VerifyByVerificationCodePayload = Schema.StructWithRest(
 					Schema.Struct({
 						type: Schema.String.annotate({ format: '"phone"' }),
 						value: Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+							Schema.isPattern(new RegExp('^\\d+$', 'u')).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
 						),
 					}),
 					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]

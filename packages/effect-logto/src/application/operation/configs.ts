@@ -196,7 +196,7 @@ export interface ConfigsOperations {
 		options: { readonly config?: Config | undefined } | undefined
 	) => Effect.Effect<WithOptionalResponse<GetCimdConfigResponse, Config>, LogtoError>
 	/**
-	 * Update the tenant-level OAuth Client ID Metadata Document (CIMD) switch. Enabling requires the OIDC provider SSRF protection to be active.
+	 * Update the tenant-level OAuth Client ID Metadata Document (CIMD) configuration. Enabling requires the OIDC provider SSRF protection to be active.
 	 */
 	readonly updateCimdConfig: <Config extends OperationConfig>(options: {
 		readonly payload: UpdateCimdConfigPayload

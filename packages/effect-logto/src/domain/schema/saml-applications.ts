@@ -41,6 +41,11 @@ export type CreatePayload = {
 	readonly entityId?: string | null
 	readonly acsUrl?: string | null
 	readonly encryption?: { readonly [x: string]: Schema.Json } | null
+	readonly authnRequestConfig?:
+		| ({ readonly forceAuthn?: boolean; readonly requireSignedAuthnRequests?: boolean; readonly signingCertificate?: string } & {
+				readonly [x: string]: Schema.Json
+		  })
+		| null
 	readonly nameIdFormat:
 		| 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
 		| 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
@@ -112,6 +117,39 @@ export const CreatePayload = Schema.StructWithRest(
 				description: 'Validator function',
 			})
 		),
+		authnRequestConfig: Schema.optionalKey(
+			Schema.Union([
+				Schema.StructWithRest(
+					Schema.Struct({
+						forceAuthn: Schema.optionalKey(
+							Schema.Boolean.annotate({
+								description:
+									'Require fresh authentication for every sign-in to this application. Set to false to reuse an existing session unless the SP requests ForceAuthn.',
+								default: true,
+							})
+						),
+						requireSignedAuthnRequests: Schema.optionalKey(
+							Schema.Boolean.annotate({
+								description:
+									'Require signed AuthnRequests for both HTTP-POST and HTTP-Redirect bindings. Defaults to false.',
+								default: false,
+							})
+						),
+						signingCertificate: Schema.optionalKey(
+							Schema.String.annotate({
+								description:
+									'PEM-encoded RSA X.509 signing certificate of the service provider. Required when requireSignedAuthnRequests is true. Used independently of the assertion encryption certificate.',
+							})
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.Null,
+			]).annotate({
+				description:
+					'IdP-side authentication policy. Fresh authentication is forced unless forceAuthn is explicitly false, including when this object is null or empty. PATCH replaces this object.',
+			})
+		),
 		nameIdFormat: Schema.Literals([
 			'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
 			'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
@@ -171,6 +209,7 @@ export type CreateResponse = {
 		  } & { readonly [x: string]: Schema.Json })
 		| null
 	readonly encryption: { readonly [x: string]: Schema.Json } | null
+	readonly authnRequestConfig: { readonly [x: string]: Schema.Json } | null
 	readonly nameIdFormat:
 		| 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
 		| 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
@@ -246,6 +285,10 @@ export const CreateResponse = Schema.StructWithRest(
 		encryption: Schema.Union([Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })), Schema.Null]).annotate({
 			description: 'Validator function',
 		}),
+		authnRequestConfig: Schema.Union([
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			Schema.Null,
+		]).annotate({ description: 'Validator function' }),
 		nameIdFormat: Schema.Literals([
 			'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
 			'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
@@ -305,6 +348,7 @@ export type GetResponse = {
 		  } & { readonly [x: string]: Schema.Json })
 		| null
 	readonly encryption: { readonly [x: string]: Schema.Json } | null
+	readonly authnRequestConfig: { readonly [x: string]: Schema.Json } | null
 	readonly nameIdFormat:
 		| 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
 		| 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
@@ -380,6 +424,10 @@ export const GetResponse = Schema.StructWithRest(
 		encryption: Schema.Union([Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })), Schema.Null]).annotate({
 			description: 'Validator function',
 		}),
+		authnRequestConfig: Schema.Union([
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			Schema.Null,
+		]).annotate({ description: 'Validator function' }),
 		nameIdFormat: Schema.Literals([
 			'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
 			'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
@@ -429,6 +477,11 @@ export type UpdatePayload = {
 	readonly entityId?: string | null
 	readonly acsUrl?: string | null
 	readonly encryption?: { readonly [x: string]: Schema.Json } | null
+	readonly authnRequestConfig?:
+		| ({ readonly forceAuthn?: boolean; readonly requireSignedAuthnRequests?: boolean; readonly signingCertificate?: string } & {
+				readonly [x: string]: Schema.Json
+		  })
+		| null
 	readonly nameIdFormat?:
 		| 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
 		| 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
@@ -503,6 +556,39 @@ export const UpdatePayload = Schema.StructWithRest(
 				description: 'Validator function',
 			})
 		),
+		authnRequestConfig: Schema.optionalKey(
+			Schema.Union([
+				Schema.StructWithRest(
+					Schema.Struct({
+						forceAuthn: Schema.optionalKey(
+							Schema.Boolean.annotate({
+								description:
+									'Require fresh authentication for every sign-in to this application. Set to false to reuse an existing session unless the SP requests ForceAuthn.',
+								default: true,
+							})
+						),
+						requireSignedAuthnRequests: Schema.optionalKey(
+							Schema.Boolean.annotate({
+								description:
+									'Require signed AuthnRequests for both HTTP-POST and HTTP-Redirect bindings. Defaults to false.',
+								default: false,
+							})
+						),
+						signingCertificate: Schema.optionalKey(
+							Schema.String.annotate({
+								description:
+									'PEM-encoded RSA X.509 signing certificate of the service provider. Required when requireSignedAuthnRequests is true. Used independently of the assertion encryption certificate.',
+							})
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.Null,
+			]).annotate({
+				description:
+					'IdP-side authentication policy. Fresh authentication is forced unless forceAuthn is explicitly false, including when this object is null or empty. PATCH replaces this object.',
+			})
+		),
 		nameIdFormat: Schema.optionalKey(
 			Schema.Literals([
 				'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -564,6 +650,7 @@ export type UpdateResponse = {
 		  } & { readonly [x: string]: Schema.Json })
 		| null
 	readonly encryption: { readonly [x: string]: Schema.Json } | null
+	readonly authnRequestConfig: { readonly [x: string]: Schema.Json } | null
 	readonly nameIdFormat:
 		| 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
 		| 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
@@ -639,6 +726,10 @@ export const UpdateResponse = Schema.StructWithRest(
 		encryption: Schema.Union([Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })), Schema.Null]).annotate({
 			description: 'Validator function',
 		}),
+		authnRequestConfig: Schema.Union([
+			Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+			Schema.Null,
+		]).annotate({ description: 'Validator function' }),
 		nameIdFormat: Schema.Literals([
 			'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
 			'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',

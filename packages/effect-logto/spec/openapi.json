@@ -2608,6 +2608,7 @@
 											"description",
 											"customData",
 											"isMfaRequired",
+											"isTrustedDeviceAllowed",
 											"color",
 											"branding",
 											"customCss",
@@ -2640,6 +2641,9 @@
 												"additionalProperties": true
 											},
 											"isMfaRequired": {
+												"type": "boolean"
+											},
+											"isTrustedDeviceAllowed": {
 												"type": "boolean"
 											},
 											"color": {
@@ -4224,6 +4228,7 @@
 													"description",
 													"customData",
 													"isMfaRequired",
+													"isTrustedDeviceAllowed",
 													"color",
 													"branding",
 													"customCss",
@@ -4255,6 +4260,9 @@
 														"additionalProperties": true
 													},
 													"isMfaRequired": {
+														"type": "boolean"
+													},
+													"isTrustedDeviceAllowed": {
 														"type": "boolean"
 													},
 													"color": {
@@ -5110,7 +5118,7 @@
 																"id": {
 																	"type": "string",
 																	"minLength": 1,
-																	"maxLength": 12
+																	"maxLength": 128
 																},
 																"username": {
 																	"type": "string",
@@ -5553,6 +5561,9 @@
 																					"verified": {
 																						"type": "boolean"
 																					},
+																					"userId": {
+																						"type": "string"
+																					},
 																					"type": {
 																						"type": "string",
 																						"format": "\"EmailVerificationCode\""
@@ -5604,6 +5615,9 @@
 																					},
 																					"verified": {
 																						"type": "boolean"
+																					},
+																					"userId": {
+																						"type": "string"
 																					},
 																					"type": {
 																						"type": "string",
@@ -5657,6 +5671,9 @@
 																					"verified": {
 																						"type": "boolean"
 																					},
+																					"userId": {
+																						"type": "string"
+																					},
 																					"type": {
 																						"type": "string",
 																						"format": "\"MfaEmailVerificationCode\""
@@ -5708,6 +5725,9 @@
 																					},
 																					"verified": {
 																						"type": "boolean"
+																					},
+																					"userId": {
+																						"type": "string"
 																					},
 																					"type": {
 																						"type": "string",
@@ -6833,7 +6853,7 @@
 																"id": {
 																	"type": "string",
 																	"minLength": 1,
-																	"maxLength": 12
+																	"maxLength": 128
 																},
 																"username": {
 																	"type": "string",
@@ -7276,6 +7296,9 @@
 																					"verified": {
 																						"type": "boolean"
 																					},
+																					"userId": {
+																						"type": "string"
+																					},
 																					"type": {
 																						"type": "string",
 																						"format": "\"EmailVerificationCode\""
@@ -7327,6 +7350,9 @@
 																					},
 																					"verified": {
 																						"type": "boolean"
+																					},
+																					"userId": {
+																						"type": "string"
 																					},
 																					"type": {
 																						"type": "string",
@@ -7380,6 +7406,9 @@
 																					"verified": {
 																						"type": "boolean"
 																					},
+																					"userId": {
+																						"type": "string"
+																					},
 																					"type": {
 																						"type": "string",
 																						"format": "\"MfaEmailVerificationCode\""
@@ -7431,6 +7460,9 @@
 																					},
 																					"verified": {
 																						"type": "boolean"
+																					},
+																					"userId": {
+																						"type": "string"
 																					},
 																					"type": {
 																						"type": "string",
@@ -8617,7 +8649,7 @@
 																"id": {
 																	"type": "string",
 																	"minLength": 1,
-																	"maxLength": 12
+																	"maxLength": 128
 																},
 																"username": {
 																	"type": "string",
@@ -9060,6 +9092,9 @@
 																					"verified": {
 																						"type": "boolean"
 																					},
+																					"userId": {
+																						"type": "string"
+																					},
 																					"type": {
 																						"type": "string",
 																						"format": "\"EmailVerificationCode\""
@@ -9111,6 +9146,9 @@
 																					},
 																					"verified": {
 																						"type": "boolean"
+																					},
+																					"userId": {
+																						"type": "string"
 																					},
 																					"type": {
 																						"type": "string",
@@ -9164,6 +9202,9 @@
 																					"verified": {
 																						"type": "boolean"
 																					},
+																					"userId": {
+																						"type": "string"
+																					},
 																					"type": {
 																						"type": "string",
 																						"format": "\"MfaEmailVerificationCode\""
@@ -9215,6 +9256,9 @@
 																					},
 																					"verified": {
 																						"type": "boolean"
+																					},
+																					"userId": {
+																						"type": "string"
 																					},
 																					"type": {
 																						"type": "string",
@@ -10377,7 +10421,7 @@
 																"id": {
 																	"type": "string",
 																	"minLength": 1,
-																	"maxLength": 12
+																	"maxLength": 128
 																},
 																"username": {
 																	"type": "string",
@@ -10820,6 +10864,9 @@
 																					"verified": {
 																						"type": "boolean"
 																					},
+																					"userId": {
+																						"type": "string"
+																					},
 																					"type": {
 																						"type": "string",
 																						"format": "\"EmailVerificationCode\""
@@ -10871,6 +10918,9 @@
 																					},
 																					"verified": {
 																						"type": "boolean"
+																					},
+																					"userId": {
+																						"type": "string"
 																					},
 																					"type": {
 																						"type": "string",
@@ -10924,6 +10974,9 @@
 																					"verified": {
 																						"type": "boolean"
 																					},
+																					"userId": {
+																						"type": "string"
+																					},
 																					"type": {
 																						"type": "string",
 																						"format": "\"MfaEmailVerificationCode\""
@@ -10975,6 +11028,9 @@
 																					},
 																					"verified": {
 																						"type": "boolean"
+																					},
+																					"userId": {
+																						"type": "string"
 																					},
 																					"type": {
 																						"type": "string",
@@ -12178,7 +12234,7 @@
 																			"id": {
 																				"type": "string",
 																				"minLength": 1,
-																				"maxLength": 12
+																				"maxLength": 128
 																			},
 																			"username": {
 																				"type": "string",
@@ -12621,6 +12677,9 @@
 																								"verified": {
 																									"type": "boolean"
 																								},
+																								"userId": {
+																									"type": "string"
+																								},
 																								"type": {
 																									"type": "string",
 																									"format": "\"EmailVerificationCode\""
@@ -12672,6 +12731,9 @@
 																								},
 																								"verified": {
 																									"type": "boolean"
+																								},
+																								"userId": {
+																									"type": "string"
 																								},
 																								"type": {
 																									"type": "string",
@@ -12725,6 +12787,9 @@
 																								"verified": {
 																									"type": "boolean"
 																								},
+																								"userId": {
+																									"type": "string"
+																								},
 																								"type": {
 																									"type": "string",
 																									"format": "\"MfaEmailVerificationCode\""
@@ -12776,6 +12841,9 @@
 																								},
 																								"verified": {
 																									"type": "boolean"
+																								},
+																								"userId": {
+																									"type": "string"
 																								},
 																								"type": {
 																									"type": "string",
@@ -13991,7 +14059,7 @@
 															"id": {
 																"type": "string",
 																"minLength": 1,
-																"maxLength": 12
+																"maxLength": 128
 															},
 															"username": {
 																"type": "string",
@@ -14434,6 +14502,9 @@
 																				"verified": {
 																					"type": "boolean"
 																				},
+																				"userId": {
+																					"type": "string"
+																				},
 																				"type": {
 																					"type": "string",
 																					"format": "\"EmailVerificationCode\""
@@ -14485,6 +14556,9 @@
 																				},
 																				"verified": {
 																					"type": "boolean"
+																				},
+																				"userId": {
+																					"type": "string"
 																				},
 																				"type": {
 																					"type": "string",
@@ -14538,6 +14612,9 @@
 																				"verified": {
 																					"type": "boolean"
 																				},
+																				"userId": {
+																					"type": "string"
+																				},
 																				"type": {
 																					"type": "string",
 																					"format": "\"MfaEmailVerificationCode\""
@@ -14589,6 +14666,9 @@
 																				},
 																				"verified": {
 																					"type": "boolean"
+																				},
+																				"userId": {
+																					"type": "string"
 																				},
 																				"type": {
 																					"type": "string",
@@ -16747,6 +16827,10 @@
 									"properties": {
 										"enabled": {
 											"type": "boolean"
+										},
+										"addConsentPromptForOfflineAccess": {
+											"type": "boolean",
+											"description": "Experimental. When enabled, Logto adds `consent` to the `prompt` parameter of CIMD authorization requests that include the `offline_access` scope without it, so the client can receive a refresh token. Requests with `prompt=none` are not changed. Defaults to `false`."
 										}
 									}
 								}
@@ -16777,7 +16861,12 @@
 								"type": "object",
 								"properties": {
 									"enabled": {
-										"type": "boolean"
+										"type": "boolean",
+										"description": "Whether CIMD is enabled for the tenant."
+									},
+									"addConsentPromptForOfflineAccess": {
+										"type": "boolean",
+										"description": "Experimental. When enabled, Logto adds `consent` to the `prompt` parameter of CIMD authorization requests that include the `offline_access` scope without it, so the client can receive a refresh token. Requests with `prompt=none` are not changed. Defaults to `false`."
 									}
 								}
 							}
@@ -16797,6 +16886,10 @@
 									"properties": {
 										"enabled": {
 											"type": "boolean"
+										},
+										"addConsentPromptForOfflineAccess": {
+											"type": "boolean",
+											"description": "Experimental. When enabled, Logto adds `consent` to the `prompt` parameter of CIMD authorization requests that include the `offline_access` scope without it, so the client can receive a refresh token. Requests with `prompt=none` are not changed. Defaults to `false`."
 										}
 									}
 								}
@@ -16817,7 +16910,7 @@
 					}
 				},
 				"summary": "Update CIMD config",
-				"description": "Update the tenant-level OAuth Client ID Metadata Document (CIMD) switch. Enabling requires the OIDC provider SSRF protection to be active."
+				"description": "Update the tenant-level OAuth Client ID Metadata Document (CIMD) configuration. Enabling requires the OIDC provider SSRF protection to be active."
 			}
 		},
 		"/api/connectors": {
@@ -20273,6 +20366,7 @@
 										"passwordPolicy",
 										"mfa",
 										"adaptiveMfa",
+										"trustedDevice",
 										"singleSignOnEnabled",
 										"supportEmail",
 										"supportWebsiteUrl",
@@ -20807,6 +20901,17 @@
 												}
 											},
 											"description": "Adaptive MFA settings."
+										},
+										"trustedDevice": {
+											"type": "object",
+											"properties": {
+												"enabled": {
+													"type": "boolean"
+												},
+												"durationDays": {
+													"type": "number"
+												}
+											}
 										},
 										"singleSignOnEnabled": {
 											"type": "boolean"
@@ -21516,6 +21621,17 @@
 										},
 										"description": "Adaptive MFA settings. Only effective when developer features are enabled."
 									},
+									"trustedDevice": {
+										"type": "object",
+										"properties": {
+											"enabled": {
+												"type": "boolean"
+											},
+											"durationDays": {
+												"type": "number"
+											}
+										}
+									},
 									"singleSignOnEnabled": {
 										"type": "boolean"
 									},
@@ -21766,6 +21882,7 @@
 										"passwordPolicy",
 										"mfa",
 										"adaptiveMfa",
+										"trustedDevice",
 										"singleSignOnEnabled",
 										"supportEmail",
 										"supportWebsiteUrl",
@@ -22284,6 +22401,17 @@
 												}
 											}
 										},
+										"trustedDevice": {
+											"type": "object",
+											"properties": {
+												"enabled": {
+													"type": "boolean"
+												},
+												"durationDays": {
+													"type": "number"
+												}
+											}
+										},
 										"singleSignOnEnabled": {
 											"type": "boolean"
 										},
@@ -22743,7 +22871,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -22913,7 +23041,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -23178,7 +23306,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -23348,7 +23476,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -23925,6 +24053,12 @@
 							"schema": {
 								"type": "object",
 								"properties": {
+									"id": {
+										"type": "string",
+										"format": "regex",
+										"pattern": "/^(?!\\.{1,2}$)[\\w+.:=@|-]{1,128}$/",
+										"description": "The unique ID for the user, up to 128 characters of letters, numbers, and `_ - . @ : + = |`, excluding `.` and `..`. If not provided, a random ID will be generated. Useful for keeping existing user IDs when migrating from another identity provider."
+									},
 									"primaryPhone": {
 										"type": "string",
 										"format": "regex",
@@ -24084,7 +24218,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -24254,7 +24388,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -24323,6 +24457,9 @@
 					},
 					"422": {
 						"description": "Unprocessable Content"
+					},
+					"501": {
+						"description": "Not Implemented"
 					}
 				},
 				"summary": "Create user",
@@ -24368,6 +24505,34 @@
 							}
 						},
 						"explode": true
+					},
+					{
+						"in": "query",
+						"name": "identityType",
+						"description": "The external identity type to use for an exact user lookup. Use `social` for a social connector identity or `sso` for an enterprise SSO identity. Must be provided together with `identityProvider` and `identityId`. External identity filters are combined with other user filters using AND logic.",
+						"schema": {
+							"type": "string",
+							"enum": [
+								"social",
+								"sso"
+							]
+						}
+					},
+					{
+						"in": "query",
+						"name": "identityProvider",
+						"description": "The connector target for a social identity (for example, `dingtalk`), or the issuer for an enterprise SSO identity. Must be provided together with `identityType` and `identityId`.",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "identityId",
+						"description": "The user identifier issued by the external identity provider, such as a DingTalk OpenID. Must be provided together with `identityType` and `identityProvider`.",
+						"schema": {
+							"type": "string"
+						}
 					}
 				],
 				"responses": {
@@ -24400,7 +24565,7 @@
 											"id": {
 												"type": "string",
 												"minLength": 1,
-												"maxLength": 12
+												"maxLength": 128
 											},
 											"username": {
 												"type": "string",
@@ -24570,7 +24735,7 @@
 														"userId": {
 															"type": "string",
 															"minLength": 1,
-															"maxLength": 12
+															"maxLength": 128
 														},
 														"issuer": {
 															"type": "string",
@@ -24699,7 +24864,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -24869,7 +25034,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -24999,7 +25164,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -25169,7 +25334,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -25401,7 +25566,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -25571,7 +25736,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -26116,7 +26281,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -26286,7 +26451,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -26420,7 +26585,7 @@
 												"userId": {
 													"type": "string",
 													"minLength": 1,
-													"maxLength": 21
+													"maxLength": 128
 												},
 												"type": {
 													"type": "string",
@@ -26598,6 +26763,7 @@
 											"description",
 											"customData",
 											"isMfaRequired",
+											"isTrustedDeviceAllowed",
 											"color",
 											"branding",
 											"customCss",
@@ -26630,6 +26796,9 @@
 												"additionalProperties": true
 											},
 											"isMfaRequired": {
+												"type": "boolean"
+											},
+											"isTrustedDeviceAllowed": {
 												"type": "boolean"
 											},
 											"color": {
@@ -27188,7 +27357,7 @@
 											"userId": {
 												"type": "string",
 												"minLength": 1,
-												"maxLength": 21
+												"maxLength": 128
 											},
 											"name": {
 												"type": "string",
@@ -27288,7 +27457,7 @@
 										"userId": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 21
+											"maxLength": 128
 										},
 										"name": {
 											"type": "string",
@@ -27386,7 +27555,7 @@
 										"userId": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 21
+											"maxLength": 128
 										},
 										"name": {
 											"type": "string",
@@ -27530,7 +27699,7 @@
 										"userId": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 21
+											"maxLength": 128
 										},
 										"name": {
 											"type": "string",
@@ -27682,7 +27851,7 @@
 												"userId": {
 													"type": "string",
 													"minLength": 1,
-													"maxLength": 12
+													"maxLength": 128
 												},
 												"issuer": {
 													"type": "string",
@@ -27740,7 +27909,7 @@
 												"userId": {
 													"type": "string",
 													"minLength": 1,
-													"maxLength": 21
+													"maxLength": 128
 												},
 												"type": {
 													"type": "string",
@@ -27890,7 +28059,7 @@
 															"userId": {
 																"type": "string",
 																"minLength": 1,
-																"maxLength": 21
+																"maxLength": 128
 															},
 															"type": {
 																"type": "string",
@@ -27975,7 +28144,7 @@
 															"userId": {
 																"type": "string",
 																"minLength": 1,
-																"maxLength": 12
+																"maxLength": 128
 															},
 															"issuer": {
 																"type": "string",
@@ -28032,7 +28201,7 @@
 															"userId": {
 																"type": "string",
 																"minLength": 1,
-																"maxLength": 21
+																"maxLength": 128
 															},
 															"type": {
 																"type": "string",
@@ -28295,6 +28464,9 @@
 																				"verified": {
 																					"type": "boolean"
 																				},
+																				"userId": {
+																					"type": "string"
+																				},
 																				"type": {
 																					"type": "string",
 																					"format": "\"EmailVerificationCode\""
@@ -28346,6 +28518,9 @@
 																				},
 																				"verified": {
 																					"type": "boolean"
+																				},
+																				"userId": {
+																					"type": "string"
 																				},
 																				"type": {
 																					"type": "string",
@@ -28399,6 +28574,9 @@
 																				"verified": {
 																					"type": "boolean"
 																				},
+																				"userId": {
+																					"type": "string"
+																				},
 																				"type": {
 																					"type": "string",
 																					"format": "\"MfaEmailVerificationCode\""
@@ -28450,6 +28628,9 @@
 																				},
 																				"verified": {
 																					"type": "boolean"
+																				},
+																				"userId": {
+																					"type": "string"
 																				},
 																				"type": {
 																					"type": "string",
@@ -29081,6 +29262,9 @@
 																	"verified": {
 																		"type": "boolean"
 																	},
+																	"userId": {
+																		"type": "string"
+																	},
 																	"type": {
 																		"type": "string",
 																		"format": "\"EmailVerificationCode\""
@@ -29132,6 +29316,9 @@
 																	},
 																	"verified": {
 																		"type": "boolean"
+																	},
+																	"userId": {
+																		"type": "string"
 																	},
 																	"type": {
 																		"type": "string",
@@ -29185,6 +29372,9 @@
 																	"verified": {
 																		"type": "boolean"
 																	},
+																	"userId": {
+																		"type": "string"
+																	},
 																	"type": {
 																		"type": "string",
 																		"format": "\"MfaEmailVerificationCode\""
@@ -29236,6 +29426,9 @@
 																	},
 																	"verified": {
 																		"type": "boolean"
+																	},
+																	"userId": {
+																		"type": "string"
 																	},
 																	"type": {
 																		"type": "string",
@@ -29728,6 +29921,121 @@
 				},
 				"summary": "Revoke a user session",
 				"description": "Revoke a specific user session by its ID, optionally revoking associated target grants and tokens."
+			}
+		},
+		"/api/users/{userId}/trusted-devices": {
+			"get": {
+				"operationId": "ListUserTrustedDevices",
+				"tags": [
+					"Users"
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/userId"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A list of the user's active trusted devices.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"required": [
+											"id",
+											"userAgent",
+											"country",
+											"city",
+											"createdAt",
+											"lastUsedAt",
+											"expiresAt"
+										],
+										"properties": {
+											"id": {
+												"type": "string",
+												"minLength": 1,
+												"maxLength": 21
+											},
+											"userAgent": {
+												"type": "string",
+												"nullable": true
+											},
+											"country": {
+												"type": "string",
+												"maxLength": 16,
+												"nullable": true
+											},
+											"city": {
+												"type": "string",
+												"nullable": true
+											},
+											"createdAt": {
+												"type": "number"
+											},
+											"lastUsedAt": {
+												"type": "number"
+											},
+											"expiresAt": {
+												"type": "number"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "The user was not found."
+					}
+				},
+				"summary": "Get user trusted devices",
+				"description": "Retrieve all active trusted devices for the user."
+			}
+		},
+		"/api/users/{userId}/trusted-devices/{trustedDeviceId}": {
+			"delete": {
+				"operationId": "DeleteUserTrustedDevice",
+				"tags": [
+					"Users"
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/userId"
+					},
+					{
+						"$ref": "#/components/parameters/trustedDeviceId"
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "The trusted device was deleted successfully."
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "The user or trusted device was not found."
+					}
+				},
+				"summary": "Delete a user trusted device",
+				"description": "Delete a trusted device that belongs to the user."
 			}
 		},
 		"/api/logs": {
@@ -30347,7 +30655,7 @@
 														"id": {
 															"type": "string",
 															"minLength": 1,
-															"maxLength": 12
+															"maxLength": 128
 														},
 														"avatar": {
 															"type": "string",
@@ -30833,7 +31141,7 @@
 											"id": {
 												"type": "string",
 												"minLength": 1,
-												"maxLength": 12
+												"maxLength": 128
 											},
 											"username": {
 												"type": "string",
@@ -31003,7 +31311,7 @@
 														"userId": {
 															"type": "string",
 															"minLength": 1,
-															"maxLength": 12
+															"maxLength": 128
 														},
 														"issuer": {
 															"type": "string",
@@ -32844,6 +33152,8 @@
 													"User.Deleted",
 													"User.Data.Updated",
 													"User.SuspensionStatus.Updated",
+													"TrustedDevice.Created",
+													"TrustedDevice.Deleted",
 													"Role.Created",
 													"Role.Deleted",
 													"Role.Data.Updated",
@@ -32881,6 +33191,8 @@
 														"User.Deleted",
 														"User.Data.Updated",
 														"User.SuspensionStatus.Updated",
+														"TrustedDevice.Created",
+														"TrustedDevice.Deleted",
 														"Role.Created",
 														"Role.Deleted",
 														"Role.Data.Updated",
@@ -33006,6 +33318,8 @@
 											"User.Deleted",
 											"User.Data.Updated",
 											"User.SuspensionStatus.Updated",
+											"TrustedDevice.Created",
+											"TrustedDevice.Deleted",
 											"Role.Created",
 											"Role.Deleted",
 											"Role.Data.Updated",
@@ -33044,6 +33358,8 @@
 												"User.Deleted",
 												"User.Data.Updated",
 												"User.SuspensionStatus.Updated",
+												"TrustedDevice.Created",
+												"TrustedDevice.Deleted",
 												"Role.Created",
 												"Role.Deleted",
 												"Role.Data.Updated",
@@ -33145,6 +33461,8 @@
 												"User.Deleted",
 												"User.Data.Updated",
 												"User.SuspensionStatus.Updated",
+												"TrustedDevice.Created",
+												"TrustedDevice.Deleted",
 												"Role.Created",
 												"Role.Deleted",
 												"Role.Data.Updated",
@@ -33182,6 +33500,8 @@
 													"User.Deleted",
 													"User.Data.Updated",
 													"User.SuspensionStatus.Updated",
+													"TrustedDevice.Created",
+													"TrustedDevice.Deleted",
 													"Role.Created",
 													"Role.Deleted",
 													"Role.Data.Updated",
@@ -33318,6 +33638,8 @@
 												"User.Deleted",
 												"User.Data.Updated",
 												"User.SuspensionStatus.Updated",
+												"TrustedDevice.Created",
+												"TrustedDevice.Deleted",
 												"Role.Created",
 												"Role.Deleted",
 												"Role.Data.Updated",
@@ -33355,6 +33677,8 @@
 													"User.Deleted",
 													"User.Data.Updated",
 													"User.SuspensionStatus.Updated",
+													"TrustedDevice.Created",
+													"TrustedDevice.Deleted",
 													"Role.Created",
 													"Role.Deleted",
 													"Role.Data.Updated",
@@ -33483,6 +33807,8 @@
 											"User.Deleted",
 											"User.Data.Updated",
 											"User.SuspensionStatus.Updated",
+											"TrustedDevice.Created",
+											"TrustedDevice.Deleted",
 											"Role.Created",
 											"Role.Deleted",
 											"Role.Data.Updated",
@@ -33522,6 +33848,8 @@
 												"User.Deleted",
 												"User.Data.Updated",
 												"User.SuspensionStatus.Updated",
+												"TrustedDevice.Created",
+												"TrustedDevice.Deleted",
 												"Role.Created",
 												"Role.Deleted",
 												"Role.Data.Updated",
@@ -33623,6 +33951,8 @@
 												"User.Deleted",
 												"User.Data.Updated",
 												"User.SuspensionStatus.Updated",
+												"TrustedDevice.Created",
+												"TrustedDevice.Deleted",
 												"Role.Created",
 												"Role.Deleted",
 												"Role.Data.Updated",
@@ -33660,6 +33990,8 @@
 													"User.Deleted",
 													"User.Data.Updated",
 													"User.SuspensionStatus.Updated",
+													"TrustedDevice.Created",
+													"TrustedDevice.Deleted",
 													"Role.Created",
 													"Role.Deleted",
 													"Role.Data.Updated",
@@ -34067,6 +34399,8 @@
 												"User.Deleted",
 												"User.Data.Updated",
 												"User.SuspensionStatus.Updated",
+												"TrustedDevice.Created",
+												"TrustedDevice.Deleted",
 												"Role.Created",
 												"Role.Deleted",
 												"Role.Data.Updated",
@@ -34202,6 +34536,8 @@
 												"User.Deleted",
 												"User.Data.Updated",
 												"User.SuspensionStatus.Updated",
+												"TrustedDevice.Created",
+												"TrustedDevice.Deleted",
 												"Role.Created",
 												"Role.Deleted",
 												"Role.Data.Updated",
@@ -34239,6 +34575,8 @@
 													"User.Deleted",
 													"User.Data.Updated",
 													"User.SuspensionStatus.Updated",
+													"TrustedDevice.Created",
+													"TrustedDevice.Deleted",
 													"Role.Created",
 													"Role.Deleted",
 													"Role.Data.Updated",
@@ -36468,7 +36806,7 @@
 										},
 										"inviterId": {
 											"type": "string",
-											"maxLength": 21,
+											"maxLength": 128,
 											"nullable": true
 										},
 										"invitee": {
@@ -36478,7 +36816,7 @@
 										},
 										"acceptedUserId": {
 											"type": "string",
-											"maxLength": 21,
+											"maxLength": 128,
 											"nullable": true
 										},
 										"organizationId": {
@@ -36640,7 +36978,7 @@
 											},
 											"inviterId": {
 												"type": "string",
-												"maxLength": 21,
+												"maxLength": 128,
 												"nullable": true
 											},
 											"invitee": {
@@ -36650,7 +36988,7 @@
 											},
 											"acceptedUserId": {
 												"type": "string",
-												"maxLength": 21,
+												"maxLength": 128,
 												"nullable": true
 											},
 											"organizationId": {
@@ -36734,7 +37072,7 @@
 								"properties": {
 									"inviterId": {
 										"type": "string",
-										"maxLength": 21,
+										"maxLength": 128,
 										"nullable": true,
 										"description": "The ID of the user who is inviting the user to join the organization."
 									},
@@ -36825,7 +37163,7 @@
 										},
 										"inviterId": {
 											"type": "string",
-											"maxLength": 21,
+											"maxLength": 128,
 											"nullable": true
 										},
 										"invitee": {
@@ -36835,7 +37173,7 @@
 										},
 										"acceptedUserId": {
 											"type": "string",
-											"maxLength": 21,
+											"maxLength": 128,
 											"nullable": true
 										},
 										"organizationId": {
@@ -36987,7 +37325,7 @@
 								"properties": {
 									"acceptedUserId": {
 										"type": "string",
-										"maxLength": 21,
+										"maxLength": 128,
 										"nullable": true,
 										"description": "The ID of the user who accepted the organization invitation. Required if the status is \"Accepted\"."
 									},
@@ -37037,7 +37375,7 @@
 										},
 										"inviterId": {
 											"type": "string",
-											"maxLength": 21,
+											"maxLength": 128,
 											"nullable": true
 										},
 										"invitee": {
@@ -37047,7 +37385,7 @@
 										},
 										"acceptedUserId": {
 											"type": "string",
-											"maxLength": 21,
+											"maxLength": 128,
 											"nullable": true
 										},
 										"organizationId": {
@@ -37154,6 +37492,9 @@
 									"isMfaRequired": {
 										"type": "boolean"
 									},
+									"isTrustedDeviceAllowed": {
+										"type": "boolean"
+									},
 									"color": {
 										"type": "object",
 										"properties": {
@@ -37219,6 +37560,7 @@
 										"description",
 										"customData",
 										"isMfaRequired",
+										"isTrustedDeviceAllowed",
 										"color",
 										"branding",
 										"customCss",
@@ -37250,6 +37592,9 @@
 											"additionalProperties": true
 										},
 										"isMfaRequired": {
+											"type": "boolean"
+										},
+										"isTrustedDeviceAllowed": {
 											"type": "boolean"
 										},
 										"color": {
@@ -37382,6 +37727,7 @@
 											"description",
 											"customData",
 											"isMfaRequired",
+											"isTrustedDeviceAllowed",
 											"color",
 											"branding",
 											"customCss",
@@ -37413,6 +37759,9 @@
 												"additionalProperties": true
 											},
 											"isMfaRequired": {
+												"type": "boolean"
+											},
+											"isTrustedDeviceAllowed": {
 												"type": "boolean"
 											},
 											"color": {
@@ -37477,7 +37826,7 @@
 														"id": {
 															"type": "string",
 															"minLength": 1,
-															"maxLength": 12
+															"maxLength": 128
 														},
 														"avatar": {
 															"type": "string",
@@ -37537,6 +37886,7 @@
 										"description",
 										"customData",
 										"isMfaRequired",
+										"isTrustedDeviceAllowed",
 										"color",
 										"branding",
 										"customCss",
@@ -37568,6 +37918,9 @@
 											"additionalProperties": true
 										},
 										"isMfaRequired": {
+											"type": "boolean"
+										},
+										"isTrustedDeviceAllowed": {
 											"type": "boolean"
 										},
 										"color": {
@@ -37678,6 +38031,9 @@
 									"isMfaRequired": {
 										"type": "boolean"
 									},
+									"isTrustedDeviceAllowed": {
+										"type": "boolean"
+									},
 									"color": {
 										"type": "object",
 										"properties": {
@@ -37743,6 +38099,7 @@
 										"description",
 										"customData",
 										"isMfaRequired",
+										"isTrustedDeviceAllowed",
 										"color",
 										"branding",
 										"customCss",
@@ -37774,6 +38131,9 @@
 											"additionalProperties": true
 										},
 										"isMfaRequired": {
+											"type": "boolean"
+										},
+										"isTrustedDeviceAllowed": {
 											"type": "boolean"
 										},
 										"color": {
@@ -37960,7 +38320,7 @@
 											"id": {
 												"type": "string",
 												"minLength": 1,
-												"maxLength": 12
+												"maxLength": 128
 											},
 											"username": {
 												"type": "string",
@@ -41683,6 +42043,14 @@
 														"ReadOnly",
 														"Edit"
 													]
+												},
+												"trustedDevice": {
+													"type": "string",
+													"enum": [
+														"Off",
+														"ReadOnly",
+														"Edit"
+													]
 												}
 											}
 										},
@@ -41840,6 +42208,14 @@
 												]
 											},
 											"session": {
+												"type": "string",
+												"enum": [
+													"Off",
+													"ReadOnly",
+													"Edit"
+												]
+											},
+											"trustedDevice": {
 												"type": "string",
 												"enum": [
 													"Off",
@@ -42010,6 +42386,14 @@
 													]
 												},
 												"session": {
+													"type": "string",
+													"enum": [
+														"Off",
+														"ReadOnly",
+														"Edit"
+													]
+												},
+												"trustedDevice": {
 													"type": "string",
 													"enum": [
 														"Off",
@@ -42227,6 +42611,28 @@
 										"additionalProperties": true,
 										"nullable": true
 									},
+									"authnRequestConfig": {
+										"type": "object",
+										"description": "IdP-side authentication policy. Fresh authentication is forced unless forceAuthn is explicitly false, including when this object is null or empty. PATCH replaces this object.",
+										"additionalProperties": true,
+										"nullable": true,
+										"properties": {
+											"forceAuthn": {
+												"type": "boolean",
+												"default": true,
+												"description": "Require fresh authentication for every sign-in to this application. Set to false to reuse an existing session unless the SP requests ForceAuthn."
+											},
+											"requireSignedAuthnRequests": {
+												"type": "boolean",
+												"default": false,
+												"description": "Require signed AuthnRequests for both HTTP-POST and HTTP-Redirect bindings. Defaults to false."
+											},
+											"signingCertificate": {
+												"type": "string",
+												"description": "PEM-encoded RSA X.509 signing certificate of the service provider. Required when requireSignedAuthnRequests is true. Used independently of the assertion encryption certificate."
+											}
+										}
+									},
 									"nameIdFormat": {
 										"default": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
 										"type": "string",
@@ -42263,6 +42669,7 @@
 										"entityId",
 										"acsUrl",
 										"encryption",
+										"authnRequestConfig",
 										"nameIdFormat"
 									],
 									"properties": {
@@ -42433,6 +42840,12 @@
 											"additionalProperties": true,
 											"nullable": true
 										},
+										"authnRequestConfig": {
+											"type": "object",
+											"description": "Validator function",
+											"additionalProperties": true,
+											"nullable": true
+										},
 										"nameIdFormat": {
 											"type": "string",
 											"enum": [
@@ -42496,6 +42909,7 @@
 										"entityId",
 										"acsUrl",
 										"encryption",
+										"authnRequestConfig",
 										"nameIdFormat"
 									],
 									"properties": {
@@ -42661,6 +43075,12 @@
 											"nullable": true
 										},
 										"encryption": {
+											"type": "object",
+											"description": "Validator function",
+											"additionalProperties": true,
+											"nullable": true
+										},
+										"authnRequestConfig": {
 											"type": "object",
 											"description": "Validator function",
 											"additionalProperties": true,
@@ -42861,6 +43281,28 @@
 										"additionalProperties": true,
 										"nullable": true
 									},
+									"authnRequestConfig": {
+										"type": "object",
+										"description": "IdP-side authentication policy. Fresh authentication is forced unless forceAuthn is explicitly false, including when this object is null or empty. PATCH replaces this object.",
+										"additionalProperties": true,
+										"nullable": true,
+										"properties": {
+											"forceAuthn": {
+												"type": "boolean",
+												"default": true,
+												"description": "Require fresh authentication for every sign-in to this application. Set to false to reuse an existing session unless the SP requests ForceAuthn."
+											},
+											"requireSignedAuthnRequests": {
+												"type": "boolean",
+												"default": false,
+												"description": "Require signed AuthnRequests for both HTTP-POST and HTTP-Redirect bindings. Defaults to false."
+											},
+											"signingCertificate": {
+												"type": "string",
+												"description": "PEM-encoded RSA X.509 signing certificate of the service provider. Required when requireSignedAuthnRequests is true. Used independently of the assertion encryption certificate."
+											}
+										}
+									},
 									"nameIdFormat": {
 										"type": "string",
 										"enum": [
@@ -42896,6 +43338,7 @@
 										"entityId",
 										"acsUrl",
 										"encryption",
+										"authnRequestConfig",
 										"nameIdFormat"
 									],
 									"properties": {
@@ -43061,6 +43504,12 @@
 											"nullable": true
 										},
 										"encryption": {
+											"type": "object",
+											"description": "Validator function",
+											"additionalProperties": true,
+											"nullable": true
+										},
+										"authnRequestConfig": {
 											"type": "object",
 											"description": "Validator function",
 											"additionalProperties": true,
@@ -44965,6 +45414,35 @@
 																"invisible",
 																"checkbox"
 															]
+														},
+														"scoreThreshold": {
+															"type": "number"
+														}
+													}
+												},
+												{
+													"type": "object",
+													"required": [
+														"type",
+														"endpoint",
+														"siteKey",
+														"secretKey"
+													],
+													"properties": {
+														"type": {
+															"type": "string",
+															"format": "\"Cap\""
+														},
+														"endpoint": {
+															"type": "object",
+															"description": "Validator function",
+															"additionalProperties": true
+														},
+														"siteKey": {
+															"type": "string"
+														},
+														"secretKey": {
+															"type": "string"
 														}
 													}
 												}
@@ -45063,6 +45541,35 @@
 															"invisible",
 															"checkbox"
 														]
+													},
+													"scoreThreshold": {
+														"type": "number"
+													}
+												}
+											},
+											{
+												"type": "object",
+												"required": [
+													"type",
+													"endpoint",
+													"siteKey",
+													"secretKey"
+												],
+												"properties": {
+													"type": {
+														"type": "string",
+														"format": "\"Cap\""
+													},
+													"endpoint": {
+														"type": "object",
+														"description": "Validator function",
+														"additionalProperties": true
+													},
+													"siteKey": {
+														"type": "string"
+													},
+													"secretKey": {
+														"type": "string"
 													}
 												}
 											}
@@ -45151,6 +45658,35 @@
 																"invisible",
 																"checkbox"
 															]
+														},
+														"scoreThreshold": {
+															"type": "number"
+														}
+													}
+												},
+												{
+													"type": "object",
+													"required": [
+														"type",
+														"endpoint",
+														"siteKey",
+														"secretKey"
+													],
+													"properties": {
+														"type": {
+															"type": "string",
+															"format": "\"Cap\""
+														},
+														"endpoint": {
+															"type": "object",
+															"description": "Validator function",
+															"additionalProperties": true
+														},
+														"siteKey": {
+															"type": "string"
+														},
+														"secretKey": {
+															"type": "string"
 														}
 													}
 												}
@@ -48902,6 +49438,7 @@
 										"passwordPolicy",
 										"mfa",
 										"adaptiveMfa",
+										"trustedDevice",
 										"singleSignOnEnabled",
 										"supportEmail",
 										"supportWebsiteUrl",
@@ -49423,6 +49960,17 @@
 												}
 											}
 										},
+										"trustedDevice": {
+											"type": "object",
+											"properties": {
+												"enabled": {
+													"type": "boolean"
+												},
+												"durationDays": {
+													"type": "number"
+												}
+											}
+										},
 										"singleSignOnEnabled": {
 											"type": "boolean"
 										},
@@ -49533,17 +50081,6 @@
 											"type": "object",
 											"description": "Validator function",
 											"additionalProperties": true
-										},
-										"trustedDevice": {
-											"type": "object",
-											"properties": {
-												"enabled": {
-													"type": "boolean"
-												},
-												"durationDays": {
-													"type": "number"
-												}
-											}
 										},
 										"socialConnectors": {
 											"type": "array",
@@ -49678,10 +50215,14 @@
 													"type": "string",
 													"enum": [
 														"RecaptchaEnterprise",
-														"Turnstile"
+														"Turnstile",
+														"Cap"
 													]
 												},
 												"siteKey": {
+													"type": "string"
+												},
+												"endpoint": {
 													"type": "string"
 												},
 												"domain": {
@@ -50230,6 +50771,7 @@
 										"passwordPolicy",
 										"mfa",
 										"adaptiveMfa",
+										"trustedDevice",
 										"singleSignOnEnabled",
 										"supportEmail",
 										"supportWebsiteUrl",
@@ -50751,6 +51293,17 @@
 												}
 											}
 										},
+										"trustedDevice": {
+											"type": "object",
+											"properties": {
+												"enabled": {
+													"type": "boolean"
+												},
+												"durationDays": {
+													"type": "number"
+												}
+											}
+										},
 										"singleSignOnEnabled": {
 											"type": "boolean"
 										},
@@ -50861,17 +51414,6 @@
 											"type": "object",
 											"description": "Validator function",
 											"additionalProperties": true
-										},
-										"trustedDevice": {
-											"type": "object",
-											"properties": {
-												"enabled": {
-													"type": "boolean"
-												},
-												"durationDays": {
-													"type": "number"
-												}
-											}
 										},
 										"socialConnectors": {
 											"type": "array",
@@ -51006,10 +51548,14 @@
 													"type": "string",
 													"enum": [
 														"RecaptchaEnterprise",
-														"Turnstile"
+														"Turnstile",
+														"Cap"
 													]
 												},
 												"siteKey": {
+													"type": "string"
+												},
+												"endpoint": {
 													"type": "string"
 												},
 												"domain": {
@@ -51589,6 +52135,14 @@
 														"ReadOnly",
 														"Edit"
 													]
+												},
+												"trustedDevice": {
+													"type": "string",
+													"enum": [
+														"Off",
+														"ReadOnly",
+														"Edit"
+													]
 												}
 											}
 										},
@@ -51974,7 +52528,7 @@
 					}
 				},
 				"summary": "Handle SAML authentication request (Redirect binding)",
-				"description": "Process SAML authentication request using HTTP Redirect binding."
+				"description": "Process SAML authentication request using HTTP Redirect binding. The application policy or ForceAuthn can require fresh authentication; otherwise an existing session may be reused. The response assertion preserves the actual authentication time. When authnRequestConfig.requireSignedAuthnRequests is true, the request must be signed using the configured service provider signing certificate."
 			},
 			"post": {
 				"operationId": "CreateSamlAuthn",
@@ -52046,7 +52600,7 @@
 					}
 				},
 				"summary": "Handle SAML authentication request (POST binding)",
-				"description": "Process SAML authentication request using HTTP POST binding."
+				"description": "Process SAML authentication request using HTTP POST binding. The application policy or ForceAuthn can require fresh authentication; otherwise an existing session may be reused. The response assertion preserves the actual authentication time. When authnRequestConfig.requireSignedAuthnRequests is true, the request must be signed using the configured service provider signing certificate."
 			}
 		},
 		"/api/.well-known/management.openapi.json": {
@@ -52163,19 +52717,40 @@
 					}
 				},
 				"responses": {
+					"200": {
+						"description": "The step-up interaction was finished with `unmet_authentication_requirements` because the pinned user has no method that can reach the requested authentication context; follow `redirectTo` to return to the application.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"required": [
+										"redirectTo"
+									],
+									"properties": {
+										"redirectTo": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
 					"204": {
 						"description": "A new experience interaction has been successfully initiated."
 					},
 					"400": {
-						"description": "Bad Request"
+						"description": "A step-up interaction was requested with a non-sign-in event, or the session has no subject to pin."
+					},
+					"404": {
+						"description": "The pinned subject of the step-up interaction no longer exists."
 					},
 					"422": {
-						"description": "Unprocessable Content"
+						"description": "The captcha verification failed."
 					}
 				},
 				"security": [],
 				"summary": "Init new interaction",
-				"description": "Init a new experience interaction with the given interaction type. Any existing interaction data will be cleared."
+				"description": "Init a new experience interaction with the given interaction type. Any existing interaction data will be cleared. When the login prompt carries a step-up authentication context (an authenticated session that does not satisfy the requested `acr_values`), the interaction pins the session subject; if the pinned user has no method that can reach the selected authentication context class, the interaction is finished with `unmet_authentication_requirements` and a redirect URL is returned instead."
 			}
 		},
 		"/api/experience/interaction-event": {
@@ -52359,6 +52934,123 @@
 										},
 										"userId": {
 											"type": "string"
+										},
+										"authenticationContext": {
+											"type": "object",
+											"required": [
+												"requestedAcrValues",
+												"availableMethods",
+												"establishableMethods",
+												"enrollableFactors",
+												"subjectProofConnectors",
+												"maskedIdentifiers"
+											],
+											"properties": {
+												"requestedAcrValues": {
+													"type": "array",
+													"items": {
+														"type": "string",
+														"enum": [
+															"urn:logto:acr:1fa",
+															"urn:logto:acr:mfa"
+														]
+													}
+												},
+												"selectedAcr": {
+													"type": "string",
+													"enum": [
+														"urn:logto:acr:1fa",
+														"urn:logto:acr:mfa"
+													]
+												},
+												"mode": {
+													"type": "string",
+													"enum": [
+														"stepUp"
+													]
+												},
+												"availableMethods": {
+													"type": "array",
+													"items": {
+														"type": "string",
+														"enum": [
+															"Password",
+															"EmailVerificationCode",
+															"PhoneVerificationCode",
+															"MfaEmailVerificationCode",
+															"MfaPhoneVerificationCode",
+															"Social",
+															"EnterpriseSso",
+															"Totp",
+															"WebAuthn",
+															"SignInPasskey",
+															"BackupCode",
+															"NewPasswordIdentity",
+															"OneTimeToken"
+														]
+													}
+												},
+												"establishableMethods": {
+													"type": "array",
+													"items": {
+														"type": "string",
+														"enum": [
+															"username",
+															"email",
+															"phone",
+															"password",
+															"emailOrPhone",
+															"extraProfile"
+														]
+													}
+												},
+												"enrollableFactors": {
+													"type": "array",
+													"items": {
+														"type": "string",
+														"enum": [
+															"Totp",
+															"WebAuthn",
+															"BackupCode",
+															"EmailVerificationCode",
+															"PhoneVerificationCode"
+														]
+													}
+												},
+												"subjectProofConnectors": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"required": [
+															"type",
+															"connectorId"
+														],
+														"properties": {
+															"type": {
+																"type": "string",
+																"enum": [
+																	"social",
+																	"sso"
+																]
+															},
+															"connectorId": {
+																"type": "string"
+															}
+														}
+													}
+												},
+												"maskedIdentifiers": {
+													"type": "object",
+													"properties": {
+														"email": {
+															"type": "string"
+														},
+														"phone": {
+															"type": "string"
+														}
+													}
+												}
+											}
 										},
 										"profile": {
 											"type": "object",
@@ -52687,6 +53379,9 @@
 															"verified": {
 																"type": "boolean"
 															},
+															"userId": {
+																"type": "string"
+															},
 															"type": {
 																"type": "string",
 																"format": "\"EmailVerificationCode\""
@@ -52738,6 +53433,9 @@
 															},
 															"verified": {
 																"type": "boolean"
+															},
+															"userId": {
+																"type": "string"
 															},
 															"type": {
 																"type": "string",
@@ -52791,6 +53489,9 @@
 															"verified": {
 																"type": "boolean"
 															},
+															"userId": {
+																"type": "string"
+															},
 															"type": {
 																"type": "string",
 																"format": "\"MfaEmailVerificationCode\""
@@ -52842,6 +53543,9 @@
 															},
 															"verified": {
 																"type": "boolean"
+															},
+															"userId": {
+																"type": "string"
 															},
 															"type": {
 																"type": "string",
@@ -53353,11 +54057,14 @@
 								}
 							}
 						}
+					},
+					"404": {
+						"description": "The pinned subject of the step-up interaction no longer exists."
 					}
 				},
 				"security": [],
 				"summary": "Get public interaction data",
-				"description": "Get the public interaction data."
+				"description": "Get the public interaction data. When the interaction was created from a login prompt that carries requested `acr_values`, the response includes the `authenticationContext` with the methods that can still contribute to the selected class, evaluated on every read."
 			}
 		},
 		"/api/experience/verification/password": {
@@ -53544,6 +54251,9 @@
 					"400": {
 						"description": "An invalid identifier was provided."
 					},
+					"403": {
+						"description": "Forbidden"
+					},
 					"404": {
 						"description": "Not Found"
 					},
@@ -53658,6 +54368,9 @@
 					},
 					"400": {
 						"description": "The verification code is invalid or the maximum number of attempts has been exceeded. Check the error message for details."
+					},
+					"403": {
+						"description": "Forbidden"
 					},
 					"404": {
 						"description": "Verification record not found."
@@ -55667,6 +56380,51 @@
 				"description": "Skip MFA verification binding flow. If the MFA is enabled in the sign-in experience settings and marked as `UserControlled`, the user can skip the MFA verification binding flow by calling this API."
 			}
 		},
+		"/api/experience/profile/trusted-device": {
+			"post": {
+				"operationId": "SetTrustedDeviceOptInDecision",
+				"tags": [
+					"Experience"
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": [
+									"trusted"
+								],
+								"properties": {
+									"trusted": {
+										"type": "boolean",
+										"description": "Whether to trust the current device."
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"204": {
+						"description": "The trusted-device opt-in decision has been recorded for the current interaction."
+					},
+					"400": {
+						"description": "The decision payload is invalid, or trusted-device opt-in is not supported for the current interaction event."
+					},
+					"403": {
+						"description": "An eligible MFA verification or binding is required before accepting the trusted-device opt-in."
+					},
+					"404": {
+						"description": "The user has not been identified yet."
+					}
+				},
+				"security": [],
+				"summary": "Set trusted device opt-in decision",
+				"description": "Record whether the user trusts the current device after eligible MFA verification or binding. A trusted-device credential is created only after the interaction is successfully submitted."
+			}
+		},
 		"/api/experience/profile/mfa/mfa-suggestion-skipped": {
 			"post": {
 				"operationId": "SkipMfaSuggestion",
@@ -55998,7 +56756,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -56168,7 +56926,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -56266,7 +57024,7 @@
 										"id": {
 											"type": "string",
 											"minLength": 1,
-											"maxLength": 12
+											"maxLength": 128
 										},
 										"username": {
 											"type": "string",
@@ -56436,7 +57194,7 @@
 													"userId": {
 														"type": "string",
 														"minLength": 1,
-														"maxLength": 12
+														"maxLength": 128
 													},
 													"issuer": {
 														"type": "string",
@@ -58113,6 +58871,9 @@
 																				"verified": {
 																					"type": "boolean"
 																				},
+																				"userId": {
+																					"type": "string"
+																				},
 																				"type": {
 																					"type": "string",
 																					"format": "\"EmailVerificationCode\""
@@ -58164,6 +58925,9 @@
 																				},
 																				"verified": {
 																					"type": "boolean"
+																				},
+																				"userId": {
+																					"type": "string"
 																				},
 																				"type": {
 																					"type": "string",
@@ -58217,6 +58981,9 @@
 																				"verified": {
 																					"type": "boolean"
 																				},
+																				"userId": {
+																					"type": "string"
+																				},
 																				"type": {
 																					"type": "string",
 																					"format": "\"MfaEmailVerificationCode\""
@@ -58268,6 +59035,9 @@
 																				},
 																				"verified": {
 																					"type": "boolean"
+																				},
+																				"userId": {
+																					"type": "string"
 																				},
 																				"type": {
 																					"type": "string",
@@ -58762,6 +59532,121 @@
 				},
 				"summary": "Revoke a session by ID",
 				"description": "Revoke a specific user session by its ID, optionally revoking target associated grants and tokens.  A logto-verification-id in header is required for revoking sessions."
+			}
+		},
+		"/api/my-account/trusted-devices": {
+			"get": {
+				"operationId": "GetTrustedDevices",
+				"tags": [
+					"My account"
+				],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "A list of the signed-in user's active trusted devices.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"required": [
+											"id",
+											"userAgent",
+											"country",
+											"city",
+											"createdAt",
+											"lastUsedAt",
+											"expiresAt",
+											"isCurrent"
+										],
+										"properties": {
+											"id": {
+												"type": "string",
+												"minLength": 1,
+												"maxLength": 21
+											},
+											"userAgent": {
+												"type": "string",
+												"nullable": true
+											},
+											"country": {
+												"type": "string",
+												"maxLength": 16,
+												"nullable": true
+											},
+											"city": {
+												"type": "string",
+												"nullable": true
+											},
+											"createdAt": {
+												"type": "number"
+											},
+											"lastUsedAt": {
+												"type": "number"
+											},
+											"expiresAt": {
+												"type": "number"
+											},
+											"isCurrent": {
+												"type": "boolean"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Permission denied, the verification record is invalid or the access token does not include the trusted-devices scope."
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"500": {
+						"description": "Internal Server Error"
+					}
+				},
+				"summary": "Get trusted devices",
+				"description": "Retrieve all active trusted devices for the signed-in user. A logto-verification-id in header and the trusted-devices scope are required. Each entry includes isCurrent, which is true only when the browser's trusted-device cookie passes full credential validation for that record."
+			}
+		},
+		"/api/my-account/trusted-devices/{trustedDeviceId}": {
+			"delete": {
+				"operationId": "DeleteTrustedDeviceById",
+				"tags": [
+					"My account"
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/trustedDeviceId"
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "The trusted device was deleted successfully."
+					},
+					"400": {
+						"description": "The field is not editable."
+					},
+					"401": {
+						"description": "Permission denied, the verification record is invalid or the access token does not include the trusted-devices scope."
+					},
+					"403": {
+						"description": "The request was made by a third-party application."
+					},
+					"404": {
+						"description": "The trusted device was not found or does not belong to the signed-in user."
+					},
+					"500": {
+						"description": "Internal Server Error"
+					}
+				},
+				"summary": "Delete a trusted device",
+				"description": "Delete a trusted device owned by the signed-in user. Deleting the current trusted device clears its cookie without ending the login session."
 			}
 		},
 		"/api/my-account/grants": {
@@ -59874,6 +60759,27 @@
 						"type": "string",
 						"format": "date-time",
 						"description": "The creation time of the SAML application."
+					},
+					"authnRequestConfig": {
+						"type": "object",
+						"nullable": true,
+						"description": "IdP-side authentication policy. Fresh authentication is forced unless forceAuthn is explicitly false, including when this object is null or empty. PATCH replaces this object.",
+						"properties": {
+							"forceAuthn": {
+								"type": "boolean",
+								"default": true,
+								"description": "Require fresh authentication for every sign-in to this application. Set to false to reuse an existing session unless the SP requests ForceAuthn."
+							},
+							"requireSignedAuthnRequests": {
+								"type": "boolean",
+								"default": false,
+								"description": "Require signed AuthnRequests for both HTTP-POST and HTTP-Redirect bindings. Defaults to false."
+							},
+							"signingCertificate": {
+								"type": "string",
+								"description": "PEM-encoded RSA X.509 signing certificate of the service provider. Required when requireSignedAuthnRequests is true. Used independently of the assertion encryption certificate."
+							}
+						}
 					}
 				}
 			},
@@ -60326,6 +61232,24 @@
 					"type": "string"
 				},
 				"name": "sessionId"
+			},
+			"trustedDeviceId-root": {
+				"in": "path",
+				"description": "The unique identifier of the trusted device.",
+				"required": true,
+				"schema": {
+					"type": "string"
+				},
+				"name": "id"
+			},
+			"trustedDeviceId": {
+				"in": "path",
+				"description": "The unique identifier of the trusted device.",
+				"required": true,
+				"schema": {
+					"type": "string"
+				},
+				"name": "trustedDeviceId"
 			},
 			"grantId-root": {
 				"in": "path",

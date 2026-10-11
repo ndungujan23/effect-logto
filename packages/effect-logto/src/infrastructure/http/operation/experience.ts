@@ -21,6 +21,7 @@ import {
 	GenerateBackupCodesResponse,
 	GetEnabledSsoConnectorsResponse,
 	GetInteractionResponse,
+	InitInteractionResponse,
 	SubmitInteractionResponse,
 	UploadAvatarResponse,
 	VerifyBackupCodeResponse,
@@ -47,7 +48,13 @@ export const makeExperience = ({
 	initInteraction: options =>
 		HttpClientRequest.put('/api/experience').pipe(
 			HttpClientRequest.bodyJsonUnsafe(options.payload),
-			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+			withResponse(options.config)(
+				HttpClientResponse.matchStatus({
+					'200': decodeSuccess(InitInteractionResponse),
+					'204': () => Effect.void,
+					orElse: unexpectedStatus,
+				})
+			)
 		),
 	updateInteractionEvent: options =>
 		HttpClientRequest.put('/api/experience/interaction-event').pipe(
@@ -300,6 +307,11 @@ export const makeExperience = ({
 	skipMfaBindingFlow: options =>
 		HttpClientRequest.post('/api/experience/profile/mfa/mfa-skipped').pipe(
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+		),
+	setTrustedDeviceOptInDecision: options =>
+		HttpClientRequest.post('/api/experience/profile/trusted-device').pipe(
+			HttpClientRequest.bodyJsonUnsafe(options.payload),
+			withResponse(options.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 		),
 	skipMfaSuggestion: options =>
 		HttpClientRequest.post('/api/experience/profile/mfa/mfa-suggestion-skipped').pipe(

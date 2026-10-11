@@ -1,1 +1,1 @@
-{"extends": "../../../tsconfig.json", "compilerOptions": {"types": ["bun"], "noUncheckedIndexedAccess": false}, "include": ["."]}
+{"extends": "../../../tsconfig.base.json", "compilerOptions": {"types": ["bun"], "noUncheckedIndexedAccess": false}, "include": ["."]}

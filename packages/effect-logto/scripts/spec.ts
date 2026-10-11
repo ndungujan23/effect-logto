@@ -95,7 +95,7 @@ const documentationOnlyProperties = (schema: Node) => {
  */
 const nullableEnum = (schema: Node) => {
 	if (schema.nullable !== true || !Array.isArray(schema.enum) || schema.oneOf) return
-	const { nullable, enum: values, type, ...rest } = schema
+	const { nullable: _nullable, enum: values, type, ...rest } = schema
 	for (const key of Object.keys(schema)) delete schema[key]
 	Object.assign(schema, rest, { oneOf: [{ ...(type ? { type } : {}), enum: values }, { type: 'null' }] })
 }
