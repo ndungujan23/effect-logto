@@ -28,6 +28,7 @@ import {
 	ListResponse,
 	ListRolesResponse,
 	ListSessionsResponse,
+	ListTrustedDevicesResponse,
 	ReplaceIdentityResponse200,
 	ReplaceIdentityResponse201,
 	ReplaceRolesResponse,
@@ -139,7 +140,13 @@ export const makeUsers = ({
 		),
 	list: options =>
 		HttpClientRequest.get('/api/users').pipe(
-			HttpClientRequest.setUrlParams({ page: options?.params?.['page'] as any, page_size: options?.params?.['page_size'] as any }),
+			HttpClientRequest.setUrlParams({
+				page: options?.params?.['page'] as any,
+				page_size: options?.params?.['page_size'] as any,
+				identityType: options?.params?.['identityType'] as any,
+				identityProvider: options?.params?.['identityProvider'] as any,
+				identityId: options?.params?.['identityId'] as any,
+			}),
 			HttpClientRequest.appendUrlParams(searchParams(options?.params?.['search_params'])),
 			withResponse(options?.config)(HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListResponse), orElse: unexpectedStatus }))
 		),
@@ -526,6 +533,28 @@ export const makeUsers = ({
 			Effect.flatMap(request =>
 				request.pipe(
 					HttpClientRequest.setUrlParams({ revokeGrantsTarget: options?.params?.['revokeGrantsTarget'] as any }),
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
+		),
+	listTrustedDevices: (userId, options) =>
+		__makePathRequest(HttpClientRequest.get, [userId], () => '/api/users/' + __encodePathParam(userId) + '/trusted-devices').pipe(
+			Effect.flatMap(request =>
+				request.pipe(
+					withResponse(options?.config)(
+						HttpClientResponse.matchStatus({ '2xx': decodeSuccess(ListTrustedDevicesResponse), orElse: unexpectedStatus })
+					)
+				)
+			)
+		),
+	deleteTrustedDevice: (userId, trustedDeviceId, options) =>
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[userId, trustedDeviceId],
+			() => '/api/users/' + __encodePathParam(userId) + '/trusted-devices/' + __encodePathParam(trustedDeviceId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
 					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 				)
 			)

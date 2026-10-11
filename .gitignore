@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Generated at build time from the root README
 packages/effect-logto/README.md
+
+# JetBrains IDEs
+.idea/

@@ -15,6 +15,7 @@ import {
 	GetProfileResponse,
 	GetSessionsResponse,
 	GetSocialIdentityAccessTokenResponse,
+	GetTrustedDevicesResponse,
 	UpdateLogtoConfigResponse,
 	UpdateMfaSettingsResponse,
 	UpdateOtherProfileResponse,
@@ -239,6 +240,24 @@ export const makeMyAccount = ({
 			Effect.flatMap(request =>
 				request.pipe(
 					HttpClientRequest.setUrlParams({ revokeGrantsTarget: options?.params?.['revokeGrantsTarget'] as any }),
+					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
+				)
+			)
+		),
+	getTrustedDevices: options =>
+		HttpClientRequest.get('/api/my-account/trusted-devices').pipe(
+			withResponse(options?.config)(
+				HttpClientResponse.matchStatus({ '2xx': decodeSuccess(GetTrustedDevicesResponse), orElse: unexpectedStatus })
+			)
+		),
+	deleteTrustedDeviceById: (trustedDeviceId, options) =>
+		__makePathRequest(
+			HttpClientRequest.delete,
+			[trustedDeviceId],
+			() => '/api/my-account/trusted-devices/' + __encodePathParam(trustedDeviceId) + ''
+		).pipe(
+			Effect.flatMap(request =>
+				request.pipe(
 					withResponse(options?.config)(HttpClientResponse.matchStatus({ '204': () => Effect.void, orElse: unexpectedStatus }))
 				)
 			)

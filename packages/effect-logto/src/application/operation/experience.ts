@@ -32,7 +32,9 @@ import type {
 	GetInteractionResponse,
 	IdentifyUserPayload,
 	InitInteractionPayload,
+	InitInteractionResponse,
 	ResetUserPasswordPayload,
+	SetTrustedDeviceOptInDecisionPayload,
 	SubmitInteractionResponse,
 	UpdateInteractionEventPayload,
 	UploadAvatarFormData,
@@ -64,12 +66,12 @@ import type {
  */
 export interface ExperienceOperations {
 	/**
-	 * Init a new experience interaction with the given interaction type. Any existing interaction data will be cleared.
+	 * Init a new experience interaction with the given interaction type. Any existing interaction data will be cleared. When the login prompt carries a step-up authentication context (an authenticated session that does not satisfy the requested `acr_values`), the interaction pins the session subject; if the pinned user has no method that can reach the selected authentication context class, the interaction is finished with `unmet_authentication_requirements` and a redirect URL is returned instead.
 	 */
 	readonly initInteraction: <Config extends OperationConfig>(options: {
 		readonly payload: InitInteractionPayload
 		readonly config?: Config | undefined
-	}) => Effect.Effect<WithOptionalResponse<void, Config>, LogtoError>
+	}) => Effect.Effect<WithOptionalResponse<InitInteractionResponse | void, Config>, LogtoError>
 	/**
 	 * Update the current experience interaction event to the given event type. This API is used to switch the interaction event between `SignIn` and `Register`, while keeping all the verification records data.
 	 */
@@ -91,7 +93,7 @@ export interface ExperienceOperations {
 		options: { readonly config?: Config | undefined } | undefined
 	) => Effect.Effect<WithOptionalResponse<SubmitInteractionResponse, Config>, LogtoError>
 	/**
-	 * Get the public interaction data.
+	 * Get the public interaction data. When the interaction was created from a login prompt that carries requested `acr_values`, the response includes the `authenticationContext` with the methods that can still contribute to the selected class, evaluated on every read.
 	 */
 	readonly getInteraction: <Config extends OperationConfig>(
 		options: { readonly config?: Config | undefined } | undefined
@@ -272,6 +274,13 @@ export interface ExperienceOperations {
 	readonly skipMfaBindingFlow: <Config extends OperationConfig>(
 		options: { readonly config?: Config | undefined } | undefined
 	) => Effect.Effect<WithOptionalResponse<void, Config>, LogtoError>
+	/**
+	 * Record whether the user trusts the current device after eligible MFA verification or binding. A trusted-device credential is created only after the interaction is successfully submitted.
+	 */
+	readonly setTrustedDeviceOptInDecision: <Config extends OperationConfig>(options: {
+		readonly payload: SetTrustedDeviceOptInDecisionPayload
+		readonly config?: Config | undefined
+	}) => Effect.Effect<WithOptionalResponse<void, Config>, LogtoError>
 	/**
 	 * Mark the optional additional MFA binding suggestion as skipped for the current interaction. When multiple MFA factors are enabled and only an email/phone factor is configured, a suggestion to add another factor may be shown; this endpoint records the choice to skip.
 	 */

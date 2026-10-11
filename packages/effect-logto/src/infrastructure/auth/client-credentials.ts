@@ -67,10 +67,10 @@ export const make = Effect.fnUntraced(function* (options: ClientCredentialsOptio
 				new LogtoAuthError({ message: `Could not obtain a Logto access token from ${options.tenant.tokenEndpoint.href}`, cause })
 		),
 		Effect.flatMap(response =>
-			Effect.map(
-				Clock.currentTimeMillis,
-				(now): CachedToken => ({ token: Redacted.make(response.access_token), expiresAt: now + response.expires_in * 1000 })
-			)
+			Effect.map(Clock.currentTimeMillis, (now): CachedToken => ({
+				token: Redacted.make(response.access_token),
+				expiresAt: now + response.expires_in * 1000,
+			}))
 		)
 	)
 

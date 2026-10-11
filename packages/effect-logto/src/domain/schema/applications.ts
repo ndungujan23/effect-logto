@@ -1272,6 +1272,7 @@ export type ListOrganizationsResponse = ReadonlyArray<
 		readonly description: string | null
 		readonly customData: { readonly [x: string]: Schema.Json }
 		readonly isMfaRequired: boolean
+		readonly isTrustedDeviceAllowed: boolean
 		readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
 			readonly [x: string]: Schema.Json
 		}
@@ -1304,11 +1305,12 @@ export const ListOrganizationsResponse = Schema.Array(
 				description: 'arbitrary',
 			}),
 			isMfaRequired: Schema.Boolean,
+			isTrustedDeviceAllowed: Schema.Boolean,
 			color: Schema.StructWithRest(
 				Schema.Struct({
 					primaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -1316,7 +1318,7 @@ export const ListOrganizationsResponse = Schema.Array(
 					isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 					darkPrimaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -1868,7 +1870,7 @@ export const GetSignInExperienceResponse = Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -1876,7 +1878,7 @@ export const GetSignInExperienceResponse = Schema.StructWithRest(
 				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 				darkPrimaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -1932,7 +1934,7 @@ export const ReplaceSignInExperiencePayload = Schema.StructWithRest(
 				Schema.Struct({
 					primaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -1940,7 +1942,7 @@ export const ReplaceSignInExperiencePayload = Schema.StructWithRest(
 					isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 					darkPrimaryColor: Schema.optionalKey(
 						Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+							Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 								expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 							})
 						)
@@ -2018,7 +2020,7 @@ export const ReplaceSignInExperienceResponse200 = Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -2026,7 +2028,7 @@ export const ReplaceSignInExperienceResponse200 = Schema.StructWithRest(
 				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 				darkPrimaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -2087,7 +2089,7 @@ export const ReplaceSignInExperienceResponse201 = Schema.StructWithRest(
 			Schema.Struct({
 				primaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -2095,7 +2097,7 @@ export const ReplaceSignInExperienceResponse201 = Schema.StructWithRest(
 				isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 				darkPrimaryColor: Schema.optionalKey(
 					Schema.String.annotate({ format: 'regex' }).check(
-						Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+						Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 							expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 						})
 					)
@@ -2152,6 +2154,7 @@ export type ListUserConsentOrganizationsResponse = {
 			readonly description: string | null
 			readonly customData: { readonly [x: string]: Schema.Json }
 			readonly isMfaRequired: boolean
+			readonly isTrustedDeviceAllowed: boolean
 			readonly color: { readonly primaryColor?: string; readonly isDarkModeEnabled?: boolean; readonly darkPrimaryColor?: string } & {
 				readonly [x: string]: Schema.Json
 			}
@@ -2188,11 +2191,12 @@ export const ListUserConsentOrganizationsResponse = Schema.StructWithRest(
 						description: 'arbitrary',
 					}),
 					isMfaRequired: Schema.Boolean,
+					isTrustedDeviceAllowed: Schema.Boolean,
 					color: Schema.StructWithRest(
 						Schema.Struct({
 							primaryColor: Schema.optionalKey(
 								Schema.String.annotate({ format: 'regex' }).check(
-									Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+									Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 										expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 									})
 								)
@@ -2200,7 +2204,7 @@ export const ListUserConsentOrganizationsResponse = Schema.StructWithRest(
 							isDarkModeEnabled: Schema.optionalKey(Schema.Boolean),
 							darkPrimaryColor: Schema.optionalKey(
 								Schema.String.annotate({ format: 'regex' }).check(
-									Schema.isPattern(/^#[\da-fA-F]{3}([\da-fA-F]{3})?$/u).annotate({
+									Schema.isPattern(new RegExp('^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$', 'u')).annotate({
 										expected: 'a string matching the RegExp ^#[\\da-fA-F]{3}([\\da-fA-F]{3})?$',
 									})
 								)

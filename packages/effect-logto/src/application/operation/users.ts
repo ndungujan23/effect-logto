@@ -40,6 +40,7 @@ import type {
 	ListRolesParams,
 	ListRolesResponse,
 	ListSessionsResponse,
+	ListTrustedDevicesResponse,
 	ReplaceIdentityPayload,
 	ReplaceIdentityResponse200,
 	ReplaceIdentityResponse201,
@@ -365,5 +366,20 @@ export interface UsersOperations {
 		userId: string,
 		sessionId: string,
 		options: { readonly params?: DeleteSessionParams | undefined; readonly config?: Config | undefined } | undefined
+	) => Effect.Effect<WithOptionalResponse<void, Config>, LogtoError>
+	/**
+	 * Retrieve all active trusted devices for the user.
+	 */
+	readonly listTrustedDevices: <Config extends OperationConfig>(
+		userId: string,
+		options: { readonly config?: Config | undefined } | undefined
+	) => Effect.Effect<WithOptionalResponse<ListTrustedDevicesResponse, Config>, LogtoError>
+	/**
+	 * Delete a trusted device that belongs to the user.
+	 */
+	readonly deleteTrustedDevice: <Config extends OperationConfig>(
+		userId: string,
+		trustedDeviceId: string,
+		options: { readonly config?: Config | undefined } | undefined
 	) => Effect.Effect<WithOptionalResponse<void, Config>, LogtoError>
 }

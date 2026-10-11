@@ -11,7 +11,9 @@ export const CreatePayload = Schema.Union(
 		Schema.StructWithRest(
 			Schema.Struct({
 				email: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+					Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
+						expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
+					})
 				),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
@@ -19,7 +21,7 @@ export const CreatePayload = Schema.Union(
 		Schema.StructWithRest(
 			Schema.Struct({
 				phone: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+					Schema.isPattern(new RegExp('^\\d+$', 'u')).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
 				),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
@@ -36,7 +38,9 @@ export const VerifyPayload = Schema.Union(
 		Schema.StructWithRest(
 			Schema.Struct({
 				email: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+					Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
+						expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
+					})
 				),
 				verificationCode: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
 			}),
@@ -45,7 +49,7 @@ export const VerifyPayload = Schema.Union(
 		Schema.StructWithRest(
 			Schema.Struct({
 				phone: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+					Schema.isPattern(new RegExp('^\\d+$', 'u')).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
 				),
 				verificationCode: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })),
 			}),

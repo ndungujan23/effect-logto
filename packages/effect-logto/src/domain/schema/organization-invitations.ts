@@ -23,14 +23,14 @@ export const GetResponse = Schema.StructWithRest(
 			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
 		inviterId: Schema.Union([
-			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 			Schema.Null,
 		]),
 		invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
 			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
 		),
 		acceptedUserId: Schema.Union([
-			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 			Schema.Null,
 		]),
 		organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
@@ -79,14 +79,14 @@ export const ListResponse = Schema.Array(
 				Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 			),
 			inviterId: Schema.Union([
-				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 				Schema.Null,
 			]),
 			invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
 				Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
 			),
 			acceptedUserId: Schema.Union([
-				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 				Schema.Null,
 			]),
 			organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
@@ -122,7 +122,7 @@ export const CreatePayload = Schema.StructWithRest(
 	Schema.Struct({
 		inviterId: Schema.optionalKey(
 			Schema.Union([
-				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 				Schema.Null,
 			]).annotate({ description: 'The ID of the user who is inviting the user to join the organization.' })
 		),
@@ -184,14 +184,14 @@ export const CreateResponse = Schema.StructWithRest(
 			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
 		inviterId: Schema.Union([
-			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 			Schema.Null,
 		]),
 		invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
 			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
 		),
 		acceptedUserId: Schema.Union([
-			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 			Schema.Null,
 		]),
 		organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
@@ -233,7 +233,7 @@ export const ReplaceStatusPayload = Schema.StructWithRest(
 	Schema.Struct({
 		acceptedUserId: Schema.optionalKey(
 			Schema.Union([
-				Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+				Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 				Schema.Null,
 			]).annotate({
 				description: 'The ID of the user who accepted the organization invitation. Required if the status is "Accepted".',
@@ -264,14 +264,14 @@ export const ReplaceStatusResponse = Schema.StructWithRest(
 			Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })
 		),
 		inviterId: Schema.Union([
-			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 			Schema.Null,
 		]),
 		invitee: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(
 			Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' })
 		),
 		acceptedUserId: Schema.Union([
-			Schema.String.check(Schema.isMaxCodePoints(21).annotate({ expected: 'a string with at most 21 code points' })),
+			Schema.String.check(Schema.isMaxCodePoints(128).annotate({ expected: 'a string with at most 128 code points' })),
 			Schema.Null,
 		]),
 		organizationId: Schema.String.check(Schema.isMinLength(1).annotate({ expected: 'a value with a length of at least 1' })).check(

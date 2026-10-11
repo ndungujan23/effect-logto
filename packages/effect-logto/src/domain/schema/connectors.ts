@@ -1038,13 +1038,17 @@ export const CreateTestPayload = Schema.StructWithRest(
 			Schema.String.annotate({
 				description: 'Phone number to send test message to. If this is set, email will be ignored.',
 				format: 'regex',
-			}).check(Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' }))
+			}).check(Schema.isPattern(new RegExp('^\\d+$', 'u')).annotate({ expected: 'a string matching the RegExp ^\\d+$' }))
 		),
 		email: Schema.optionalKey(
 			Schema.String.annotate({
 				description: 'Email address to send test message to. If phone is set, this will be ignored.',
 				format: 'regex',
-			}).check(Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' }))
+			}).check(
+				Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
+					expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
+				})
+			)
 		),
 		config: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
 			description: 'Connector configuration object for testing.',

@@ -37,7 +37,9 @@ export type GetActiveUserCountsParams = { readonly date?: string }
 export const GetActiveUserCountsParams = Schema.Struct({
 	date: Schema.optionalKey(
 		Schema.String.annotate({ format: 'regex' }).check(
-			Schema.isPattern(/^\d{4}(-\d{2}){2}$/u).annotate({ expected: 'a string matching the RegExp ^\\d{4}(-\\d{2}){2}$' })
+			Schema.isPattern(new RegExp('^\\d{4}(-\\d{2}){2}$', 'u')).annotate({
+				expected: 'a string matching the RegExp ^\\d{4}(-\\d{2}){2}$',
+			})
 		)
 	),
 })

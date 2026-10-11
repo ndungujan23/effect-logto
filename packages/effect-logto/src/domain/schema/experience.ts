@@ -15,6 +15,11 @@ export const InitInteractionPayload = Schema.StructWithRest(
 	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 )
 
+export type InitInteractionResponse = { readonly redirectTo: string } & { readonly [x: string]: Schema.Json }
+export const InitInteractionResponse = Schema.StructWithRest(Schema.Struct({ redirectTo: Schema.String }), [
+	Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+])
+
 export type UpdateInteractionEventPayload = { readonly interactionEvent: 'SignIn' | 'Register' | 'ForgotPassword' } & {
 	readonly [x: string]: Schema.Json
 }
@@ -56,6 +61,32 @@ export const SubmitInteractionResponse = Schema.StructWithRest(Schema.Struct({ r
 export type GetInteractionResponse = {
 	readonly interactionEvent: 'SignIn' | 'Register' | 'ForgotPassword'
 	readonly userId?: string
+	readonly authenticationContext?: {
+		readonly requestedAcrValues: ReadonlyArray<'urn:logto:acr:1fa' | 'urn:logto:acr:mfa'>
+		readonly selectedAcr?: 'urn:logto:acr:1fa' | 'urn:logto:acr:mfa'
+		readonly mode?: 'stepUp'
+		readonly availableMethods: ReadonlyArray<
+			| 'Password'
+			| 'EmailVerificationCode'
+			| 'PhoneVerificationCode'
+			| 'MfaEmailVerificationCode'
+			| 'MfaPhoneVerificationCode'
+			| 'Social'
+			| 'EnterpriseSso'
+			| 'Totp'
+			| 'WebAuthn'
+			| 'SignInPasskey'
+			| 'BackupCode'
+			| 'NewPasswordIdentity'
+			| 'OneTimeToken'
+		>
+		readonly establishableMethods: ReadonlyArray<'username' | 'email' | 'phone' | 'password' | 'emailOrPhone' | 'extraProfile'>
+		readonly enrollableFactors: ReadonlyArray<'Totp' | 'WebAuthn' | 'BackupCode' | 'EmailVerificationCode' | 'PhoneVerificationCode'>
+		readonly subjectProofConnectors: ReadonlyArray<
+			{ readonly type: 'social' | 'sso'; readonly connectorId: string } & { readonly [x: string]: Schema.Json }
+		>
+		readonly maskedIdentifiers: { readonly email?: string; readonly phone?: string } & { readonly [x: string]: Schema.Json }
+	} & { readonly [x: string]: Schema.Json }
 	readonly profile: {
 		readonly avatar?: string | null
 		readonly name?: string | null
@@ -131,6 +162,7 @@ export type GetInteractionResponse = {
 					| 'MfaVerification'
 					| 'BindMfa'
 				readonly verified: boolean
+				readonly userId?: string
 				readonly type: string
 				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
 		  } & { readonly [x: string]: Schema.Json })
@@ -147,6 +179,7 @@ export type GetInteractionResponse = {
 					| 'MfaVerification'
 					| 'BindMfa'
 				readonly verified: boolean
+				readonly userId?: string
 				readonly type: string
 				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
 		  } & { readonly [x: string]: Schema.Json })
@@ -163,6 +196,7 @@ export type GetInteractionResponse = {
 					| 'MfaVerification'
 					| 'BindMfa'
 				readonly verified: boolean
+				readonly userId?: string
 				readonly type: string
 				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
 		  } & { readonly [x: string]: Schema.Json })
@@ -179,6 +213,7 @@ export type GetInteractionResponse = {
 					| 'MfaVerification'
 					| 'BindMfa'
 				readonly verified: boolean
+				readonly userId?: string
 				readonly type: string
 				readonly identifier: { readonly type: string; readonly value: string } & { readonly [x: string]: Schema.Json }
 		  } & { readonly [x: string]: Schema.Json })
@@ -265,6 +300,48 @@ export const GetInteractionResponse = Schema.StructWithRest(
 	Schema.Struct({
 		interactionEvent: Schema.Literals(['SignIn', 'Register', 'ForgotPassword']),
 		userId: Schema.optionalKey(Schema.String),
+		authenticationContext: Schema.optionalKey(
+			Schema.StructWithRest(
+				Schema.Struct({
+					requestedAcrValues: Schema.Array(Schema.Literals(['urn:logto:acr:1fa', 'urn:logto:acr:mfa'])),
+					selectedAcr: Schema.optionalKey(Schema.Literals(['urn:logto:acr:1fa', 'urn:logto:acr:mfa'])),
+					mode: Schema.optionalKey(Schema.Literal('stepUp')),
+					availableMethods: Schema.Array(
+						Schema.Literals([
+							'Password',
+							'EmailVerificationCode',
+							'PhoneVerificationCode',
+							'MfaEmailVerificationCode',
+							'MfaPhoneVerificationCode',
+							'Social',
+							'EnterpriseSso',
+							'Totp',
+							'WebAuthn',
+							'SignInPasskey',
+							'BackupCode',
+							'NewPasswordIdentity',
+							'OneTimeToken',
+						])
+					),
+					establishableMethods: Schema.Array(
+						Schema.Literals(['username', 'email', 'phone', 'password', 'emailOrPhone', 'extraProfile'])
+					),
+					enrollableFactors: Schema.Array(
+						Schema.Literals(['Totp', 'WebAuthn', 'BackupCode', 'EmailVerificationCode', 'PhoneVerificationCode'])
+					),
+					subjectProofConnectors: Schema.Array(
+						Schema.StructWithRest(Schema.Struct({ type: Schema.Literals(['social', 'sso']), connectorId: Schema.String }), [
+							Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })),
+						])
+					),
+					maskedIdentifiers: Schema.StructWithRest(
+						Schema.Struct({ email: Schema.optionalKey(Schema.String), phone: Schema.optionalKey(Schema.String) }),
+						[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+					),
+				}),
+				[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+			)
+		),
 		profile: Schema.StructWithRest(
 			Schema.Struct({
 				avatar: Schema.optionalKey(
@@ -426,6 +503,7 @@ export const GetInteractionResponse = Schema.StructWithRest(
 									'BindMfa',
 								]),
 								verified: Schema.Boolean,
+								userId: Schema.optionalKey(Schema.String),
 								type: Schema.String.annotate({ format: '"EmailVerificationCode"' }),
 								identifier: Schema.StructWithRest(
 									Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), value: Schema.String }),
@@ -449,6 +527,7 @@ export const GetInteractionResponse = Schema.StructWithRest(
 									'BindMfa',
 								]),
 								verified: Schema.Boolean,
+								userId: Schema.optionalKey(Schema.String),
 								type: Schema.String.annotate({ format: '"PhoneVerificationCode"' }),
 								identifier: Schema.StructWithRest(
 									Schema.Struct({ type: Schema.String.annotate({ format: '"phone"' }), value: Schema.String }),
@@ -472,6 +551,7 @@ export const GetInteractionResponse = Schema.StructWithRest(
 									'BindMfa',
 								]),
 								verified: Schema.Boolean,
+								userId: Schema.optionalKey(Schema.String),
 								type: Schema.String.annotate({ format: '"MfaEmailVerificationCode"' }),
 								identifier: Schema.StructWithRest(
 									Schema.Struct({ type: Schema.String.annotate({ format: '"email"' }), value: Schema.String }),
@@ -495,6 +575,7 @@ export const GetInteractionResponse = Schema.StructWithRest(
 									'BindMfa',
 								]),
 								verified: Schema.Boolean,
+								userId: Schema.optionalKey(Schema.String),
 								type: Schema.String.annotate({ format: '"MfaPhoneVerificationCode"' }),
 								identifier: Schema.StructWithRest(
 									Schema.Struct({ type: Schema.String.annotate({ format: '"phone"' }), value: Schema.String }),
@@ -713,7 +794,7 @@ export const CreateAndSendVerificationCodePayload = Schema.StructWithRest(
 						value: Schema.String.annotate({ format: 'regex' })
 							.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
 							.check(
-								Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({
+								Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
 									expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
 								})
 							),
@@ -724,7 +805,7 @@ export const CreateAndSendVerificationCodePayload = Schema.StructWithRest(
 					Schema.Struct({
 						type: Schema.String.annotate({ format: '"phone"' }),
 						value: Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+							Schema.isPattern(new RegExp('^\\d+$', 'u')).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
 						),
 					}),
 					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
@@ -765,7 +846,7 @@ export const VerifyVerificationCodeVerificationPayload = Schema.StructWithRest(
 						value: Schema.String.annotate({ format: 'regex' })
 							.check(Schema.isMaxCodePoints(256).annotate({ expected: 'a string with at most 256 code points' }))
 							.check(
-								Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({
+								Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
 									expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
 								})
 							),
@@ -776,7 +857,7 @@ export const VerifyVerificationCodeVerificationPayload = Schema.StructWithRest(
 					Schema.Struct({
 						type: Schema.String.annotate({ format: '"phone"' }),
 						value: Schema.String.annotate({ format: 'regex' }).check(
-							Schema.isPattern(/^\d+$/u).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
+							Schema.isPattern(new RegExp('^\\d+$', 'u')).annotate({ expected: 'a string matching the RegExp ^\\d+$' })
 						),
 					}),
 					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
@@ -1489,7 +1570,9 @@ export const CreateNewPasswordIdentityVerificationPayload = Schema.StructWithRes
 			Schema.Struct({
 				type: Schema.String.annotate({ format: '"username"' }),
 				value: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^[A-Z_a-z]\w*$/u).annotate({ expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$' })
+					Schema.isPattern(new RegExp('^[A-Z_a-z]\\w*$', 'u')).annotate({
+						expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$',
+					})
 				),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
@@ -1525,7 +1608,9 @@ export const VerifyOneTimeTokenVerificationPayload = Schema.StructWithRest(
 			Schema.Struct({
 				type: Schema.String.annotate({ format: '"email"' }),
 				value: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^\S+@\S+\.\S+$/u).annotate({ expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$' })
+					Schema.isPattern(new RegExp('^\\S+@\\S+\\.\\S+$', 'u')).annotate({
+						expected: 'a string matching the RegExp ^\\S+@\\S+\\.\\S+$',
+					})
 				),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
@@ -1561,7 +1646,9 @@ export const AddUserProfilePayload = Schema.Union(
 			Schema.Struct({
 				type: Schema.String.annotate({ format: '"username"' }),
 				value: Schema.String.annotate({ format: 'regex' }).check(
-					Schema.isPattern(/^[A-Z_a-z]\w*$/u).annotate({ expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$' })
+					Schema.isPattern(new RegExp('^[A-Z_a-z]\\w*$', 'u')).annotate({
+						expected: 'a string matching the RegExp ^[A-Z_a-z]\\w*$',
+					})
 				),
 			}),
 			[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
@@ -1629,6 +1716,12 @@ export const ResetUserPasswordPayload = Schema.StructWithRest(
 				'The new password to update. The password must meet the password policy requirements and can not be the same as the current password.',
 		}),
 	}),
+	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+)
+
+export type SetTrustedDeviceOptInDecisionPayload = { readonly trusted: boolean } & { readonly [x: string]: Schema.Json }
+export const SetTrustedDeviceOptInDecisionPayload = Schema.StructWithRest(
+	Schema.Struct({ trusted: Schema.Boolean.annotate({ description: 'Whether to trust the current device.' }) }),
 	[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 )
 

@@ -18,6 +18,7 @@ import type {
 	GetProfileResponse,
 	GetSessionsResponse,
 	GetSocialIdentityAccessTokenResponse,
+	GetTrustedDevicesResponse,
 	ReplaceIdentityPayload,
 	UpdateLogtoConfigPayload,
 	UpdateLogtoConfigResponse,
@@ -233,6 +234,19 @@ export interface MyAccountOperations {
 	readonly deleteSessionById: <Config extends OperationConfig>(
 		sessionId: string,
 		options: { readonly params?: DeleteSessionByIdParams | undefined; readonly config?: Config | undefined } | undefined
+	) => Effect.Effect<WithOptionalResponse<void, Config>, LogtoError>
+	/**
+	 * Retrieve all active trusted devices for the signed-in user. A logto-verification-id in header and the trusted-devices scope are required. Each entry includes isCurrent, which is true only when the browser's trusted-device cookie passes full credential validation for that record.
+	 */
+	readonly getTrustedDevices: <Config extends OperationConfig>(
+		options: { readonly config?: Config | undefined } | undefined
+	) => Effect.Effect<WithOptionalResponse<GetTrustedDevicesResponse, Config>, LogtoError>
+	/**
+	 * Delete a trusted device owned by the signed-in user. Deleting the current trusted device clears its cookie without ending the login session.
+	 */
+	readonly deleteTrustedDeviceById: <Config extends OperationConfig>(
+		trustedDeviceId: string,
+		options: { readonly config?: Config | undefined } | undefined
 	) => Effect.Effect<WithOptionalResponse<void, Config>, LogtoError>
 	/**
 	 * Retrieve all active application grants for the user. A logto-verification-id in header is required for checking grant details.

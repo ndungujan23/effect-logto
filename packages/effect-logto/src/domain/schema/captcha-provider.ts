@@ -15,6 +15,13 @@ export type GetResponse = {
 				readonly projectId: string
 				readonly domain?: string
 				readonly mode?: 'invisible' | 'checkbox'
+				readonly scoreThreshold?: number
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
+				readonly type: string
+				readonly endpoint: { readonly [x: string]: Schema.Json }
+				readonly siteKey: string
+				readonly secretKey: string
 		  } & { readonly [x: string]: Schema.Json })
 	readonly createdAt: number
 	readonly updatedAt: number
@@ -43,6 +50,20 @@ export const GetResponse = Schema.StructWithRest(
 						projectId: Schema.String,
 						domain: Schema.optionalKey(Schema.String),
 						mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
+						scoreThreshold: Schema.optionalKey(
+							Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"Cap"' }),
+						endpoint: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+							description: 'Validator function',
+						}),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
 					}),
 					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 				),
@@ -65,6 +86,13 @@ export type UpdatePayload = {
 				readonly projectId: string
 				readonly domain?: string
 				readonly mode?: 'invisible' | 'checkbox'
+				readonly scoreThreshold?: number
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
+				readonly type: string
+				readonly endpoint: { readonly [x: string]: Schema.Json }
+				readonly siteKey: string
+				readonly secretKey: string
 		  } & { readonly [x: string]: Schema.Json })
 } & { readonly [x: string]: Schema.Json }
 export const UpdatePayload = Schema.StructWithRest(
@@ -87,6 +115,20 @@ export const UpdatePayload = Schema.StructWithRest(
 						projectId: Schema.String,
 						domain: Schema.optionalKey(Schema.String),
 						mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
+						scoreThreshold: Schema.optionalKey(
+							Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"Cap"' }),
+						endpoint: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+							description: 'Validator function',
+						}),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
 					}),
 					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 				),
@@ -109,6 +151,13 @@ export type UpdateResponse = {
 				readonly projectId: string
 				readonly domain?: string
 				readonly mode?: 'invisible' | 'checkbox'
+				readonly scoreThreshold?: number
+		  } & { readonly [x: string]: Schema.Json })
+		| ({
+				readonly type: string
+				readonly endpoint: { readonly [x: string]: Schema.Json }
+				readonly siteKey: string
+				readonly secretKey: string
 		  } & { readonly [x: string]: Schema.Json })
 	readonly createdAt: number
 	readonly updatedAt: number
@@ -137,6 +186,20 @@ export const UpdateResponse = Schema.StructWithRest(
 						projectId: Schema.String,
 						domain: Schema.optionalKey(Schema.String),
 						mode: Schema.optionalKey(Schema.Literals(['invisible', 'checkbox'])),
+						scoreThreshold: Schema.optionalKey(
+							Schema.Number.check(Schema.isFinite().annotate({ expected: 'a finite number' }))
+						),
+					}),
+					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
+				),
+				Schema.StructWithRest(
+					Schema.Struct({
+						type: Schema.String.annotate({ format: '"Cap"' }),
+						endpoint: Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' })).annotate({
+							description: 'Validator function',
+						}),
+						siteKey: Schema.String,
+						secretKey: Schema.String,
 					}),
 					[Schema.Record(Schema.String, Schema.Json.annotate({ expected: 'JSON value' }))]
 				),

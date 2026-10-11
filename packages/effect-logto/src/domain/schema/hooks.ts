@@ -32,6 +32,8 @@ export type ListResponse = ReadonlyArray<
 			| 'User.Deleted'
 			| 'User.Data.Updated'
 			| 'User.SuspensionStatus.Updated'
+			| 'TrustedDevice.Created'
+			| 'TrustedDevice.Deleted'
 			| 'Role.Created'
 			| 'Role.Deleted'
 			| 'Role.Data.Updated'
@@ -63,6 +65,8 @@ export type ListResponse = ReadonlyArray<
 			| 'User.Deleted'
 			| 'User.Data.Updated'
 			| 'User.SuspensionStatus.Updated'
+			| 'TrustedDevice.Created'
+			| 'TrustedDevice.Deleted'
 			| 'Role.Created'
 			| 'Role.Deleted'
 			| 'Role.Data.Updated'
@@ -113,6 +117,8 @@ export const ListResponse = Schema.Array(
 						'User.Deleted',
 						'User.Data.Updated',
 						'User.SuspensionStatus.Updated',
+						'TrustedDevice.Created',
+						'TrustedDevice.Deleted',
 						'Role.Created',
 						'Role.Deleted',
 						'Role.Data.Updated',
@@ -149,6 +155,8 @@ export const ListResponse = Schema.Array(
 					'User.Deleted',
 					'User.Data.Updated',
 					'User.SuspensionStatus.Updated',
+					'TrustedDevice.Created',
+					'TrustedDevice.Deleted',
 					'Role.Created',
 					'Role.Deleted',
 					'Role.Data.Updated',
@@ -209,6 +217,8 @@ export type CreatePayload = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -239,6 +249,8 @@ export type CreatePayload = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -287,6 +299,8 @@ export const CreatePayload = Schema.StructWithRest(
 				'User.Deleted',
 				'User.Data.Updated',
 				'User.SuspensionStatus.Updated',
+				'TrustedDevice.Created',
+				'TrustedDevice.Deleted',
 				'Role.Created',
 				'Role.Deleted',
 				'Role.Data.Updated',
@@ -321,6 +335,8 @@ export const CreatePayload = Schema.StructWithRest(
 					'User.Deleted',
 					'User.Data.Updated',
 					'User.SuspensionStatus.Updated',
+					'TrustedDevice.Created',
+					'TrustedDevice.Deleted',
 					'Role.Created',
 					'Role.Deleted',
 					'Role.Data.Updated',
@@ -376,6 +392,8 @@ export type CreateResponse = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -407,6 +425,8 @@ export type CreateResponse = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -454,6 +474,8 @@ export const CreateResponse = Schema.StructWithRest(
 					'User.Deleted',
 					'User.Data.Updated',
 					'User.SuspensionStatus.Updated',
+					'TrustedDevice.Created',
+					'TrustedDevice.Deleted',
 					'Role.Created',
 					'Role.Deleted',
 					'Role.Data.Updated',
@@ -490,6 +512,8 @@ export const CreateResponse = Schema.StructWithRest(
 				'User.Deleted',
 				'User.Data.Updated',
 				'User.SuspensionStatus.Updated',
+				'TrustedDevice.Created',
+				'TrustedDevice.Deleted',
 				'Role.Created',
 				'Role.Deleted',
 				'Role.Data.Updated',
@@ -544,6 +568,8 @@ export type GetResponse = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -575,6 +601,8 @@ export type GetResponse = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -623,6 +651,8 @@ export const GetResponse = Schema.StructWithRest(
 					'User.Deleted',
 					'User.Data.Updated',
 					'User.SuspensionStatus.Updated',
+					'TrustedDevice.Created',
+					'TrustedDevice.Deleted',
 					'Role.Created',
 					'Role.Deleted',
 					'Role.Data.Updated',
@@ -659,6 +689,8 @@ export const GetResponse = Schema.StructWithRest(
 				'User.Deleted',
 				'User.Data.Updated',
 				'User.SuspensionStatus.Updated',
+				'TrustedDevice.Created',
+				'TrustedDevice.Deleted',
 				'Role.Created',
 				'Role.Deleted',
 				'Role.Data.Updated',
@@ -718,6 +750,8 @@ export type UpdatePayload = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -749,6 +783,8 @@ export type UpdatePayload = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -799,6 +835,8 @@ export const UpdatePayload = Schema.StructWithRest(
 						'User.Deleted',
 						'User.Data.Updated',
 						'User.SuspensionStatus.Updated',
+						'TrustedDevice.Created',
+						'TrustedDevice.Deleted',
 						'Role.Created',
 						'Role.Deleted',
 						'Role.Data.Updated',
@@ -837,6 +875,8 @@ export const UpdatePayload = Schema.StructWithRest(
 					'User.Deleted',
 					'User.Data.Updated',
 					'User.SuspensionStatus.Updated',
+					'TrustedDevice.Created',
+					'TrustedDevice.Deleted',
 					'Role.Created',
 					'Role.Deleted',
 					'Role.Data.Updated',
@@ -894,6 +934,8 @@ export type UpdateResponse = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -925,6 +967,8 @@ export type UpdateResponse = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -972,6 +1016,8 @@ export const UpdateResponse = Schema.StructWithRest(
 					'User.Deleted',
 					'User.Data.Updated',
 					'User.SuspensionStatus.Updated',
+					'TrustedDevice.Created',
+					'TrustedDevice.Deleted',
 					'Role.Created',
 					'Role.Deleted',
 					'Role.Data.Updated',
@@ -1008,6 +1054,8 @@ export const UpdateResponse = Schema.StructWithRest(
 				'User.Deleted',
 				'User.Data.Updated',
 				'User.SuspensionStatus.Updated',
+				'TrustedDevice.Created',
+				'TrustedDevice.Deleted',
 				'Role.Created',
 				'Role.Deleted',
 				'Role.Data.Updated',
@@ -1204,6 +1252,8 @@ export type CreateTestPayload = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -1243,6 +1293,8 @@ export const CreateTestPayload = Schema.StructWithRest(
 				'User.Deleted',
 				'User.Data.Updated',
 				'User.SuspensionStatus.Updated',
+				'TrustedDevice.Created',
+				'TrustedDevice.Deleted',
 				'Role.Created',
 				'Role.Deleted',
 				'Role.Data.Updated',
@@ -1296,6 +1348,8 @@ export type UpdateSigningKeyResponse = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -1327,6 +1381,8 @@ export type UpdateSigningKeyResponse = {
 		| 'User.Deleted'
 		| 'User.Data.Updated'
 		| 'User.SuspensionStatus.Updated'
+		| 'TrustedDevice.Created'
+		| 'TrustedDevice.Deleted'
 		| 'Role.Created'
 		| 'Role.Deleted'
 		| 'Role.Data.Updated'
@@ -1374,6 +1430,8 @@ export const UpdateSigningKeyResponse = Schema.StructWithRest(
 					'User.Deleted',
 					'User.Data.Updated',
 					'User.SuspensionStatus.Updated',
+					'TrustedDevice.Created',
+					'TrustedDevice.Deleted',
 					'Role.Created',
 					'Role.Deleted',
 					'Role.Data.Updated',
@@ -1410,6 +1468,8 @@ export const UpdateSigningKeyResponse = Schema.StructWithRest(
 				'User.Deleted',
 				'User.Data.Updated',
 				'User.SuspensionStatus.Updated',
+				'TrustedDevice.Created',
+				'TrustedDevice.Deleted',
 				'Role.Created',
 				'Role.Deleted',
 				'Role.Data.Updated',
